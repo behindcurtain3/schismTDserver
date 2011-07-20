@@ -1,0 +1,10 @@
+/bin
+schismTD/bin/*
+schismTD/obj/*
+schismTDdev/bin/*
+schismTDdev/obj/*
+*.exe
+*.dll
+*.pdb
+*.suo
+*.db
