@@ -25,5 +25,9 @@ namespace schismTD
         public const String GAME_PLACE_WALL = "game_place_wall";
         public const String GAME_REMOVE_WALL = "game_remove_wall";
         public const String GAME_INVALID_WALL = "game_invalid_wall";
+
+        public const String GAME_PLACE_TOWER = "game_place_tower";
+        public const String GAME_REMOVE_TOWER = "game_remove_tower";
+        public const String GAME_INVALID_TOWER = "game_invalid_tower";
     }
 }

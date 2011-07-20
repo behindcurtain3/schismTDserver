@@ -10,11 +10,12 @@ namespace schismTD
     public class Game
     {
         private GameCode mCtx;
+        private Board mBoard;
         private Player black;
         private Player white;
 
         // Seconds to countdown at start of game (IE: dead period)
-        private const int mCountdownLength = 15000; // in milliseconds
+        private const int mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
         private int mCountdownPosition;
 
         private Boolean mIsStarted = false;
@@ -26,6 +27,8 @@ namespace schismTD
             mCtx = gc;
             black = p1;
             white = p2;
+
+            mBoard = new Board(black, white);
 
             mCountdownPosition = mCountdownLength;
         }
@@ -51,7 +54,14 @@ namespace schismTD
             mCtx.Broadcast(Messages.GAME_START);
             mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, placeWall);
             mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, removeWall);
+            mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
 
+        }
+
+        public void finish()
+        {
+            mIsFinished = true;
+            mCtx.Broadcast(Messages.GAME_FINISHED);
         }
 
         public void update(int dt)
@@ -81,8 +91,38 @@ namespace schismTD
             }
         }
 
+        private void placeTower(Player p, Message m)
+        {
+            if (isFinished() || !isStarted())
+                return;
+
+            Cell c = findCellByPoint(new Point(m.GetInt(0), m.GetInt(1)));
+
+            if (c == null)
+                return;
+
+            // Check for correct player on the cell && that it is in a buildable area
+            if (c.Tower == null && p == c.Player)
+            {
+                c.Tower = new Tower(p, c.Position);
+                p.Towers.Add(c.Tower);
+
+                mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Position.X, c.Position.Y);
+
+                // check for winner
+                if (p.Towers.Count >= 5)
+                {
+                    // They win!
+                    finish();
+                }
+            }
+        }
+
         private void placeWall(Player p, Message m)
         {
+            if (isFinished() || !isStarted())
+                return;
+
             Player sender;
 
             if (p == black)
@@ -107,12 +147,36 @@ namespace schismTD
             {
                 sender.Walls.Add(w);
                 mCtx.Broadcast(Messages.GAME_PLACE_WALL, w.Start.X, w.Start.Y, w.End.X, w.End.Y);
+
+                // check for winner
+                if (sender.Walls.Count >= 5)
+                {
+                    // They win!
+                    finish();
+                }
             }
         }
 
         private void removeWall(Player p, Message message)
         {
+            if (isFinished() || !isStarted())
+                return;
+
             return;
+        }
+
+        public Cell findCellByPoint(Point p)
+        {
+            if (p.X < mBoard.xOffset || p.X > mBoard.xOffset + (mBoard.Width * mBoard.CellWidth) || p.Y < mBoard.yOffset || p.Y > mBoard.yOffset + (mBoard.Height * mBoard.CellHeight))
+                return null;
+
+            Point indexed = new Point((p.X - Settings.BOARD_X_OFFSET) / Settings.BOARD_CELL_WIDTH, (p.Y - Settings.BOARD_Y_OFFSET) / Settings.BOARD_CELL_HEIGHT);
+            int index = mBoard.getIndex(indexed.X, indexed.Y);
+
+            if (index >= 0 && index < mBoard.Cells.Count)
+                return mBoard.Cells[index];
+            else
+                return null;
         }
 
         public Boolean isStarted()
@@ -123,6 +187,21 @@ namespace schismTD
         public Boolean isFinished()
         {
             return mIsFinished;
+        }
+
+        public Player Black()
+        {
+            return black;
+        }
+
+        public Player White()
+        {
+            return white;
+        }
+
+        public Board getBoard()
+        {
+            return mBoard;
         }
 
     }

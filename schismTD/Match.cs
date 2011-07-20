@@ -8,7 +8,7 @@ namespace schismTD
     
     public class Match
     {
-        private int mNumGames = 3;
+        private int mNumGames = Settings.GAMES_PER_MATCH;
         private int mCurrentGameNum = 0;
         private Game mCurrentGame;
 
@@ -63,6 +63,12 @@ namespace schismTD
         public void finish()
         {
             mIsFinished = true;
+
+            if (mCurrentGame != null)
+            {
+                mCurrentGame.finish();
+            }
+
             mCtx.Broadcast(Messages.MATCH_FINISHED);
         }
 
@@ -77,6 +83,11 @@ namespace schismTD
                     return;
 
                 mCurrentGame.update(dt);
+
+                if (mCurrentGame.isFinished())
+                {
+                    startNextGame();
+                }
             }
             else
             {
@@ -118,5 +129,9 @@ namespace schismTD
             return mNumPlayers;
         }
 
+        public Game getCurrentGame()
+        {
+            return mCurrentGame;
+        }
     }
 }

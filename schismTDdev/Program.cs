@@ -13,8 +13,8 @@ namespace schismTDdev
         [STAThread]
         static void Main()
         {
-            //PlayerIO.DevelopmentServer.Server.StartWithDebugging();
-            PlayerIO.DevelopmentServer.Server.StartWithDebugging("schismtd-3r3otmhvkki9ixublwca", "public", "schismTD", "bob", "", 30000);
+            PlayerIO.DevelopmentServer.Server.StartWithDebugging();
+            //PlayerIO.DevelopmentServer.Server.StartWithDebugging("schismtd-3r3otmhvkki9ixublwca", "public", "schismTD", "server1", "", 150000);
         }
     }
 }

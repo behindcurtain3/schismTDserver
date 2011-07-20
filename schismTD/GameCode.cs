@@ -7,27 +7,6 @@ using System.Drawing;
 
 namespace schismTD
 {
-    public class Player : BasePlayer
-    {
-        public string Name;
-
-        // Game data
-        public int Mana = Settings.DEFAULT_MANA;
-        public int Life = Settings.DEFAULT_LIFE;
-
-        public List<Tower> Towers = new List<Tower>();
-        public List<Wall> Walls = new List<Wall>();
-
-        public void reset()
-        {
-            Mana = Settings.DEFAULT_MANA;
-            Life = Settings.DEFAULT_LIFE;
-
-            Towers.Clear();
-            Walls.Clear();
-        }
-    }
-
     [RoomType("schismTD")]
     public class GameCode : Game<Player>
     {
@@ -135,17 +114,47 @@ namespace schismTD
         {
             // we'll just draw 400 by 400 pixels image with the current time, but you can
             // use this to visualize just about anything.
-            var image = new Bitmap(400, 400);
+            var image = new Bitmap(800, 600);
             using (var g = Graphics.FromImage(image))
             {
                 // fill the background
-                g.FillRectangle(Brushes.Blue, 0, 0, image.Width, image.Height);
+                g.FillRectangle(Brushes.LightGray, 0, 0, image.Width, image.Height);
 
                 // draw the current time
-                g.DrawString(DateTime.Now.ToString(), new Font("Verdana", 20F), Brushes.Orange, 10, 10);
+                g.DrawString(DateTime.Now.ToString(), new Font("Verdana", 10F), Brushes.Black, 10, 10);
 
                 // draw a dot based on the DebugPoint variable
                 g.FillRectangle(Brushes.Red, debugPoint.X, debugPoint.Y, 5, 5);
+
+                if (mMatch != null)
+                {
+                    if (mMatch.getCurrentGame() != null)
+                    {
+                        // Board bg
+                        g.FillRectangle(Brushes.Black, Settings.BOARD_X_OFFSET, Settings.BOARD_Y_OFFSET, Settings.BOARD_CELL_WIDTH * Settings.BOARD_WIDTH + 1, Settings.BOARD_CELL_HEIGHT * Settings.BOARD_HEIGHT + 1);
+
+                        // Draw passable cells
+                        foreach (Cell c in mMatch.getCurrentGame().getBoard().Cells)
+                        {
+                            if (c.Passable)
+                                g.DrawRectangle(Pens.White, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT);
+
+                            if (c.Tower != null)
+                                g.DrawString("T", new Font("Verdana", 12F), Brushes.White, c.Position.X + 6, c.Position.Y + 3);
+                        }
+
+                        // Draw walls
+                        foreach (Wall w in mMatch.getCurrentGame().Black().Walls)
+                        {
+                            g.DrawLine(Pens.Black, w.Start, w.End);
+                        }
+
+                        foreach (Wall w in mMatch.getCurrentGame().White().Walls)
+                        {
+                            g.DrawLine(Pens.White, w.Start, w.End);
+                        }
+                    }
+                }
             }
             return image;
         }
