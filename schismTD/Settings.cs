@@ -36,5 +36,10 @@ namespace schismTD
         public const long DEFAULT_FIRE_RATE = 500;
         public const int DEFAULT_DAMAGE = 10;
         public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 3.5f;
+
+        // Creeps
+        public const int CREEP_LIFE = 10;
+        public const int CREEP_SPEED = 50;
+        public const int CREEP_WIGGLE = 2;
     }
 }

@@ -206,6 +206,12 @@ namespace schismTD
                                 g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
                             }
                         }
+
+                        // Draw creeps!
+                        foreach (Creep c in mMatch.getCurrentGame().Creeps)
+                        {
+                            g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                        }
                     }
                 }
             }

@@ -29,8 +29,8 @@ namespace schismTD
         public List<Cell> WhiteCells = new List<Cell>();
         public List<Cell> BlackCells = new List<Cell>();
 
-        public List<Cell> BlackPath = new List<Cell>();
-        public List<Cell> WhitePath = new List<Cell>();
+        public Path BlackPath = new Path();
+        public Path WhitePath = new Path();
 
         public Board(Player black, Player white)
         {
@@ -48,14 +48,14 @@ namespace schismTD
             setupPathFinding();
         }
 
-        public List<Cell> getBlackPath()
+        public Path getBlackPath()
         {
-            return AStar.getPath(BlackSpawn, BlackBase);
+            return (Path)AStar.getPath(BlackSpawn, BlackBase);
         }
 
-        public List<Cell> getWhitePath()
+        public Path getWhitePath()
         {
-            return AStar.getPath(WhiteSpawn, WhiteBase);
+            return (Path)AStar.getPath(WhiteSpawn, WhiteBase);
         }
 
         public void calcPaths()
