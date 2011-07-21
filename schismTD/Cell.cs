@@ -6,13 +6,11 @@ using System.Text;
 
 namespace schismTD
 {
-    public class Cell
+    public class Cell : ANode
     {
-        // Position = coordinates
+        // World Position
         public Point Position;
-
-        // Is this cell passable by creeps?
-        public Boolean Passable;
+        public Point Center;
         
         // Index in the list
         public int Index;
@@ -22,14 +20,18 @@ namespace schismTD
 
         // A cell can have a tower
         public Tower Tower = null;
+
+        // Can anyone build here?
+        public Boolean Buildable;
        
 
-        public Cell(int i, Point p)
+        public Cell(int i, Point c, Point p) : base(c)
         {
             Index = i;
             Position = p;
-
+            Center = new Point(Position.X + (int)Math.Ceiling((double)Settings.BOARD_CELL_WIDTH / 2), Position.Y + (int)Math.Ceiling((double)Settings.BOARD_CELL_HEIGHT / 2));
             Passable = false;
+            Buildable = false;
         }
     }
 }

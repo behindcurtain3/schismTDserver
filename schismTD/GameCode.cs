@@ -12,6 +12,12 @@ namespace schismTD
     {
         public Match mMatch;
 
+        // Debug
+        private Boolean mShowNeighbors = true;
+        private Boolean mShowPassable = true;
+        private Boolean mShowTowers = true;
+        private Boolean mShowWalls = true;
+
         // This method is called when an instance of your the game is created
         public override void GameStarted()
         {
@@ -118,7 +124,7 @@ namespace schismTD
             using (var g = Graphics.FromImage(image))
             {
                 // fill the background
-                g.FillRectangle(Brushes.LightGray, 0, 0, image.Width, image.Height);
+                g.FillRectangle(Brushes.Tan, 0, 0, image.Width, image.Height);
 
                 // draw the current time
                 g.DrawString(DateTime.Now.ToString(), new Font("Verdana", 10F), Brushes.Black, 10, 10);
@@ -130,28 +136,58 @@ namespace schismTD
                 {
                     if (mMatch.getCurrentGame() != null)
                     {
-                        // Board bg
-                        g.FillRectangle(Brushes.Black, Settings.BOARD_X_OFFSET, Settings.BOARD_Y_OFFSET, Settings.BOARD_CELL_WIDTH * Settings.BOARD_WIDTH + 1, Settings.BOARD_CELL_HEIGHT * Settings.BOARD_HEIGHT + 1);
+                        Brush off = Brushes.DarkGray;
+                        Brush on = Brushes.White;
+                        Brush current = on;
 
-                        // Draw passable cells
-                        foreach (Cell c in mMatch.getCurrentGame().getBoard().Cells)
+                        // Draw White Cells
+                        foreach (Cell c in mMatch.getCurrentGame().getBoard().WhiteCells)
                         {
-                            if (c.Passable)
-                                g.DrawRectangle(Pens.White, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT);
+                            if (c.Coords.Y % 2 == 0)
+                                if (c.Coords.X % 2 == 0)
+                                    current = off;
+                                else
+                                    current = on;
+                            else
+                                if (c.Coords.X % 2 == 0)
+                                    current = on;
+                                else
+                                    current = off;
 
-                            if (c.Tower != null)
-                                g.DrawString("T", new Font("Verdana", 12F), Brushes.White, c.Position.X + 6, c.Position.Y + 3);
+                            drawCell(g, current, c);
+
+                        }
+
+                        on = Brushes.Black;
+                        // Draw Black Cells
+                        foreach (Cell c in mMatch.getCurrentGame().getBoard().BlackCells)
+                        {
+                            if (c.Coords.Y % 2 == 0)
+                                if (c.Coords.X % 2 == 0)
+                                    current = off;
+                                else
+                                    current = on;
+                            else
+                                if (c.Coords.X % 2 == 0)
+                                    current = on;
+                                else
+                                    current = off;
+
+                            drawCell(g, current, c);
                         }
 
                         // Draw walls
-                        foreach (Wall w in mMatch.getCurrentGame().Black().Walls)
+                        if (mShowWalls)
                         {
-                            g.DrawLine(Pens.Black, w.Start, w.End);
-                        }
+                            foreach (Wall w in mMatch.getCurrentGame().Black().Walls)
+                            {
+                                g.DrawLine(Pens.Black, w.Start, w.End);
+                            }
 
-                        foreach (Wall w in mMatch.getCurrentGame().White().Walls)
-                        {
-                            g.DrawLine(Pens.White, w.Start, w.End);
+                            foreach (Wall w in mMatch.getCurrentGame().White().Walls)
+                            {
+                                g.DrawLine(Pens.White, w.Start, w.End);
+                            }
                         }
                     }
                 }
@@ -159,25 +195,78 @@ namespace schismTD
             return image;
         }
 
+        public void drawCell(Graphics g, Brush b, Cell c)
+        {
+            g.FillRectangle(b, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT); 
+
+            // Draw neighbor links
+            if (mShowNeighbors)
+            {
+                foreach (Cell neighbor in c.Neighbors)
+                {
+                    g.DrawLine(Pens.Orange, c.Center, neighbor.Center);
+                }
+            }
+            
+            // Draw tower
+            if (mShowTowers)
+            {
+                if (c.Tower != null)
+                    g.DrawString("T", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 6, c.Position.Y + 3);
+            }
+
+            if (c == mMatch.getCurrentGame().getBoard().WhiteSpawn)
+                g.DrawString("W", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 1, c.Position.Y + 3);
+
+            if (c == mMatch.getCurrentGame().getBoard().BlackSpawn)
+                g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
+
+            if (c == mMatch.getCurrentGame().getBoard().WhiteBase || c == mMatch.getCurrentGame().getBoard().BlackBase)
+                g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
+
+            // Draw passable marker
+            if (mShowPassable)
+            {
+                if (c.Passable)
+                    g.FillEllipse(Brushes.Tomato, c.Position.X + 8, c.Position.Y + 8, 9, 9);
+            }
+
+        }
+
         // During development, it's very usefull to be able to cause certain events
         // to occur in your serverside code. If you create a public method with no
         // arguments and add a [DebugAction] attribute like we've down below, a button
         // will be added to the development server. 
         // Whenever you click the button, your code will run.
-        [DebugAction("Play", DebugAction.Icon.Play)]
-        public void PlayNow()
+        [DebugAction("Toggle Neighbors", DebugAction.Icon.Green)]
+        public void ToogleNeighbors()
         {
-            Console.WriteLine("The play button was clicked!");
+            mShowNeighbors = !mShowNeighbors;
         }
+
+        [DebugAction("Toggle Passable", DebugAction.Icon.Green)]
+        public void TooglePassable()
+        {
+            mShowPassable = !mShowPassable;
+        }
+
+        [DebugAction("Toggle Towers", DebugAction.Icon.Green)]
+        public void ToogleTowers()
+        {
+            mShowTowers = !mShowTowers;
+        }
+
 
         // If you use the [DebugAction] attribute on a method with
         // two int arguments, the action will be triggered via the
         // debug view when you click the debug view on a running game.
+        /*
         [DebugAction("Set Debug Point", DebugAction.Icon.Green)]
         public void SetDebugPoint(int x, int y)
         {
             debugPoint = new Point(x, y);
         }
+         */
     }
 }
 

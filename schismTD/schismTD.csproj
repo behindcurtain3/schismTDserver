@@ -40,6 +40,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ANode.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Game.cs" />

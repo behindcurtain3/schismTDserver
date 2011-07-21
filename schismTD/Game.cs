@@ -102,9 +102,20 @@ namespace schismTD
                 return;
 
             // Check for correct player on the cell && that it is in a buildable area
-            if (c.Tower == null && p == c.Player)
+            if (c.Tower == null && p == c.Player && c.Buildable)
             {
                 c.Tower = new Tower(p, c.Position);
+                c.Buildable = false;
+                c.Passable = false;
+                
+                // Remove neighbor links
+                foreach (Cell neighbor in c.Neighbors)
+                {
+                    if (neighbor.Neighbors.Contains(c))
+                        neighbor.Neighbors.Remove(c);
+                }
+                c.Neighbors.Clear();
+
                 p.Towers.Add(c.Tower);
 
                 mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Position.X, c.Position.Y);
