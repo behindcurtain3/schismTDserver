@@ -104,6 +104,32 @@ namespace schismTD
             // Check for correct player on the cell && that it is in a buildable area
             if (c.Tower == null && p == c.Player && c.Buildable)
             {
+                // Set to non-passable
+                c.Passable = false;
+
+                // Now try and find a path to make sure the maze is valid
+                List<Cell> path;
+                if (p == white)
+                    path = mBoard.getWhitePath();
+                else
+                    path = mBoard.getBlackPath();
+
+                // If there is no valid path, reject the tower placement
+                if (path.Count <= 0)
+                {
+                    c.Passable = true;
+                    p.Send(Messages.GAME_INVALID_TOWER, m.GetInt(0), m.GetInt(1));
+                    return;
+                }
+                else
+                {
+                    // Valid path
+                    if (p == white)
+                        mBoard.WhitePath = path;
+                    else
+                        mBoard.BlackPath = path;
+                }
+
                 c.Tower = new Tower(p, c.Position);
                 c.Buildable = false;
                 c.Passable = false;
@@ -119,13 +145,6 @@ namespace schismTD
                 p.Towers.Add(c.Tower);
 
                 mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Position.X, c.Position.Y);
-
-                // check for winner
-                if (p.Towers.Count >= 5)
-                {
-                    // They win!
-                    finish();
-                }
             }
         }
 

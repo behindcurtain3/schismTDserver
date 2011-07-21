@@ -29,6 +29,9 @@ namespace schismTD
         public List<Cell> WhiteCells = new List<Cell>();
         public List<Cell> BlackCells = new List<Cell>();
 
+        public List<Cell> BlackPath = new List<Cell>();
+        public List<Cell> WhitePath = new List<Cell>();
+
         public Board(Player black, Player white)
         {
             for (int i = 0; i < Height; i++)
@@ -43,6 +46,25 @@ namespace schismTD
             setupLists();
             setupCells(black, white);
             setupPathFinding();
+        }
+
+        public List<Cell> getBlackPath()
+        {
+            return AStar.getPath(BlackSpawn, BlackBase);
+        }
+
+        public List<Cell> getWhitePath()
+        {
+            return AStar.getPath(WhiteSpawn, WhiteBase);
+        }
+
+        public void calcPaths()
+        {
+            BlackPath.Clear();
+            WhitePath.Clear();
+
+            BlackPath = getBlackPath();
+            WhitePath = getWhitePath();
         }
 
         public int getIndex(int x, int y)
@@ -66,7 +88,7 @@ namespace schismTD
             int DOWN = 18;
 
             // For each white/black cell create links between valid neighbors
-            foreach (Cell c in BlackCells)
+            foreach (Cell c in Cells)
             {
                 if (!c.Passable)
                     continue;
@@ -76,6 +98,8 @@ namespace schismTD
                 addNeighborToCell(c, findCellByIndex(c.Index + RIGHT));
                 addNeighborToCell(c, findCellByIndex(c.Index + DOWN));                
             }
+
+            calcPaths();
         }
 
         private void addNeighborToCell(Cell c, Cell neighbor)

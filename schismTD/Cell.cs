@@ -29,7 +29,7 @@ namespace schismTD
         {
             Index = i;
             Position = p;
-            Center = new Point(Position.X + (int)Math.Ceiling((double)Settings.BOARD_CELL_WIDTH / 2), Position.Y + (int)Math.Ceiling((double)Settings.BOARD_CELL_HEIGHT / 2));
+            Center = new Point(Position.X + Settings.BOARD_CELL_WIDTH / 2, Position.Y + Settings.BOARD_CELL_HEIGHT / 2);
             Passable = false;
             Buildable = false;
         }

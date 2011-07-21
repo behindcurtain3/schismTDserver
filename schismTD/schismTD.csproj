@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ANode.cs" />
+    <Compile Include="AStar.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Game.cs" />

@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using PlayerIO.GameLibrary;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace schismTD
 {
@@ -17,6 +18,8 @@ namespace schismTD
         private Boolean mShowPassable = true;
         private Boolean mShowTowers = true;
         private Boolean mShowWalls = true;
+        private Boolean mShowLabels = true;
+        private Boolean mShowPaths = true;
 
         // This method is called when an instance of your the game is created
         public override void GameStarted()
@@ -49,6 +52,7 @@ namespace schismTD
                     {
                         mMatch.update(40);
                     }
+                    RefreshDebugView();
                 }
             }, 40);
 
@@ -57,12 +61,11 @@ namespace schismTD
             // of the state of your game.
             // An easy way to accomplish this is to setup a timer to update the
             // debug view every 250th second (4 times a second).
-            AddTimer(delegate
-            {
+            //AddTimer(delegate
+            //{
                 // This will cause the GenerateDebugImage() method to be called
                 // so you can draw a grapical version of the game state.
-                RefreshDebugView();
-            }, 250);
+            //}, 250);
         }
 
         // This method is called when the last player leaves the room, and it's closed down.
@@ -189,6 +192,20 @@ namespace schismTD
                                 g.DrawLine(Pens.White, w.Start, w.End);
                             }
                         }
+
+                        // Draw paths
+                        if (mShowPaths)
+                        {
+                            foreach (Cell p in mMatch.getCurrentGame().getBoard().BlackPath)
+                            {
+                                g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4); 
+                            }
+
+                            foreach (Cell p in mMatch.getCurrentGame().getBoard().WhitePath)
+                            {
+                                g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
+                            }
+                        }
                     }
                 }
             }
@@ -215,14 +232,18 @@ namespace schismTD
                     g.DrawString("T", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 6, c.Position.Y + 3);
             }
 
-            if (c == mMatch.getCurrentGame().getBoard().WhiteSpawn)
-                g.DrawString("W", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 1, c.Position.Y + 3);
+            // Draw Labels
+            if (mShowLabels)
+            {
+                if (c == mMatch.getCurrentGame().getBoard().WhiteSpawn)
+                    g.DrawString("W", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 1, c.Position.Y + 3);
 
-            if (c == mMatch.getCurrentGame().getBoard().BlackSpawn)
-                g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
+                if (c == mMatch.getCurrentGame().getBoard().BlackSpawn)
+                    g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
 
-            if (c == mMatch.getCurrentGame().getBoard().WhiteBase || c == mMatch.getCurrentGame().getBoard().BlackBase)
-                g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
+                if (c == mMatch.getCurrentGame().getBoard().WhiteBase || c == mMatch.getCurrentGame().getBoard().BlackBase)
+                    g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
+            }
 
             // Draw passable marker
             if (mShowPassable)
@@ -238,6 +259,26 @@ namespace schismTD
         // arguments and add a [DebugAction] attribute like we've down below, a button
         // will be added to the development server. 
         // Whenever you click the button, your code will run.
+        /*
+        [DebugAction("Calculate Paths", DebugAction.Icon.Play)]
+        public void CalcPaths()
+        {
+            if (mMatch != null)
+            {
+                if (mMatch.isStarted())
+                {
+                    mMatch.getCurrentGame().getBoard().calcPaths();
+                }
+            }
+        }
+        */
+
+        [DebugAction("Toggle Paths", DebugAction.Icon.Green)]
+        public void TooglePaths()
+        {
+            mShowPaths = !mShowPaths;
+        }
+
         [DebugAction("Toggle Neighbors", DebugAction.Icon.Green)]
         public void ToogleNeighbors()
         {
@@ -254,6 +295,12 @@ namespace schismTD
         public void ToogleTowers()
         {
             mShowTowers = !mShowTowers;
+        }
+
+        [DebugAction("Toggle Labels", DebugAction.Icon.Green)]
+        public void ToogleLabels()
+        {
+            mShowLabels = !mShowLabels;
         }
 
 
