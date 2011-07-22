@@ -8,31 +8,195 @@ namespace schismTD
     public class Creep
     {
         // World position
-        public PointF Position;
-        public PointF Center;
+        public PointF Position
+        {
+            get
+            {
+                return mPosition;
+            }
+            set
+            {
+                mPosition = value;
+            }
+        }
+        private PointF mPosition;
 
-        public int Width;
-        public int Height;
-        public RectangleF HitBox;
+        public PointF Center
+        {
+            get
+            {
+                return mCenter;
+            }
+            set
+            {
+                mCenter = value;
+            }
+        }
+        private PointF mCenter;
+
+        public int Width
+        {
+            get
+            {
+                return mWidth;
+            }
+            set
+            {
+                mWidth = value;
+            }
+        }
+        private int mWidth;
+
+
+        public int Height
+        {
+            get
+            {
+                return mHeight;
+            }
+            set
+            {
+                mHeight = value;
+            }
+        }
+        private int mHeight;
+
+
+        public RectangleF HitBox
+        {
+            get
+            {
+                return mHitBox;
+            }
+            set
+            {
+                mHitBox = value;
+            }
+        }
+        private RectangleF mHitBox;
 
         // Pathing
-        public Path CurrentPath;
-        public Cell MovingTo; // The next cell in the path the creep is trying to get to
+        public Path CurrentPath
+        {
+            get
+            {
+                return mCurrentPath;
+            }
+            set
+            {
+                mCurrentPath = value;
+            }
+        }
+        private Path mCurrentPath;
 
-        // Goal
-        public Cell Target; // Ultimate Goal, needs to be set independent of the path
+        // The next cell in the path the creep is trying to get to
+        public Cell MovingTo
+        {
+            get
+            {
+                return mMovingTo;
+            }
+            set
+            {
+                mMovingTo = value;
+            }
+        }
+        private Cell mMovingTo;
+
+        // Ultimate Goal, needs to be set independent of the path
+        public Cell Target
+        {
+            get
+            {
+                return mTarget;
+            }
+            set
+            {
+                mTarget = value;
+            }
+        }
+        private Cell mTarget;
 
         // Player the creep belongs to
-        public Player Player;
+        public Player Player
+        {
+            get
+            {
+                return mPlayer;
+            }
+            set
+            {
+                mPlayer = value;
+            }
+        }
+        private Player mPlayer;
 
         // Stats
-        public Boolean Alive = true;
-        public int Life;
-        public int Speed;
+        public Boolean Alive
+        {
+            get
+            {
+                return mAlive;
+            }
+            set
+            {
+                mAlive = value;
+            }
+        }
+        private Boolean mAlive;
+
+        public int Life
+        {
+            get
+            {
+                return mLife;
+            }
+            set
+            {
+                mLife = value;
+            }
+        }
+        private int mLife;
+
+        public int Speed
+        {
+            get
+            {
+                return mSpeed;
+            }
+            set
+            {
+                mSpeed = value;
+            }
+        }
+        private int mSpeed;
 
         // Network state
-        public String ID;
-        public Boolean Valid = false;
+        public String ID
+        {
+            get
+            {
+                return mID;
+            }
+            set
+            {
+                mID = value;
+            }
+        }
+        private String mID;
+
+        public Boolean Valid
+        {
+            get
+            {
+                return mValid;
+            }
+            set
+            {
+                mValid = value;
+            }
+        }
+        private Boolean mValid;
 
         public Creep(Player player, Point pos, Path p, Cell t)
         {
@@ -49,6 +213,9 @@ namespace schismTD
 
             Life = 10;
             Speed = 50;
+
+            Valid = false;
+            Alive = true;
         }
 
         public void update(int dt)
@@ -91,21 +258,21 @@ namespace schismTD
                     if (Math.Abs(Center.X - MovingTo.Center.X) >= Settings.CREEP_WIGGLE)
                     {
                         if (Center.X < MovingTo.Center.X)
-                            Position.X += dd;
+                            mPosition.X += dd;
                         else
-                            Position.X -= dd;
+                            mPosition.X -= dd;
                     }
                     if (Math.Abs(Center.Y - MovingTo.Center.Y) >= Settings.CREEP_WIGGLE)
                     {
                         if (Center.Y < MovingTo.Center.Y)
-                            Position.Y += dd;
+                            mPosition.Y += dd;
                         else
-                            Position.Y -= dd;
+                            mPosition.Y -= dd;
                     }
 
                     // Update center
-                    Center.X = Position.X + Width / 2;
-                    Center.Y = Position.Y + Height / 2;
+                    mCenter.X = Position.X + Width / 2;
+                    mCenter.Y = Position.Y + Height / 2;
                 }
 
             }
