@@ -30,8 +30,13 @@ namespace schismTD
         public int Life;
         public int Speed;
 
+        // Network state
+        public String ID;
+        public Boolean Valid = false;
+
         public Creep(Player player, Point pos, Path p, Cell t)
         {
+            ID = Guid.NewGuid().ToString();
             Player = player;
             CurrentPath = new Path(p);
             Position = pos;
@@ -54,6 +59,7 @@ namespace schismTD
                 if (MovingTo == null)
                 {
                     MovingTo = CurrentPath.Peek();
+                    invalidate();
                 }
 
                 float d = getDistance(MovingTo);
@@ -72,6 +78,7 @@ namespace schismTD
                     else
                     {
                         MovingTo = CurrentPath.Peek();
+                        invalidate();
                     }
                 }
 
@@ -107,6 +114,11 @@ namespace schismTD
         public float getDistance(Cell c)
         {
             return Math.Abs(Center.X - c.Center.X) + Math.Abs(Center.Y - c.Center.Y);
+        }
+
+        public void invalidate()
+        {
+            Valid = false;
         }
     }
 }

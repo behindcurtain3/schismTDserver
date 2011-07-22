@@ -31,5 +31,9 @@ namespace schismTD
         public const String GAME_PLACE_TOWER = "game_place_tower";
         public const String GAME_REMOVE_TOWER = "game_remove_tower";
         public const String GAME_INVALID_TOWER = "game_invalid_tower";
+
+        public const String GAME_CREEP_ADD = "game_creep_add";
+        public const String GAME_CREEP_REMOVE = "game_creep_remove";
+        public const String GAME_CREEP_UPDATE = "game_creep_update";
     }
 }

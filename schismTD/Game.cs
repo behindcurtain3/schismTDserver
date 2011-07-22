@@ -113,8 +113,14 @@ namespace schismTD
                         if (mCreepTimerPosition <= 0)
                         {
                             mCreepTimerPosition = mCreepTimerLength;
-                            Creeps.Add(new Creep(black, mBoard.WhiteSpawn.Position, mBoard.WhitePath, mBoard.WhiteBase));
-                            Creeps.Add(new Creep(white, mBoard.BlackSpawn.Position, mBoard.BlackPath, mBoard.BlackBase));
+                            Creep c = new Creep(black, mBoard.WhiteSpawn.Position, mBoard.WhitePath, mBoard.WhiteBase);
+                            Creeps.Add(c);
+                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
+
+                            c = new Creep(white, mBoard.BlackSpawn.Position, mBoard.BlackPath, mBoard.BlackBase);
+                            Creeps.Add(c);
+                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
+                            
                         }
 
                         List<Creep> toRemove = new List<Creep>();
@@ -123,7 +129,17 @@ namespace schismTD
                             c.update(dt);
 
                             if (!c.Alive)
+                            {
                                 toRemove.Add(c);
+                                mCtx.Broadcast(Messages.GAME_CREEP_REMOVE, c.ID);
+                            }
+                            else
+                            {
+                                if (!c.Valid)
+                                {
+                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
+                                }
+                            }                            
                         }
 
                         foreach (Creep r in toRemove)
