@@ -20,6 +20,7 @@ namespace schismTD
         private Boolean mShowWalls = true;
         private Boolean mShowLabels = true;
         private Boolean mShowPaths = true;
+        private Boolean mShowCreeps = true;
 
         // This method is called when an instance of your the game is created
         public override void GameStarted()
@@ -208,9 +209,12 @@ namespace schismTD
                         }
 
                         // Draw creeps!
-                        foreach (Creep c in mMatch.getCurrentGame().Creeps)
+                        if (mShowCreeps)
                         {
-                            g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                            foreach (Creep c in mMatch.getCurrentGame().Creeps)
+                            {
+                                g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                            }
                         }
                     }
                 }
@@ -278,6 +282,12 @@ namespace schismTD
             }
         }
         */
+
+        [DebugAction("Toggle Creeps", DebugAction.Icon.Green)]
+        public void ToogleCreeps()
+        {
+            mShowCreeps = !mShowCreeps;
+        }
 
         [DebugAction("Toggle Paths", DebugAction.Icon.Green)]
         public void TooglePaths()

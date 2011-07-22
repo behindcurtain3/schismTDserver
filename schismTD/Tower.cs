@@ -15,6 +15,8 @@ namespace schismTD
         public int Damage = Settings.DEFAULT_DAMAGE;
         public float Range = Settings.DEFAULT_RANGE;
 
+        public String Type = "basic";
+
         public Tower(Player p, Point pos)
         {
             Player = p;

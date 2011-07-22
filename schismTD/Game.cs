@@ -35,6 +35,18 @@ namespace schismTD
 
             mBoard = new Board(black, white);
 
+            // Send the cells to the players
+            foreach (Cell c in mBoard.BlackCells)
+            {
+                black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                white.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
+            }
+            foreach (Cell c in mBoard.WhiteCells)
+            {
+                white.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
+            }
+
             mCountdownPosition = mCountdownLength;
             mCreepTimerPosition = 0;
         }
@@ -272,7 +284,7 @@ namespace schismTD
 
                         p.Towers.Add(c.Tower);
 
-                        mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Position.X, c.Position.Y);
+                        mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
                     }
                 }
             }

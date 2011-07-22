@@ -22,6 +22,8 @@ namespace schismTD
         public const String GAME_MANA = "game_mana";
         public const String GAME_LIFE = "game_life";
 
+        public const String GAME_ADD_CELL = "game_add_cell";
+
         public const String GAME_PLACE_WALL = "game_place_wall";
         public const String GAME_REMOVE_WALL = "game_remove_wall";
         public const String GAME_INVALID_WALL = "game_invalid_wall";
