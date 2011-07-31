@@ -17,7 +17,6 @@ namespace schismTD
         private Boolean mShowNeighbors = true;
         private Boolean mShowPassable = true;
         private Boolean mShowTowers = true;
-        private Boolean mShowWalls = true;
         private Boolean mShowLabels = true;
         private Boolean mShowPaths = true;
         private Boolean mShowCreeps = true;
@@ -145,7 +144,7 @@ namespace schismTD
                         Brush current = on;
 
                         // Draw White Cells
-                        foreach (Cell c in mMatch.getCurrentGame().getBoard().WhiteCells)
+                        foreach (Cell c in mMatch.getCurrentGame().Board.WhiteCells)
                         {
                             if (c.Coords.Y % 2 == 0)
                                 if (c.Coords.X % 2 == 0)
@@ -164,7 +163,7 @@ namespace schismTD
 
                         on = Brushes.Black;
                         // Draw Black Cells
-                        foreach (Cell c in mMatch.getCurrentGame().getBoard().BlackCells)
+                        foreach (Cell c in mMatch.getCurrentGame().Board.BlackCells)
                         {
                             if (c.Coords.Y % 2 == 0)
                                 if (c.Coords.X % 2 == 0)
@@ -180,29 +179,15 @@ namespace schismTD
                             drawCell(g, current, c);
                         }
 
-                        // Draw walls
-                        if (mShowWalls)
-                        {
-                            foreach (Wall w in mMatch.getCurrentGame().Black().Walls)
-                            {
-                                g.DrawLine(Pens.Black, w.Start, w.End);
-                            }
-
-                            foreach (Wall w in mMatch.getCurrentGame().White().Walls)
-                            {
-                                g.DrawLine(Pens.White, w.Start, w.End);
-                            }
-                        }
-
                         // Draw paths
                         if (mShowPaths)
                         {
-                            foreach (Cell p in mMatch.getCurrentGame().getBoard().BlackPath)
+                            foreach (Cell p in mMatch.getCurrentGame().Board.BlackPath)
                             {
                                 g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4); 
                             }
 
-                            foreach (Cell p in mMatch.getCurrentGame().getBoard().WhitePath)
+                            foreach (Cell p in mMatch.getCurrentGame().Board.WhitePath)
                             {
                                 g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
                             }
@@ -245,13 +230,13 @@ namespace schismTD
             // Draw Labels
             if (mShowLabels)
             {
-                if (c == mMatch.getCurrentGame().getBoard().WhiteSpawn)
+                if (c == mMatch.getCurrentGame().Board.WhiteSpawn)
                     g.DrawString("W", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 1, c.Position.Y + 3);
 
-                if (c == mMatch.getCurrentGame().getBoard().BlackSpawn)
+                if (c == mMatch.getCurrentGame().Board.BlackSpawn)
                     g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
 
-                if (c == mMatch.getCurrentGame().getBoard().WhiteBase || c == mMatch.getCurrentGame().getBoard().BlackBase)
+                if (c == mMatch.getCurrentGame().Board.WhiteBase || c == mMatch.getCurrentGame().Board.BlackBase)
                     g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
             }
 

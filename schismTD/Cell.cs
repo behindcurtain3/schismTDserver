@@ -9,20 +9,88 @@ namespace schismTD
     public class Cell : ANode
     {
         // World Position
-        public Point Position;
-        public Point Center;
+        public Point Position
+        {
+            get
+            {
+                return mPosition;
+            }
+            set
+            {
+                mPosition = value;
+            }
+        }
+        private Point mPosition;
+
+        public Point Center
+        {
+            get
+            {
+                return mPosition;
+            }
+
+            set
+            {
+                mPosition = value;
+            }
+        }
+        private Point mCenter;
         
         // Index in the list
-        public int Index;
+        public int Index
+        {
+            get
+            {
+                return mIndex;
+            }
+            set
+            {
+                mIndex = value;
+            }
+        }
+        private int mIndex;
 
         // A cell belongs to a player
-        public Player Player = null;
+        public Player Player
+        {
+            get
+            {
+                return mPlayer;
+            }
+            set
+            {
+                mPlayer = value;
+            }
+        }
+        private Player mPlayer;
 
         // A cell can have a tower
-        public Tower Tower = null;
+        public Tower Tower
+        {
+            get
+            {
+                return mTower;
+            }
+            set
+            {
+                mTower = value;
+            }
+        }
+        private Tower mTower;
 
         // Can anyone build here?
-        public Boolean Buildable;
+        public Boolean Buildable
+        {
+            get
+            {
+                return mBuildable;
+            }
+            set
+            {
+                mBuildable = value;
+            }
+        }
+        private Boolean mBuildable;
        
 
         public Cell(int i, Point c, Point p) : base(c)
@@ -32,6 +100,9 @@ namespace schismTD
             Center = new Point(Position.X + Settings.BOARD_CELL_WIDTH / 2, Position.Y + Settings.BOARD_CELL_HEIGHT / 2);
             Passable = false;
             Buildable = false;
+
+            Player = null;
+            Tower = null;
         }
     }
 }

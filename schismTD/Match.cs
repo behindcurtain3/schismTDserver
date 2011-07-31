@@ -84,7 +84,7 @@ namespace schismTD
 
                 mCurrentGame.update(dt);
 
-                if (mCurrentGame.isFinished())
+                if (mCurrentGame.Finished)
                 {
                     startNextGame();
                 }

@@ -10,9 +10,64 @@ namespace schismTD
     public class Game
     {
         private GameCode mCtx;
+
+        public Board Board
+        {
+            get
+            {
+                return mBoard;
+            }
+            set
+            {
+                mBoard = value;
+            }
+        }
         private Board mBoard;
-        private Player black;
-        private Player white;
+
+        public Player Black
+        {
+            get
+            {
+                return mBlack;
+            }
+            set
+            {
+                mBlack = value;
+            }
+        }
+        private Player mBlack;
+
+        public Player White
+        {
+            get
+            {
+                return mWhite;
+            }
+            set
+            {
+                mWhite = value;
+            }
+        }
+        private Player mWhite;
+
+        public Boolean Started
+        {
+            get
+            {
+                return mIsStarted;
+            }
+        }
+        private Boolean mIsStarted = false;
+
+        public Boolean Finished
+        {
+            get
+            {
+                return mIsFinished;
+            }
+        }
+        private Boolean mIsFinished = false;
+
 
         // Seconds to countdown at start of game (IE: dead period)
         private const int mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
@@ -21,30 +76,39 @@ namespace schismTD
         private int mCreepTimerLength = 1000;
         private int mCreepTimerPosition;
 
-        private Boolean mIsStarted = false;
-        private Boolean mIsFinished = false;
         private long mTotalTimeElapsed = 0;
 
-        public List<Creep> Creeps = new List<Creep>();
+        public List<Creep> Creeps
+        {
+            get
+            {
+                return mCreeps;
+            }
+            set
+            {
+                mCreeps = value;
+            }
+        }
+        private List<Creep> mCreeps = new List<Creep>();
 
         public Game(GameCode gc, Player p1, Player p2)
         {
             mCtx = gc;
-            black = p1;
-            white = p2;
+            Black = p1;
+            White = p2;
 
-            mBoard = new Board(black, white);
+            Board = new Board(Black, White);
 
             // Send the cells to the players
             foreach (Cell c in mBoard.BlackCells)
             {
-                black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
-                white.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
+                Black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                White.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
             foreach (Cell c in mBoard.WhiteCells)
             {
-                white.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
-                black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
+                White.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                Black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
 
             mCountdownPosition = mCountdownLength;
@@ -58,20 +122,20 @@ namespace schismTD
             mTotalTimeElapsed = 0;
 
             // Reset both players
-            black.reset();
-            white.reset();
+            Black.reset();
+            White.reset();
 
             // Send player info
-            black.Send(Messages.GAME_LIFE, black.Life);
-            black.Send(Messages.GAME_MANA, black.Mana);
+            Black.Send(Messages.GAME_LIFE, Black.Life);
+            Black.Send(Messages.GAME_MANA, Black.Mana);
 
-            white.Send(Messages.GAME_LIFE, white.Life);
-            white.Send(Messages.GAME_MANA, white.Mana);
+            White.Send(Messages.GAME_LIFE, White.Life);
+            White.Send(Messages.GAME_MANA, White.Mana);
 
             // Finally send the message to start the game
             mCtx.Broadcast(Messages.GAME_START);
-            mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, placeWall);
-            mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, removeWall);
+            //mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, placeWall);
+            //mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, removeWall);
             mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
 
         }
@@ -84,7 +148,7 @@ namespace schismTD
 
         public void update(int dt)
         {
-            if (!isStarted())
+            if (!Started)
             {
                 mCountdownPosition -= dt;
 
@@ -102,7 +166,7 @@ namespace schismTD
             else
             {
                 // Game has started
-                if (!isFinished())
+                if (!Finished)
                 {
                     mTotalTimeElapsed += dt;
 
@@ -113,11 +177,11 @@ namespace schismTD
                         if (mCreepTimerPosition <= 0)
                         {
                             mCreepTimerPosition = mCreepTimerLength;
-                            Creep c = new Creep(black, mBoard.WhiteSpawn.Position, mBoard.WhitePath, mBoard.WhiteBase);
+                            Creep c = new Creep(Black, mBoard.WhiteSpawn.Position, mBoard.WhitePath, mBoard.WhiteBase);
                             Creeps.Add(c);
                             mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
 
-                            c = new Creep(white, mBoard.BlackSpawn.Position, mBoard.BlackPath, mBoard.BlackBase);
+                            c = new Creep(White, mBoard.BlackSpawn.Position, mBoard.BlackPath, mBoard.BlackBase);
                             Creeps.Add(c);
                             mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
                             
@@ -159,7 +223,7 @@ namespace schismTD
 
         private void placeTower(Player p, Message m)
         {
-            if (isFinished() || !isStarted())
+            if (Finished || !Started)
             {
                 invalidTower(p, m.GetInt(0), m.GetInt(0));
                 return;
@@ -201,7 +265,7 @@ namespace schismTD
 
                     // Now try and find a path to make sure the maze is valid
                     Path path;
-                    if (p == white)
+                    if (p == White)
                         path = mBoard.getWhitePath();
                     else
                         path = mBoard.getBlackPath();
@@ -232,7 +296,7 @@ namespace schismTD
                             {
                                 Path tmpPath;
                                 // Recalc the path for this creep
-                                if (cr.Player == white)
+                                if (cr.Player == White)
                                     tmpPath = AStar.getPath(crIn, mBoard.BlackBase);
                                 else
                                     tmpPath = AStar.getPath(crIn, mBoard.WhiteBase);
@@ -281,7 +345,7 @@ namespace schismTD
                             }
                         }
 
-                        if (p == white)
+                        if (p == White)
                             mBoard.WhitePath = path;
                         else
                             mBoard.BlackPath = path;
@@ -306,6 +370,7 @@ namespace schismTD
             }
         }
 
+        /*
         private void placeWall(Player p, Message m)
         {
             if (isFinished() || !isStarted())
@@ -352,6 +417,7 @@ namespace schismTD
 
             return;
         }
+         */
 
         public Cell findCellByPoint(PointF p)
         {
@@ -370,31 +436,6 @@ namespace schismTD
         public Cell findCellByPoint(Point p)
         {
             return findCellByPoint(new PointF(p.X, p.Y));
-        }
-
-        public Boolean isStarted()
-        {
-            return mIsStarted;
-        }
-
-        public Boolean isFinished()
-        {
-            return mIsFinished;
-        }
-
-        public Player Black()
-        {
-            return black;
-        }
-
-        public Player White()
-        {
-            return white;
-        }
-
-        public Board getBoard()
-        {
-            return mBoard;
         }
 
     }
