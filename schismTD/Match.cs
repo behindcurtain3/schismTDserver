@@ -8,16 +8,54 @@ namespace schismTD
     
     public class Match
     {
-        private int mNumGames = Settings.GAMES_PER_MATCH;
-        private int mCurrentGameNum = 0;
-        private Game mCurrentGame;
-
-        private Boolean mIsStarted = false;
-        private Boolean mIsFinished = false;
-
         private GameCode mCtx;
         private Player p1 = null;
         private Player p2 = null;
+        private int mNumGames = Settings.GAMES_PER_MATCH;
+        private int mCurrentGameNum = 0;
+
+        public Game Game
+        {
+            get
+            {
+                return mCurrentGame;
+            }
+        }
+        private Game mCurrentGame;
+
+        public Boolean Started
+        {
+            get
+            {
+                return mIsStarted;
+            }
+            set
+            {
+                mIsStarted = value;
+            }
+        }
+        private Boolean mIsStarted = false;
+
+        public Boolean Finished
+        {
+            get
+            {
+                return mIsFinished;
+            }
+            set
+            {
+                mIsFinished = value;
+            }
+        }
+        private Boolean mIsFinished = false;
+
+        public int Players
+        {
+            get
+            {
+                return mNumPlayers;
+            }
+        }
         private int mNumPlayers = 0;
 
         public Match(GameCode gc)
@@ -53,7 +91,7 @@ namespace schismTD
 
         public void start()
         {
-            mIsStarted = true;
+            Started = true;
             mCtx.Broadcast(Messages.MATCH_READY);
 
             // Possibly add a countdown or both players click a ready button before calling this?
@@ -62,7 +100,7 @@ namespace schismTD
 
         public void finish()
         {
-            mIsFinished = true;
+            Finished = true;
 
             if (mCurrentGame != null)
             {
@@ -74,10 +112,10 @@ namespace schismTD
 
         public void update(int dt)
         {
-            if (isFinished())
+            if (Finished)
                 return;
 
-            if (isStarted())
+            if (Started)
             {
                 if (mCurrentGame == null)
                     return;
@@ -114,24 +152,5 @@ namespace schismTD
             }
         }
 
-        public Boolean isStarted()
-        {
-            return mIsStarted;
-        }
-
-        public Boolean isFinished()
-        {
-            return mIsFinished;
-        }
-
-        public int numPlayers()
-        {
-            return mNumPlayers;
-        }
-
-        public Game getCurrentGame()
-        {
-            return mCurrentGame;
-        }
     }
 }

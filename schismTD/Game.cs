@@ -11,6 +11,15 @@ namespace schismTD
     {
         private GameCode mCtx;
 
+        // Seconds to countdown at start of game (IE: dead period)
+        private const int mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
+        private int mCountdownPosition;
+
+        private int mCreepTimerLength = 1000;
+        private int mCreepTimerPosition;
+
+        private long mTotalTimeElapsed = 0;
+
         public Board Board
         {
             get
@@ -68,16 +77,6 @@ namespace schismTD
         }
         private Boolean mIsFinished = false;
 
-
-        // Seconds to countdown at start of game (IE: dead period)
-        private const int mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
-        private int mCountdownPosition;
-
-        private int mCreepTimerLength = 1000;
-        private int mCreepTimerPosition;
-
-        private long mTotalTimeElapsed = 0;
-
         public List<Creep> Creeps
         {
             get
@@ -134,8 +133,6 @@ namespace schismTD
 
             // Finally send the message to start the game
             mCtx.Broadcast(Messages.GAME_START);
-            //mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, placeWall);
-            //mCtx.AddMessageHandler(Messages.GAME_PLACE_WALL, removeWall);
             mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
 
         }
@@ -358,7 +355,10 @@ namespace schismTD
                         foreach (Cell neighbor in c.Neighbors)
                         {
                             if (neighbor.Neighbors.Contains(c))
+                            {
+
                                 neighbor.Neighbors.Remove(c);
+                            }
                         }
                         c.Neighbors.Clear();
 
@@ -370,58 +370,9 @@ namespace schismTD
             }
         }
 
-        /*
-        private void placeWall(Player p, Message m)
-        {
-            if (isFinished() || !isStarted())
-                return;
-
-            Player sender;
-
-            if (p == black)
-                sender = black;
-            else if (p == white)
-                sender = white;
-            else
-            {
-                // If this was sent by someone not who isn't black or white, reject the request
-                //p.Send(Messages.GAME_INVALID_WALL, message.GetInt(0), message.GetInt(1), message.GetInt(2), message.GetInt(3));
-                // Error message above, for now I chose not to send it since this case likely happens by nefarious means
-                return;
-            }
-
-            // Place the wall
-            Wall w = new Wall(new Point(m.GetInt(0), m.GetInt(1)), new Point(m.GetInt(2), m.GetInt(3)));
-            if (sender.Walls.Contains(w))
-            {
-                mCtx.Broadcast(Messages.GAME_INVALID_WALL, m.GetInt(0), m.GetInt(1), m.GetInt(2), m.GetInt(3));
-            }
-            else
-            {
-                sender.Walls.Add(w);
-                mCtx.Broadcast(Messages.GAME_PLACE_WALL, w.Start.X, w.Start.Y, w.End.X, w.End.Y);
-
-                // check for winner
-                if (sender.Walls.Count >= 5)
-                {
-                    // They win!
-                    finish();
-                }
-            }
-        }
-
-        private void removeWall(Player p, Message message)
-        {
-            if (isFinished() || !isStarted())
-                return;
-
-            return;
-        }
-         */
-
         public Cell findCellByPoint(PointF p)
         {
-            if (p.X < mBoard.xOffset || p.X > mBoard.xOffset + (mBoard.Width * mBoard.CellWidth) || p.Y < mBoard.yOffset || p.Y > mBoard.yOffset + (mBoard.Height * mBoard.CellHeight))
+            if (p.X < mBoard.XOffset || p.X > mBoard.XOffset + (mBoard.Width * mBoard.CellWidth) || p.Y < mBoard.YOffset || p.Y > mBoard.YOffset + (mBoard.Height * mBoard.CellHeight))
                 return null;
 
             Point indexed = new Point(((int)p.X - Settings.BOARD_X_OFFSET) / Settings.BOARD_CELL_WIDTH, ((int)p.Y - Settings.BOARD_Y_OFFSET) / Settings.BOARD_CELL_HEIGHT);

@@ -7,14 +7,58 @@ namespace schismTD
 {
     public class Player : BasePlayer
     {
-        public string Name;
+        public String Name
+        {
+            get
+            {
+                return mName;
+            }
+            set
+            {
+                mName = value;
+            }
+        }
+        private String mName;
 
         // Game data
-        public int Mana = Settings.DEFAULT_MANA;
-        public int Life = Settings.DEFAULT_LIFE;
+        public int Mana
+        {
+            get
+            {
+                return mMana;
+            }
+            set
+            {
+                mMana = value;
+            }
+        }
+        private int mMana = Settings.DEFAULT_MANA;
 
-        public List<Tower> Towers = new List<Tower>();
-        public List<Wall> Walls = new List<Wall>();
+        public int Life
+        {
+            get
+            {
+                return mLife;
+            }
+            set
+            {
+                mLife = value;
+            }
+        }
+        private int mLife = Settings.DEFAULT_LIFE;
+
+        public List<Tower> Towers
+        {
+            get
+            {
+                return mTowers;
+            }
+            set
+            {
+                mTowers = value;
+            }
+        }
+        private List<Tower> mTowers = new List<Tower>();
 
         public void reset()
         {
@@ -22,7 +66,6 @@ namespace schismTD
             Life = Settings.DEFAULT_LIFE;
 
             Towers.Clear();
-            Walls.Clear();
         }
     }
 }

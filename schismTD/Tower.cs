@@ -8,12 +8,70 @@ namespace schismTD
 {
     public class Tower
     {
-        public Point Position;
-        public Player Player;
+        public Point Position
+        {
+            get
+            {
+                return mPostion;
+            }
+            set
+            {
+                mPostion = value;
+            }
+        }
+        private Point mPostion;
 
-        public long FireRate = Settings.DEFAULT_FIRE_RATE; // in milliseconds
-        public int Damage = Settings.DEFAULT_DAMAGE;
-        public float Range = Settings.DEFAULT_RANGE;
+        public Player Player
+        {
+            get
+            {
+                return mPlayer;
+            }
+            set
+            {
+                mPlayer = value;
+            }
+        }
+        private Player mPlayer;
+
+        public long FireRate
+        {
+            get
+            {
+                return mFireRate;
+            }
+            set
+            {
+                mFireRate = value;
+            }
+        }
+        private long mFireRate = Settings.DEFAULT_FIRE_RATE; // in milliseconds
+
+        public int Damage
+        {
+            get
+            {
+                return mDamage;
+            }
+            set
+            {
+                mDamage = value;
+            }
+        }
+        private int mDamage = Settings.DEFAULT_DAMAGE;
+
+        public float Range
+        {
+            get
+            {
+                return mRange;
+            }
+            set
+            {
+                mRange = value;
+            }
+        }
+        private float mRange = Settings.DEFAULT_RANGE;
 
         public String Type = "basic";
 

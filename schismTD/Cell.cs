@@ -26,12 +26,12 @@ namespace schismTD
         {
             get
             {
-                return mPosition;
+                return mCenter;
             }
 
             set
             {
-                mPosition = value;
+                mCenter = value;
             }
         }
         private Point mCenter;

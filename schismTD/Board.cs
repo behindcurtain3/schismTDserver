@@ -7,30 +7,174 @@ namespace schismTD
 {
     public class Board
     {
-        // Height/width are in cells
-        public int Width = Settings.BOARD_WIDTH;
-        public int Height = Settings.BOARD_HEIGHT;
-
-        // These are in pixels
-        public int CellWidth = Settings.BOARD_CELL_WIDTH;
-        public int CellHeight = Settings.BOARD_CELL_HEIGHT;
-        public int xOffset = Settings.BOARD_X_OFFSET;
-        public int yOffset = Settings.BOARD_Y_OFFSET;
-
-        public List<Cell> Cells = new List<Cell>();
-        public Cell BlackSpawn = null;
-        public Cell WhiteSpawn = null;
-        public Cell BlackBase = null;
-        public Cell WhiteBase = null;
 
         private List<int> blackCellsIndex;
         private List<int> whiteCellsIndex;
 
-        public List<Cell> WhiteCells = new List<Cell>();
-        public List<Cell> BlackCells = new List<Cell>();
+        // Height/width are in cells
+        public int Width
+        {
+            get
+            {
+                return mWidth;
+            }
+        }
+        private int mWidth = Settings.BOARD_WIDTH;
 
-        public Path BlackPath = new Path();
-        public Path WhitePath = new Path();
+        public int Height
+        {
+            get
+            {
+                return mHeight;
+            }
+        }
+        private int mHeight = Settings.BOARD_HEIGHT;
+
+        // These are in pixels
+        public int CellWidth
+        {
+            get
+            {
+                return mCellWidth;
+            }
+        }
+        private int mCellWidth = Settings.BOARD_CELL_WIDTH;
+        
+        public int CellHeight
+        {
+            get
+            {
+                return mCellHeight;
+            }
+        }
+        private int mCellHeight = Settings.BOARD_CELL_HEIGHT;
+
+        public int XOffset
+        {
+            get
+            {
+                return mXOffset;
+            }
+        }
+        private int mXOffset = Settings.BOARD_X_OFFSET;
+
+        public int YOffset
+        {
+            get
+            {
+                return mYOffset;
+            }
+        }
+        private int mYOffset = Settings.BOARD_Y_OFFSET;
+
+        public List<Cell> Cells
+        {
+            get
+            {
+                return mCells;
+            }
+            set
+            {
+                mCells = value;
+            }
+        }
+        private List<Cell> mCells = new List<Cell>();
+
+        public Cell BlackSpawn
+        {
+            get
+            {
+                return mBlackSpawn;
+            }
+            set
+            {
+                mBlackSpawn = value;
+            }
+        }
+        private Cell mBlackSpawn = null;
+
+        public Cell WhiteSpawn
+        {
+            get
+            {
+                return mWhiteSpawn;
+            }
+            set
+            {
+                mWhiteSpawn = value;
+            }
+        }
+        private Cell mWhiteSpawn = null;
+
+        public Cell BlackBase
+        {
+            get
+            {
+                return mBlackBase;
+            }
+            set
+            {
+                mBlackBase = value;
+            }
+        }
+        private Cell mBlackBase = null;
+
+        public Cell WhiteBase
+        {
+            get
+            {
+                return mWhiteBase;
+            }
+            set
+            {
+                mWhiteBase = value;
+            }
+        }
+        private Cell mWhiteBase = null;
+
+        public List<Cell> WhiteCells
+        {
+            get
+            {
+                return mWhiteCells;
+            }
+        }
+        private List<Cell> mWhiteCells = new List<Cell>();
+
+        public List<Cell> BlackCells
+        {
+            get
+            {
+                return mBlackCells;
+            }
+        }
+        private List<Cell> mBlackCells = new List<Cell>();
+
+        public Path BlackPath
+        {
+            get
+            {
+                return mBlackPath;
+            }
+            set
+            {
+                mBlackPath = value;
+            }
+        }
+        private Path mBlackPath = new Path();
+
+        public Path WhitePath
+        {
+            get
+            {
+                return mWhitePath;
+            }
+            set
+            {
+                mWhitePath = value;
+            }
+        }
+        private Path mWhitePath = new Path();
 
         public Board(Player black, Player white)
         {
@@ -38,7 +182,7 @@ namespace schismTD
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    Cells.Add(new Cell(getIndex(j, i), new Point(j, i), new Point(j * CellWidth + xOffset, i * CellHeight + yOffset)));
+                    Cells.Add(new Cell(getIndex(j, i), new Point(j, i), new Point(j * CellWidth + XOffset, i * CellHeight + YOffset)));
                 }
             }
 
@@ -83,9 +227,15 @@ namespace schismTD
         private void setupPathFinding()
         {
             int UP = -18;
+            int UPL = -19;
+            int UPR = -17;
+
             int LEFT = -1;
             int RIGHT = 1;
+
             int DOWN = 18;
+            int DOWNL = 17;
+            int DOWNR = 19;
 
             // For each white/black cell create links between valid neighbors
             foreach (Cell c in Cells)
@@ -94,9 +244,15 @@ namespace schismTD
                     continue;
 
                 addNeighborToCell(c, findCellByIndex(c.Index + UP));
+                addNeighborToCell(c, findCellByIndex(c.Index + UPL));
+                addNeighborToCell(c, findCellByIndex(c.Index + UPR));
+
                 addNeighborToCell(c, findCellByIndex(c.Index + LEFT));
                 addNeighborToCell(c, findCellByIndex(c.Index + RIGHT));
-                addNeighborToCell(c, findCellByIndex(c.Index + DOWN));                
+
+                addNeighborToCell(c, findCellByIndex(c.Index + DOWN));
+                addNeighborToCell(c, findCellByIndex(c.Index + DOWNL));
+                addNeighborToCell(c, findCellByIndex(c.Index + DOWNR));
             }
 
             calcPaths();

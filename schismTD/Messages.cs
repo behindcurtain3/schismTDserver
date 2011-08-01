@@ -35,5 +35,9 @@ namespace schismTD
         public const String GAME_CREEP_ADD = "game_creep_add";
         public const String GAME_CREEP_REMOVE = "game_creep_remove";
         public const String GAME_CREEP_UPDATE = "game_creep_update";
+
+        // Lobby messages
+        public const String LOBBY_LOGIN = "lobby_login";
+        public const String LOBBY_WAVE_LIST = "lobby_wave_list";
     }
 }

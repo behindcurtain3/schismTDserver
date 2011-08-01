@@ -39,7 +39,7 @@ namespace schismTD
             {
                 if (mMatch != null)
                 {
-                    if (mMatch.isFinished())
+                    if (mMatch.Finished)
                     {
                         // For now just create a new match & add players
                         mMatch = new Match(this);
@@ -116,8 +116,6 @@ namespace schismTD
             }
         }
 
-        Point debugPoint;
-
         // This method get's called whenever you trigger it by calling the RefreshDebugView() method.
         public override System.Drawing.Image GenerateDebugImage()
         {
@@ -132,19 +130,16 @@ namespace schismTD
                 // draw the current time
                 g.DrawString(DateTime.Now.ToString(), new Font("Verdana", 10F), Brushes.Black, 10, 10);
 
-                // draw a dot based on the DebugPoint variable
-                g.FillRectangle(Brushes.Red, debugPoint.X, debugPoint.Y, 5, 5);
-
                 if (mMatch != null)
                 {
-                    if (mMatch.getCurrentGame() != null)
+                    if (mMatch.Game != null)
                     {
                         Brush off = Brushes.DarkGray;
                         Brush on = Brushes.White;
                         Brush current = on;
 
                         // Draw White Cells
-                        foreach (Cell c in mMatch.getCurrentGame().Board.WhiteCells)
+                        foreach (Cell c in mMatch.Game.Board.WhiteCells)
                         {
                             if (c.Coords.Y % 2 == 0)
                                 if (c.Coords.X % 2 == 0)
@@ -163,7 +158,7 @@ namespace schismTD
 
                         on = Brushes.Black;
                         // Draw Black Cells
-                        foreach (Cell c in mMatch.getCurrentGame().Board.BlackCells)
+                        foreach (Cell c in mMatch.Game.Board.BlackCells)
                         {
                             if (c.Coords.Y % 2 == 0)
                                 if (c.Coords.X % 2 == 0)
@@ -182,23 +177,32 @@ namespace schismTD
                         // Draw paths
                         if (mShowPaths)
                         {
-                            foreach (Cell p in mMatch.getCurrentGame().Board.BlackPath)
+                            lock (mMatch.Game.Board.BlackPath)
                             {
-                                g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4); 
+                                foreach (Cell p in mMatch.Game.Board.BlackPath)
+                                {
+                                    g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
+                                }
                             }
 
-                            foreach (Cell p in mMatch.getCurrentGame().Board.WhitePath)
+                            lock (mMatch.Game.Board.WhitePath)
                             {
-                                g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
+                                foreach (Cell p in mMatch.Game.Board.WhitePath)
+                                {
+                                    g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
+                                }
                             }
                         }
 
                         // Draw creeps!
                         if (mShowCreeps)
                         {
-                            foreach (Creep c in mMatch.getCurrentGame().Creeps)
+                            lock (mMatch.Game.Creeps)
                             {
-                                g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                                foreach (Creep c in mMatch.Game.Creeps)
+                                {
+                                    g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                                }
                             }
                         }
                     }
@@ -214,9 +218,12 @@ namespace schismTD
             // Draw neighbor links
             if (mShowNeighbors)
             {
-                foreach (Cell neighbor in c.Neighbors)
+                lock (c.Neighbors)
                 {
-                    g.DrawLine(Pens.Orange, c.Center, neighbor.Center);
+                    foreach (Cell neighbor in c.Neighbors)
+                    {
+                        g.DrawLine(Pens.Orange, c.Center, neighbor.Center);
+                    }
                 }
             }
             
@@ -230,13 +237,13 @@ namespace schismTD
             // Draw Labels
             if (mShowLabels)
             {
-                if (c == mMatch.getCurrentGame().Board.WhiteSpawn)
+                if (c == mMatch.Game.Board.WhiteSpawn)
                     g.DrawString("W", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 1, c.Position.Y + 3);
 
-                if (c == mMatch.getCurrentGame().Board.BlackSpawn)
+                if (c == mMatch.Game.Board.BlackSpawn)
                     g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
 
-                if (c == mMatch.getCurrentGame().Board.WhiteBase || c == mMatch.getCurrentGame().Board.BlackBase)
+                if (c == mMatch.Game.Board.WhiteBase || c == mMatch.Game.Board.BlackBase)
                     g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
             }
 

@@ -185,6 +185,7 @@ namespace schismTD
         }
         private String mID;
 
+        // An invalid creep needs to be resynched with clients
         public Boolean Valid
         {
             get
