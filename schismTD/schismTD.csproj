@@ -46,7 +46,6 @@
     <Compile Include="Cell.cs" />
     <Compile Include="Creep.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Link.cs" />
     <Compile Include="Lobby.cs" />
     <Compile Include="Match.cs" />
     <Compile Include="Messages.cs" />

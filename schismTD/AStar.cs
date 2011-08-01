@@ -62,8 +62,8 @@ namespace schismTD
                         if (!closedList.Contains(neighbor.Key) && !openList.Contains(neighbor.Key))
                         {
                             neighbor.Key.Parent = currentNode;
-                            neighbor.Key.G = neighbor.Key.Parent.G + 25;
-                            neighbor.Key.H = Math.Abs(neighbor.Key.Position.X - target.Position.X) + Math.Abs(neighbor.Key.Position.Y - target.Position.Y);
+                            neighbor.Key.G = neighbor.Key.Parent.G + getDistance(currentNode, neighbor.Key);
+                            neighbor.Key.H = getDistance(neighbor.Key, target);
                             neighbor.Key.F = neighbor.Key.G + neighbor.Key.H;
                             openList.Add(neighbor.Key);
                         }
@@ -73,6 +73,12 @@ namespace schismTD
 
             return empty;
         }
+
+        public static int getDistance(Cell a, Cell b)
+        {
+            return Math.Abs(a.Position.X - b.Position.X) + Math.Abs(a.Position.Y - b.Position.Y);
+        }
+
         /*
         public static int getClosestTarget(List<Cell> targets, Point position)
         {
