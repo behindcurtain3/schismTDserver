@@ -237,6 +237,15 @@ namespace schismTD
             int DOWNL = 17;
             int DOWNR = 19;
 
+            // First we go through and set all the LEFT, RIGHT, UP & DOWN neighbors, even if they aren't passable or the other team etc
+            foreach (Cell c in Cells)
+            {
+                c.Left = findCellByIndex(c.Index + LEFT);
+                c.Right = findCellByIndex(c.Index + RIGHT);
+                c.Up = findCellByIndex(c.Index + UP);
+                c.Down = findCellByIndex(c.Index + DOWN);
+            }
+
             // For each white/black cell create links between valid neighbors
             foreach (Cell c in Cells)
             {
@@ -244,16 +253,41 @@ namespace schismTD
                     continue;
 
                 addNeighborToCell(c, findCellByIndex(c.Index + UP));
-                addNeighborToCell(c, findCellByIndex(c.Index + UPL));
-                addNeighborToCell(c, findCellByIndex(c.Index + UPR));
-
                 addNeighborToCell(c, findCellByIndex(c.Index + LEFT));
                 addNeighborToCell(c, findCellByIndex(c.Index + RIGHT));
-
                 addNeighborToCell(c, findCellByIndex(c.Index + DOWN));
-                addNeighborToCell(c, findCellByIndex(c.Index + DOWNL));
-                addNeighborToCell(c, findCellByIndex(c.Index + DOWNR));
+                
             }
+
+            // calculate the diagonal neighbors
+            foreach (Cell c in Cells)
+            {
+                if (!c.Passable)
+                    continue;
+
+                // Upper left
+                if (c.Up != null && c.Left != null)
+                {
+                    if(c.Up.Player == c.Player && c.Left.Player == c.Player && c.Up.Passable && c.Left.Passable)
+                        addNeighborToCell(c, findCellByIndex(c.Index + UPL));
+                }
+                if (c.Up != null && c.Right != null)
+                {
+                    if (c.Up.Player == c.Player && c.Right.Player == c.Player && c.Up.Passable && c.Right.Passable)
+                        addNeighborToCell(c, findCellByIndex(c.Index + UPR));
+                }
+                if (c.Down != null && c.Left != null)
+                {
+                    if (c.Down.Player == c.Player && c.Left.Player == c.Player && c.Down.Passable && c.Left.Passable)
+                        addNeighborToCell(c, findCellByIndex(c.Index + DOWNL));
+                }
+                if (c.Down != null && c.Right != null)
+                {
+                    if (c.Down.Player == c.Player && c.Right.Player == c.Player && c.Down.Passable && c.Right.Passable)
+                        addNeighborToCell(c, findCellByIndex(c.Index + DOWNR));
+                }
+            }
+
 
             calcPaths();
         }
@@ -264,7 +298,7 @@ namespace schismTD
             {
                 if (neighbor.Player == c.Player && neighbor.Passable)
                 {
-                    c.Neighbors.Add(neighbor);
+                    c.Neighbors.Add(neighbor, true);
                 }
             }
         }

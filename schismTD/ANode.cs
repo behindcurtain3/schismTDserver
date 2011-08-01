@@ -35,7 +35,7 @@ namespace schismTD
         public int G;
         public int H;
 
-        public List<Cell> Neighbors
+        public Dictionary<Cell, Boolean> Neighbors
         {
             get
             {
@@ -46,7 +46,7 @@ namespace schismTD
                 mNeighbors = value;
             }
         }
-        private List<Cell> mNeighbors = new List<Cell>();
+        private Dictionary<Cell, Boolean> mNeighbors = new Dictionary<Cell, Boolean>();
 
         public Cell Up
         {

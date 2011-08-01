@@ -20,6 +20,7 @@ namespace schismTD
         private Boolean mShowLabels = true;
         private Boolean mShowPaths = true;
         private Boolean mShowCreeps = true;
+        private Boolean mShowWireFrame = false;
 
         // This method is called when an instance of your the game is created
         public override void GameStarted()
@@ -213,14 +214,21 @@ namespace schismTD
 
         public void drawCell(Graphics g, Brush b, Cell c)
         {
-            g.FillRectangle(b, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT); 
+            if (mShowWireFrame)
+            {
+                g.DrawRectangle(Pens.Black, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT);
+            }
+            else
+            {
+                g.FillRectangle(b, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT);
+            }
 
             // Draw neighbor links
             if (mShowNeighbors)
             {
                 lock (c.Neighbors)
                 {
-                    foreach (Cell neighbor in c.Neighbors)
+                    foreach (Cell neighbor in c.Neighbors.Keys)
                     {
                         g.DrawLine(Pens.Orange, c.Center, neighbor.Center);
                     }
@@ -256,25 +264,7 @@ namespace schismTD
 
         }
 
-        // During development, it's very usefull to be able to cause certain events
-        // to occur in your serverside code. If you create a public method with no
-        // arguments and add a [DebugAction] attribute like we've down below, a button
-        // will be added to the development server. 
-        // Whenever you click the button, your code will run.
-        /*
-        [DebugAction("Calculate Paths", DebugAction.Icon.Play)]
-        public void CalcPaths()
-        {
-            if (mMatch != null)
-            {
-                if (mMatch.isStarted())
-                {
-                    mMatch.getCurrentGame().getBoard().calcPaths();
-                }
-            }
-        }
-        */
-
+        // Debug actions
         [DebugAction("Toggle Creeps", DebugAction.Icon.Green)]
         public void ToogleCreeps()
         {
@@ -309,6 +299,12 @@ namespace schismTD
         public void ToogleLabels()
         {
             mShowLabels = !mShowLabels;
+        }
+
+        [DebugAction("Toggle Wire Frame", DebugAction.Icon.Green)]
+        public void ToogleWireFrame()
+        {
+            mShowWireFrame = !mShowWireFrame;
         }
 
 

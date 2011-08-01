@@ -55,17 +55,17 @@ namespace schismTD
                 openList.Remove(currentNode);
                 closedList.Add(currentNode);
 
-                foreach (Cell neighbor in currentNode.Neighbors)
+                foreach (KeyValuePair<Cell, Boolean> neighbor in currentNode.Neighbors)
                 {
-                    if (neighbor.Passable)
+                    if (neighbor.Value && neighbor.Key.Passable)
                     {
-                        if (!closedList.Contains(neighbor) && !openList.Contains(neighbor))
+                        if (!closedList.Contains(neighbor.Key) && !openList.Contains(neighbor.Key))
                         {
-                            neighbor.Parent = currentNode;
-                            neighbor.G = neighbor.Parent.G + 25;
-                            neighbor.H = Math.Abs(neighbor.Position.X - target.Position.X) + Math.Abs(neighbor.Position.Y - target.Position.Y);
-                            neighbor.F = neighbor.G + neighbor.H;
-                            openList.Add(neighbor);
+                            neighbor.Key.Parent = currentNode;
+                            neighbor.Key.G = neighbor.Key.Parent.G + 25;
+                            neighbor.Key.H = Math.Abs(neighbor.Key.Position.X - target.Position.X) + Math.Abs(neighbor.Key.Position.Y - target.Position.Y);
+                            neighbor.Key.F = neighbor.Key.G + neighbor.Key.H;
+                            openList.Add(neighbor.Key);
                         }
                     }
                 }

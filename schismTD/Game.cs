@@ -213,8 +213,42 @@ namespace schismTD
             }
         }
 
-        private void invalidTower(Player p, int x, int y)
+        private void invalidTower(Player p, Cell c, int x, int y)
         {
+            if (c != null)
+            {
+                c.Passable = true;
+
+                if (c.Up != null && c.Left != null)
+                {
+                    if (c.Up.Neighbors.ContainsKey(c.Left))
+                        c.Up.Neighbors[c.Left] = true;
+                    if (c.Left.Neighbors.ContainsKey(c.Up))
+                        c.Left.Neighbors[c.Up] = true;
+                }
+                if (c.Up != null && c.Right != null)
+                {
+                    if (c.Up.Neighbors.ContainsKey(c.Right))
+                        c.Up.Neighbors[c.Right] = true;
+                    if (c.Right.Neighbors.ContainsKey(c.Up))
+                        c.Right.Neighbors[c.Up] = true;
+                }
+                if (c.Down != null && c.Right != null)
+                {
+                    if (c.Down.Neighbors.ContainsKey(c.Right))
+                        c.Down.Neighbors[c.Right] = true;
+                    if (c.Right.Neighbors.ContainsKey(c.Down))
+                        c.Right.Neighbors[c.Down] = true;
+                }
+                if (c.Down != null && c.Left != null)
+                {
+                    if (c.Down.Neighbors.ContainsKey(c.Left))
+                        c.Down.Neighbors[c.Left] = true;
+                    if (c.Left.Neighbors.ContainsKey(c.Down))
+                        c.Left.Neighbors[c.Down] = true;
+                }
+            }
+
             p.Send(Messages.GAME_INVALID_TOWER, x, y);
         }
 
@@ -222,7 +256,7 @@ namespace schismTD
         {
             if (Finished || !Started)
             {
-                invalidTower(p, m.GetInt(0), m.GetInt(0));
+                invalidTower(p, null, m.GetInt(0), m.GetInt(0));
                 return;
             }
 
@@ -230,12 +264,12 @@ namespace schismTD
 
             if (c == null)
             {
-                invalidTower(p, m.GetInt(0), m.GetInt(0));
+                invalidTower(p, null, m.GetInt(0), m.GetInt(0));
                 return;
             }
 
             // Check for correct player on the cell && that it is in a buildable area
-            if (c.Tower == null && p == c.Player && c.Buildable)
+            if (c.Tower == null && p == c.Player && c.Buildable && c.Passable)
             {
                 lock (Creeps)
                 {
@@ -251,7 +285,7 @@ namespace schismTD
                         creepsIn.Add(cr, crIn); // Save for later
                         if (crIn == c)
                         {
-                            invalidTower(p, m.GetInt(0), m.GetInt(1));
+                            invalidTower(p, c, m.GetInt(0), m.GetInt(1));
                             return;
                         }
 
@@ -259,6 +293,37 @@ namespace schismTD
 
                     // Set to non-passable
                     c.Passable = false;
+
+                    // Disable all links involving this square and the diagonals that go past it
+                    if (c.Up != null && c.Left != null)
+                    {
+                        if (c.Up.Neighbors.ContainsKey(c.Left))
+                            c.Up.Neighbors[c.Left] = false;
+                        if (c.Left.Neighbors.ContainsKey(c.Up))
+                            c.Left.Neighbors[c.Up] = false;
+                    }
+                    if (c.Up != null && c.Right != null)
+                    {
+                        if (c.Up.Neighbors.ContainsKey(c.Right))
+                            c.Up.Neighbors[c.Right] = false;
+                        if (c.Right.Neighbors.ContainsKey(c.Up))
+                            c.Right.Neighbors[c.Up] = false;
+                    }
+                    if (c.Down != null && c.Right != null)
+                    {
+                        if (c.Down.Neighbors.ContainsKey(c.Right))
+                            c.Down.Neighbors[c.Right] = false;
+                        if (c.Right.Neighbors.ContainsKey(c.Down))
+                            c.Right.Neighbors[c.Down] = false;
+                    }
+                    if (c.Down != null && c.Left != null)
+                    {
+                        if (c.Down.Neighbors.ContainsKey(c.Left))
+                            c.Down.Neighbors[c.Left] = false;
+                        if (c.Left.Neighbors.ContainsKey(c.Down))
+                            c.Left.Neighbors[c.Down] = false;
+                    }
+
 
                     // Now try and find a path to make sure the maze is valid
                     Path path;
@@ -270,8 +335,7 @@ namespace schismTD
                     // If there is no valid path, reject the tower placement
                     if (path.Count <= 0)
                     {
-                        c.Passable = true;
-                        p.Send(Messages.GAME_INVALID_TOWER, m.GetInt(0), m.GetInt(1));
+                        invalidTower(p, c, m.GetInt(0), m.GetInt(1));
                         return;
                     }
                     else
@@ -300,7 +364,7 @@ namespace schismTD
 
                                 if (tmpPath.Count <= 0)
                                 {
-                                    invalidTower(p, m.GetInt(0), m.GetInt(1));
+                                    invalidTower(p, c, m.GetInt(0), m.GetInt(1));
                                     return;
                                 }
                                 else
@@ -352,18 +416,56 @@ namespace schismTD
                         c.Passable = false;
 
                         // Remove neighbor links
-                        foreach (Cell neighbor in c.Neighbors)
+                        foreach (KeyValuePair<Cell, Boolean> neighbor in c.Neighbors)
                         {
-                            if (neighbor.Neighbors.Contains(c))
+                            if (neighbor.Key.Neighbors.ContainsKey(c))
                             {
-
-                                neighbor.Neighbors.Remove(c);
+                                neighbor.Key.Neighbors.Remove(c);
                             }
                         }
+                        
+                        // Check the diagonals that go past this cell
+                        // Upper left
+                        if (c.Up != null && c.Left != null)
+                        {
+                            if (c.Up.Neighbors.ContainsKey(c.Left))
+                                c.Up.Neighbors.Remove(c.Left);
+                            if (c.Left.Neighbors.ContainsKey(c.Up))
+                                c.Left.Neighbors.Remove(c.Up);
+                        }
+                        // Upper right
+                        if (c.Up != null && c.Right != null)
+                        {
+                            if (c.Up.Neighbors.ContainsKey(c.Right))
+                                c.Up.Neighbors.Remove(c.Right);
+                            if (c.Right.Neighbors.ContainsKey(c.Up))
+                                c.Right.Neighbors.Remove(c.Up);
+                        }
+                        // Lower right
+                        if (c.Down != null && c.Right != null)
+                        {
+                            if (c.Down.Neighbors.ContainsKey(c.Right))
+                                c.Down.Neighbors.Remove(c.Right);
+                            if (c.Right.Neighbors.ContainsKey(c.Down))
+                                c.Right.Neighbors.Remove(c.Down);
+                        }
+                        // Lower left
+                        if (c.Down != null && c.Left != null)
+                        {
+                            if (c.Down.Neighbors.ContainsKey(c.Left))
+                                c.Down.Neighbors.Remove(c.Left);
+                            if (c.Left.Neighbors.ContainsKey(c.Down))
+                                c.Left.Neighbors.Remove(c.Down);
+                        }
+                         
+
+                        // Clear the cells neighbors
                         c.Neighbors.Clear();
 
+                        // Add the tower to the player
                         p.Towers.Add(c.Tower);
 
+                        // Send the players the new tower information
                         mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
                     }
                 }
