@@ -5,12 +5,10 @@ using System.Text;
 
 namespace schismTD
 {
-    public class Projectile
+    public class Projectile : Entity
     {
         private Game mGame;
         private float mVelocity;
-        private int mWidth = 5;
-        private int mHeight = 5;
 
         public Boolean Active
         {
@@ -20,32 +18,6 @@ namespace schismTD
             }
         }
         private Boolean mActive = true;
-
-        public Vector2 Position
-        {
-            get
-            {
-                return mPosition;
-            }
-            set
-            {
-                mPosition = value;
-            }
-        }
-        private Vector2 mPosition;
-
-        public PointF Center
-        {
-            get
-            {
-                return mCenter;
-            }
-            set
-            {
-                mCenter = new PointF(value.X + mWidth / 2, value.Y + mHeight / 2);
-            }
-        }
-        private PointF mCenter;
 
         public int Damage
         {
@@ -69,11 +41,15 @@ namespace schismTD
         }
         private Creep mTarget;
 
-        public Projectile(Game game, Point position, Creep target)
+        public Projectile(Game game, Vector2 position, Creep target)
         {
             mGame = game;
-            mPosition = new Vector2(position.X, position.Y);
-            mCenter = position;
+
+            Width = 5;
+            Height = 5;
+
+            // The position passed in is the center of the tower, we need to recalc the projectiles position so the center is aligned with the center of the tower
+            Position = new Vector2(position.X - Width / 2, position.Y - Height / 2);
             mTarget = target;
 
             mVelocity = 200;
@@ -89,12 +65,11 @@ namespace schismTD
                 float dd = mVelocity * dv;
 
                 // Movement vector will point in the correct direction
-                Vector2 movement = Position - new Vector2(Target.Center);
+                Vector2 movement = new Vector2(Center) - new Vector2(Target.Center);
                 movement.Normalize(); // Normalize it
                 movement *= dd; // Scale it based on the velocity calculated above
 
                 Position -= movement; // Apply it to the position
-                Center = Position.getPointF(); // Get new center
 
                 // If the projectile is within the radius of the target
                 if (Target.getDistance(Center) <= Target.Width / 2)

@@ -77,21 +77,6 @@ namespace schismTD
         }
         private Boolean mIsFinished = false;
 
-        /*
-        public List<Creep> Creeps
-        {
-            get
-            {
-                return mCreeps;
-            }
-            set
-            {
-                mCreeps = value;
-            }
-        }
-        private List<Creep> mCreeps = new List<Creep>();
-        */
-
         public List<Projectile> Projectiles
         {
             get
@@ -344,7 +329,7 @@ namespace schismTD
         {
             if (Finished || !Started)
             {
-                invalidTower(p, null, m.GetInt(0), m.GetInt(0));
+                //invalidTower(p, null, m.GetInt(0), m.GetInt(0));
                 return;
             }
 
@@ -388,31 +373,39 @@ namespace schismTD
                     // Disable all links involving this square and the diagonals that go past it
                     if (c.Up != null && c.Left != null)
                     {
-                        if (c.Up.Neighbors.ContainsKey(c.Left))
-                            c.Up.Neighbors[c.Left] = false;
-                        if (c.Left.Neighbors.ContainsKey(c.Up))
-                            c.Left.Neighbors[c.Up] = false;
+                        lock(c.Up.Neighbors)
+                            if (c.Up.Neighbors.ContainsKey(c.Left))
+                                c.Up.Neighbors[c.Left] = false;
+                        lock(c.Left.Neighbors)
+                            if (c.Left.Neighbors.ContainsKey(c.Up))
+                                c.Left.Neighbors[c.Up] = false;
                     }
                     if (c.Up != null && c.Right != null)
                     {
-                        if (c.Up.Neighbors.ContainsKey(c.Right))
-                            c.Up.Neighbors[c.Right] = false;
-                        if (c.Right.Neighbors.ContainsKey(c.Up))
-                            c.Right.Neighbors[c.Up] = false;
+                        lock (c.Up.Neighbors)
+                            if (c.Up.Neighbors.ContainsKey(c.Right))
+                                c.Up.Neighbors[c.Right] = false;
+                        lock(c.Right.Neighbors)
+                            if (c.Right.Neighbors.ContainsKey(c.Up))
+                                c.Right.Neighbors[c.Up] = false;
                     }
                     if (c.Down != null && c.Right != null)
                     {
-                        if (c.Down.Neighbors.ContainsKey(c.Right))
-                            c.Down.Neighbors[c.Right] = false;
-                        if (c.Right.Neighbors.ContainsKey(c.Down))
-                            c.Right.Neighbors[c.Down] = false;
+                        lock(c.Down.Neighbors)
+                            if (c.Down.Neighbors.ContainsKey(c.Right))
+                                c.Down.Neighbors[c.Right] = false;
+                        lock (c.Right.Neighbors)
+                            if (c.Right.Neighbors.ContainsKey(c.Down))
+                                c.Right.Neighbors[c.Down] = false;
                     }
                     if (c.Down != null && c.Left != null)
                     {
-                        if (c.Down.Neighbors.ContainsKey(c.Left))
-                            c.Down.Neighbors[c.Left] = false;
-                        if (c.Left.Neighbors.ContainsKey(c.Down))
-                            c.Left.Neighbors[c.Down] = false;
+                        lock (c.Down.Neighbors)
+                            if (c.Down.Neighbors.ContainsKey(c.Left))
+                                c.Down.Neighbors[c.Left] = false;
+                        lock (c.Left.Neighbors)
+                            if (c.Left.Neighbors.ContainsKey(c.Down))
+                                c.Left.Neighbors[c.Down] = false;
                     }
 
 
@@ -519,34 +512,42 @@ namespace schismTD
                         // Upper left
                         if (c.Up != null && c.Left != null)
                         {
-                            if (c.Up.Neighbors.ContainsKey(c.Left))
-                                c.Up.Neighbors.Remove(c.Left);
-                            if (c.Left.Neighbors.ContainsKey(c.Up))
-                                c.Left.Neighbors.Remove(c.Up);
+                            lock (c.Up.Neighbors)
+                                if (c.Up.Neighbors.ContainsKey(c.Left))
+                                    c.Up.Neighbors.Remove(c.Left);
+                            lock (c.Left.Neighbors)
+                                if (c.Left.Neighbors.ContainsKey(c.Up))
+                                    c.Left.Neighbors.Remove(c.Up);
                         }
                         // Upper right
                         if (c.Up != null && c.Right != null)
                         {
-                            if (c.Up.Neighbors.ContainsKey(c.Right))
-                                c.Up.Neighbors.Remove(c.Right);
-                            if (c.Right.Neighbors.ContainsKey(c.Up))
-                                c.Right.Neighbors.Remove(c.Up);
+                            lock(c.Up.Neighbors)
+                                if (c.Up.Neighbors.ContainsKey(c.Right))
+                                    c.Up.Neighbors.Remove(c.Right);
+                            lock (c.Right.Neighbors)
+                                if (c.Right.Neighbors.ContainsKey(c.Up))
+                                    c.Right.Neighbors.Remove(c.Up);
                         }
                         // Lower right
                         if (c.Down != null && c.Right != null)
                         {
-                            if (c.Down.Neighbors.ContainsKey(c.Right))
-                                c.Down.Neighbors.Remove(c.Right);
-                            if (c.Right.Neighbors.ContainsKey(c.Down))
-                                c.Right.Neighbors.Remove(c.Down);
+                            lock (c.Down.Neighbors)
+                                if (c.Down.Neighbors.ContainsKey(c.Right))
+                                    c.Down.Neighbors.Remove(c.Right);
+                            lock(c.Right.Neighbors)
+                                if (c.Right.Neighbors.ContainsKey(c.Down))
+                                    c.Right.Neighbors.Remove(c.Down);
                         }
                         // Lower left
                         if (c.Down != null && c.Left != null)
                         {
-                            if (c.Down.Neighbors.ContainsKey(c.Left))
-                                c.Down.Neighbors.Remove(c.Left);
-                            if (c.Left.Neighbors.ContainsKey(c.Down))
-                                c.Left.Neighbors.Remove(c.Down);
+                            lock(c.Down.Neighbors)
+                                if (c.Down.Neighbors.ContainsKey(c.Left))
+                                    c.Down.Neighbors.Remove(c.Left);
+                            lock (c.Left.Neighbors)
+                                if (c.Left.Neighbors.ContainsKey(c.Down))
+                                    c.Left.Neighbors.Remove(c.Down);
                         }
                          
 

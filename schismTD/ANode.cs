@@ -5,7 +5,7 @@ using System.Text;
 
 namespace schismTD
 {
-    public class ANode
+    public class ANode : Entity
     {
         // Used in A*
         public ANode Parent
@@ -31,9 +31,9 @@ namespace schismTD
         }
         private Point mCoords;
 
-        public int F;
-        public int G;
-        public int H;
+        public float F;
+        public float G;
+        public float H;
 
         public Dictionary<Cell, Boolean> Neighbors
         {

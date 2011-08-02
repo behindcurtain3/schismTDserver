@@ -26,7 +26,7 @@ namespace schismTD
                 if (openList.Count == 0)
                     return empty;
 
-                int lowestFScore = 9999;
+                float lowestFScore = 9999f;
 
                 foreach (Cell c in openList)
                 {
@@ -74,18 +74,18 @@ namespace schismTD
             return empty;
         }
 
-        public static int getDistance(Cell a, Cell b)
+        public static float getDistance(Cell a, Cell b)
         {
             return Math.Abs(a.Position.X - b.Position.X) + Math.Abs(a.Position.Y - b.Position.Y);
         }
 
-        public static int getClosestTarget(List<Cell> targets, Point position)
+        public static float getClosestTarget(List<Cell> targets, PointF position)
         {
-            int smallestDistance = 9999;
+            float smallestDistance = 9999f;
 
             foreach (Cell c in targets)
             {
-                int d = Math.Abs(c.Center.X - position.X) + Math.Abs(c.Center.Y - position.Y);
+                float d = Math.Abs(c.Center.X - position.X) + Math.Abs(c.Center.Y - position.Y);
                 if (d < smallestDistance)
                 {
                     smallestDistance = d;

@@ -206,11 +206,16 @@ namespace schismTD
 
         public void calcPaths()
         {
-            BlackPath.Clear();
-            WhitePath.Clear();
-
-            BlackPath = getBlackPath();
-            WhitePath = getWhitePath();
+            lock (BlackPath)
+            {
+                BlackPath.Clear();
+                BlackPath = getBlackPath();
+            }
+            lock (WhitePath)
+            {
+                WhitePath.Clear();
+                WhitePath = getWhitePath();
+            }
         }
 
         public int getIndex(int x, int y)

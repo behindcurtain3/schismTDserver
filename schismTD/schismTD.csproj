@@ -45,6 +45,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Creep.cs" />
+    <Compile Include="Entity.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Lobby.cs" />
     <Compile Include="Match.cs" />

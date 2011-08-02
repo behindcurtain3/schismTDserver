@@ -5,63 +5,8 @@ using System.Drawing;
 
 namespace schismTD
 {
-    public class Creep
+    public class Creep : Entity
     {
-        // World position
-        public Vector2 Position
-        {
-            get
-            {
-                return mPosition;
-            }
-            set
-            {
-                mPosition = value;
-            }
-        }
-        private Vector2 mPosition;
-
-        public PointF Center
-        {
-            get
-            {
-                return mCenter;
-            }
-            set
-            {
-                mCenter = new PointF(value.X + mWidth / 2, value.Y + mHeight / 2);
-            }
-        }
-        private PointF mCenter;
-
-        public int Width
-        {
-            get
-            {
-                return mWidth;
-            }
-            set
-            {
-                mWidth = value;
-            }
-        }
-        private int mWidth;
-
-
-        public int Height
-        {
-            get
-            {
-                return mHeight;
-            }
-            set
-            {
-                mHeight = value;
-            }
-        }
-        private int mHeight;
-
-
         public RectangleF HitBox
         {
             get
@@ -207,17 +152,17 @@ namespace schismTD
         }
         private Boolean mValid;
 
-        public Creep(Player player, Player opponent, Point pos, Path p)
+        public Creep(Player player, Player opponent, Vector2 pos, Path p)
         {
             ID = Guid.NewGuid().ToString();
             Player = player;
             mOpponent = opponent;
             CurrentPath = new Path(p);
-            Position = new Vector2(pos);
+            
             Height = Settings.BOARD_CELL_HEIGHT;
             Width = Settings.BOARD_CELL_WIDTH;
 
-            Center = Position.getPointF();
+            Position = pos;
 
             Valid = false;
             Alive = true;
@@ -271,28 +216,7 @@ namespace schismTD
                     movement.Normalize();
                     movement *= dd;
                     Position -= movement;
-                    Center = Position.getPointF();
-                    /*
-                    if (Math.Abs(Center.X - MovingTo.Center.X) >= Settings.CREEP_WIGGLE)
-                    {
-                        if (Center.X < MovingTo.Center.X)
-                            mPosition.X += dd;
-                        else
-                            mPosition.X -= dd;
-                    }
-                    if (Math.Abs(Center.Y - MovingTo.Center.Y) >= Settings.CREEP_WIGGLE)
-                    {
-                        if (Center.Y < MovingTo.Center.Y)
-                            mPosition.Y += dd;
-                        else
-                            mPosition.Y -= dd;
-                    }
-                    */
-                    // Update center
-                    //mCenter.X = Position.X + Width / 2;
-                    //mCenter.Y = Position.Y + Height / 2;
                 }
-
             }
         }
 

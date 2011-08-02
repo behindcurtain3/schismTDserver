@@ -6,36 +6,10 @@ using System.Text;
 
 namespace schismTD
 {
-    public class Tower
+    public class Tower : Entity
     {
         private int mFireRatePostion;
         private Game mGame;
-
-        public Point Position
-        {
-            get
-            {
-                return mPostion;
-            }
-            set
-            {
-                mPostion = value;
-            }
-        }
-        private Point mPostion;
-
-        public Point Center
-        {
-            get
-            {
-                return mCenter;
-            }
-            set
-            {
-                mCenter = value;
-            }
-        }
-        private Point mCenter;
 
         public Player Player
         {
@@ -114,13 +88,16 @@ namespace schismTD
 
         public String Type = "basic";
 
-        public Tower(Game g, Player p, Player opponent, Point pos)
+        public Tower(Game g, Player p, Player opponent, Vector2 pos)
         {
             mGame = g;
             Player = p;
             mOpponent = opponent;
+
+            Width = Settings.BOARD_CELL_WIDTH;
+            Height = Settings.BOARD_CELL_HEIGHT;
             Position = pos;
-            Center = new Point(Position.X + Settings.BOARD_CELL_WIDTH / 2, Position.Y + Settings.BOARD_CELL_HEIGHT / 2);
+            
 
             mFireRatePostion = mFireRate;
         }
@@ -152,7 +129,7 @@ namespace schismTD
                         if (closestCreep != null)
                         {
                             mFireRatePostion = mFireRate;
-                            mGame.Projectiles.Add(new Projectile(mGame, Center, closestCreep));
+                            mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), closestCreep));
                         }
                     }                    
                 }

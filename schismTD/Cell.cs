@@ -8,34 +8,6 @@ namespace schismTD
 {
     public class Cell : ANode
     {
-        // World Position
-        public Point Position
-        {
-            get
-            {
-                return mPosition;
-            }
-            set
-            {
-                mPosition = value;
-            }
-        }
-        private Point mPosition;
-
-        public Point Center
-        {
-            get
-            {
-                return mCenter;
-            }
-
-            set
-            {
-                mCenter = value;
-            }
-        }
-        private Point mCenter;
-        
         // Index in the list
         public int Index
         {
@@ -96,8 +68,10 @@ namespace schismTD
         public Cell(int i, Point c, Point p) : base(c)
         {
             Index = i;
-            Position = p;
-            Center = new Point(Position.X + Settings.BOARD_CELL_WIDTH / 2, Position.Y + Settings.BOARD_CELL_HEIGHT / 2);
+            Width = Settings.BOARD_CELL_WIDTH;
+            Height = Settings.BOARD_CELL_HEIGHT;
+            Position = new Vector2(p);
+            //Center = new Point(Position.X + Settings.BOARD_CELL_WIDTH / 2, Position.Y + Settings.BOARD_CELL_HEIGHT / 2);
             Passable = false;
             Buildable = false;
 
