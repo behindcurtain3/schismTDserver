@@ -84,11 +84,6 @@ namespace schismTD
         {
             if (Target != null)
             {
-                if (!mGame.Creeps.Contains(Target))
-                {
-                    mActive = false;
-                    return;
-                }
 
                 float dv = dt * 0.001f;
                 float dd = mVelocity * dv;
@@ -100,7 +95,7 @@ namespace schismTD
                 Position -= movement;
                 Center = Position.getPointF();
 
-                if (Target.getDistance(Center) <= 3)
+                if (Target.getDistance(Center) <= Target.Width / 2)
                 {
                     Target.Life -= Damage;
                     mActive = false;

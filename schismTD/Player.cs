@@ -60,12 +60,27 @@ namespace schismTD
         }
         private List<Tower> mTowers = new List<Tower>();
 
+        public List<Creep> Creeps
+        {
+            get
+            {
+                return mCreeps;
+            }
+            set
+            {
+                mCreeps = value;
+            }
+        }
+        private List<Creep> mCreeps = new List<Creep>();
+
         public void reset()
         {
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
 
             Towers.Clear();
+            Creeps.Clear();
         }
+
     }
 }

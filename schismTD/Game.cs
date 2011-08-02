@@ -77,6 +77,7 @@ namespace schismTD
         }
         private Boolean mIsFinished = false;
 
+        /*
         public List<Creep> Creeps
         {
             get
@@ -89,6 +90,7 @@ namespace schismTD
             }
         }
         private List<Creep> mCreeps = new List<Creep>();
+        */
 
         public List<Projectile> Projectiles
         {
@@ -180,25 +182,19 @@ namespace schismTD
                 {
                     mTotalTimeElapsed += dt;
 
-                    lock (Creeps)
+                    lock (Black.Creeps)
                     {
-
                         mCreepTimerPosition -= dt;
                         if (mCreepTimerPosition <= 0)
                         {
                             mCreepTimerPosition = mCreepTimerLength;
                             Creep c = new Creep(Black, mBoard.WhiteSpawn.Position, mBoard.WhitePath);
-                            Creeps.Add(c);
-                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
-
-                            c = new Creep(White, mBoard.BlackSpawn.Position, mBoard.BlackPath);
-                            Creeps.Add(c);
-                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
-                            
+                            Black.Creeps.Add(c);
+                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);                            
                         }
 
                         List<Creep> toRemove = new List<Creep>();
-                        foreach (Creep c in Creeps)
+                        foreach (Creep c in Black.Creeps)
                         {
                             c.update(dt);
 
@@ -218,8 +214,45 @@ namespace schismTD
 
                         foreach (Creep r in toRemove)
                         {
-                            if (Creeps.Contains(r))
-                                Creeps.Remove(r);
+                            if (Black.Creeps.Contains(r))
+                                Black.Creeps.Remove(r);
+                        }
+                    }
+                    lock (White.Creeps)
+                    {
+                        mCreepTimerPosition -= dt;
+                        if (mCreepTimerPosition <= 0)
+                        {
+                            mCreepTimerPosition = mCreepTimerLength;
+                            Creep c = new Creep(White, mBoard.BlackSpawn.Position, mBoard.BlackPath);
+                            White.Creeps.Add(c);
+                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
+
+                        }
+
+                        List<Creep> toRemove = new List<Creep>();
+                        foreach (Creep c in White.Creeps)
+                        {
+                            c.update(dt);
+
+                            if (!c.Alive)
+                            {
+                                toRemove.Add(c);
+                                mCtx.Broadcast(Messages.GAME_CREEP_REMOVE, c.ID);
+                            }
+                            else
+                            {
+                                if (!c.Valid)
+                                {
+                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
+                                }
+                            }
+                        }
+
+                        foreach (Creep r in toRemove)
+                        {
+                            if (White.Creeps.Contains(r))
+                                White.Creeps.Remove(r);
                         }
                     }
                     lock (White.Towers)
@@ -314,12 +347,15 @@ namespace schismTD
             // Check for correct player on the cell && that it is in a buildable area
             if (c.Tower == null && p == c.Player && c.Buildable && c.Passable)
             {
-                lock (Creeps)
+                Player self = p;
+                Player opponent = (p == White) ? Black : White;
+
+                lock (opponent.Creeps)
                 {
 
                     // Check to see if any creeps are on the cell
                     Dictionary<Creep, Cell> creepsIn = new Dictionary<Creep, Cell>();
-                    foreach (Creep cr in Creeps)
+                    foreach (Creep cr in opponent.Creeps)
                     {
                         if (cr.Player == p)
                             continue;
@@ -387,7 +423,7 @@ namespace schismTD
 
                         // Now Recheck each existing creep's path, if any are invalid return an error
                         Dictionary<Creep, Path> tmpPaths = new Dictionary<Creep, Path>();
-                        foreach (Creep cr in Creeps)
+                        foreach (Creep cr in opponent.Creeps)
                         {
                             if (cr.Player == p)
                                 continue;
@@ -417,7 +453,7 @@ namespace schismTD
 
                         // If we made it this far the tower is valid!
                         // Update the creeps paths
-                        foreach (Creep cr in Creeps)
+                        foreach (Creep cr in opponent.Creeps)
                         {
                             if (cr.Player == p)
                                 continue;
@@ -454,7 +490,7 @@ namespace schismTD
                         else
                             mBoard.BlackPath = path;
 
-                        c.Tower = new Tower(this, p, c.Position);
+                        c.Tower = new Tower(this, self, opponent, c.Position);
                         c.Buildable = false;
                         c.Passable = false;
 

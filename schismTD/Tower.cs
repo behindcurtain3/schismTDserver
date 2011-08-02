@@ -24,6 +24,19 @@ namespace schismTD
         }
         private Point mPostion;
 
+        public Point Center
+        {
+            get
+            {
+                return mCenter;
+            }
+            set
+            {
+                mCenter = value;
+            }
+        }
+        private Point mCenter;
+
         public Player Player
         {
             get
@@ -36,6 +49,15 @@ namespace schismTD
             }
         }
         private Player mPlayer;
+
+        public Player Opponent
+        {
+            get
+            {
+                return mOpponent;
+            }
+        }
+        private Player mOpponent;
 
         public int FireRate
         {
@@ -92,11 +114,13 @@ namespace schismTD
 
         public String Type = "basic";
 
-        public Tower(Game g, Player p, Point pos)
+        public Tower(Game g, Player p, Player opponent, Point pos)
         {
             mGame = g;
             Player = p;
+            mOpponent = opponent;
             Position = pos;
+            Center = new Point(Position.X + Settings.BOARD_CELL_WIDTH / 2, Position.Y + Settings.BOARD_CELL_HEIGHT / 2);
 
             mFireRatePostion = mFireRate;
         }
@@ -121,8 +145,8 @@ namespace schismTD
                     {
 
                     }
-                    if(mGame.Creeps.Count > 0)
-                        mGame.Projectiles.Add(new Projectile(mGame, Position, mGame.Creeps[0]));
+                    if(mOpponent.Creeps.Count > 0)
+                        mGame.Projectiles.Add(new Projectile(mGame, Center, mOpponent.Creeps[0]));
                 }
             }
         }

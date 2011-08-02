@@ -199,9 +199,16 @@ namespace schismTD
                         // Draw creeps!
                         if (mShowCreeps)
                         {
-                            lock (mMatch.Game.Creeps)
+                            lock (mMatch.Game.Black.Creeps)
                             {
-                                foreach (Creep c in mMatch.Game.Creeps)
+                                foreach (Creep c in mMatch.Game.Black.Creeps)
+                                {
+                                    g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                                }
+                            }
+                            lock (mMatch.Game.White.Creeps)
+                            {
+                                foreach (Creep c in mMatch.Game.White.Creeps)
                                 {
                                     g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
                                 }
