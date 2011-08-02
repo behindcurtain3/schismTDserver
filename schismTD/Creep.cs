@@ -102,21 +102,7 @@ namespace schismTD
             }
         }
         private Cell mMovingTo;
-
-        // Ultimate Goal, needs to be set independent of the path
-        public Cell Target
-        {
-            get
-            {
-                return mTarget;
-            }
-            set
-            {
-                mTarget = value;
-            }
-        }
-        private Cell mTarget;
-
+        
         // Player the creep belongs to
         public Player Player
         {
@@ -199,7 +185,7 @@ namespace schismTD
         }
         private Boolean mValid;
 
-        public Creep(Player player, Point pos, Path p, Cell t)
+        public Creep(Player player, Point pos, Path p)
         {
             ID = Guid.NewGuid().ToString();
             Player = player;
@@ -210,8 +196,6 @@ namespace schismTD
 
             Center = new PointF(Position.X + (Width / 2), Position.Y + (Height / 2));
 
-            Target = t;
-
             Life = 10;
             Speed = 50;
 
@@ -221,6 +205,11 @@ namespace schismTD
 
         public void update(int dt)
         {
+            if (Life <= 0)
+            {
+                Alive = false;
+            }
+
             // Move creep
             if(CurrentPath.Count > 0)
             {
@@ -282,6 +271,16 @@ namespace schismTD
         public float getDistance(Cell c)
         {
             return Math.Abs(Center.X - c.Center.X) + Math.Abs(Center.Y - c.Center.Y);
+        }
+
+        public float getDistance(Tower t)
+        {
+            return Math.Abs(Center.X - t.Position.X) + Math.Abs(Center.Y - t.Position.Y);
+        }
+
+        public float getDistance(PointF p)
+        {
+            return Math.Abs(Center.X - p.X) + Math.Abs(Center.Y - p.Y);
         }
 
         public void invalidate()

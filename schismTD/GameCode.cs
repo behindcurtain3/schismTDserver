@@ -20,6 +20,7 @@ namespace schismTD
         private Boolean mShowLabels = true;
         private Boolean mShowPaths = true;
         private Boolean mShowCreeps = true;
+        private Boolean mShowProjectiles = true;
         private Boolean mShowWireFrame = false;
 
         // This method is called when an instance of your the game is created
@@ -206,6 +207,17 @@ namespace schismTD
                                 }
                             }
                         }
+
+                        if (mShowProjectiles)
+                        {
+                            lock (mMatch.Game.Projectiles)
+                            {
+                                foreach (Projectile p in mMatch.Game.Projectiles)
+                                {
+                                    g.FillEllipse(Brushes.DarkTurquoise, p.Position.X, p.Position.Y, 5, 5);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -251,7 +263,7 @@ namespace schismTD
                 if (c == mMatch.Game.Board.BlackSpawn)
                     g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
 
-                if (c == mMatch.Game.Board.WhiteBase || c == mMatch.Game.Board.BlackBase)
+                if (mMatch.Game.Board.WhiteBase.Contains(c) || mMatch.Game.Board.BlackBase.Contains(c))
                     g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
             }
 

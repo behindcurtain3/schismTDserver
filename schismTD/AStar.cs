@@ -7,7 +7,7 @@ namespace schismTD
 {
     public class AStar
     {
-        public static Path getPath(Cell start, Cell target)
+        public static Path getPath(Cell start, List<Cell> targets)
         {
             Path empty = new Path();
 
@@ -37,7 +37,7 @@ namespace schismTD
                     }
                 }
 
-                if (currentNode == target)
+                if (targets.Contains(currentNode))
                 {
                     // We found the target node
                     Path path = new Path();
@@ -63,7 +63,7 @@ namespace schismTD
                         {
                             neighbor.Key.Parent = currentNode;
                             neighbor.Key.G = neighbor.Key.Parent.G + getDistance(currentNode, neighbor.Key);
-                            neighbor.Key.H = getDistance(neighbor.Key, target);
+                            neighbor.Key.H = getClosestTarget(targets, neighbor.Key.Center);
                             neighbor.Key.F = neighbor.Key.G + neighbor.Key.H;
                             openList.Add(neighbor.Key);
                         }
@@ -79,14 +79,13 @@ namespace schismTD
             return Math.Abs(a.Position.X - b.Position.X) + Math.Abs(a.Position.Y - b.Position.Y);
         }
 
-        /*
         public static int getClosestTarget(List<Cell> targets, Point position)
         {
             int smallestDistance = 9999;
 
             foreach (Cell c in targets)
             {
-                int d = Math.Abs(c.Position.X - position.X) + Math.Abs(c.Position.Y - position.Y);
+                int d = Math.Abs(c.Center.X - position.X) + Math.Abs(c.Center.Y - position.Y);
                 if (d < smallestDistance)
                 {
                     smallestDistance = d;
@@ -94,6 +93,6 @@ namespace schismTD
             }
 
             return smallestDistance;
-        }*/
+        }
     }
 }

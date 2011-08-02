@@ -90,6 +90,19 @@ namespace schismTD
         }
         private List<Creep> mCreeps = new List<Creep>();
 
+        public List<Projectile> Projectiles
+        {
+            get
+            {
+                return mProjectiles;
+            }
+            set
+            {
+                mProjectiles = value;
+            }
+        }
+        private List<Projectile> mProjectiles = new List<Projectile>();
+
         public Game(GameCode gc, Player p1, Player p2)
         {
             mCtx = gc;
@@ -174,11 +187,11 @@ namespace schismTD
                         if (mCreepTimerPosition <= 0)
                         {
                             mCreepTimerPosition = mCreepTimerLength;
-                            Creep c = new Creep(Black, mBoard.WhiteSpawn.Position, mBoard.WhitePath, mBoard.WhiteBase);
+                            Creep c = new Creep(Black, mBoard.WhiteSpawn.Position, mBoard.WhitePath);
                             Creeps.Add(c);
                             mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
 
-                            c = new Creep(White, mBoard.BlackSpawn.Position, mBoard.BlackPath, mBoard.BlackBase);
+                            c = new Creep(White, mBoard.BlackSpawn.Position, mBoard.BlackPath);
                             Creeps.Add(c);
                             mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
                             
@@ -207,6 +220,36 @@ namespace schismTD
                         {
                             if (Creeps.Contains(r))
                                 Creeps.Remove(r);
+                        }
+                    }
+                    lock (White.Towers)
+                    {
+                        foreach (Tower t in White.Towers)
+                        {
+                            t.update(dt);
+                        }
+                    }
+                    lock (Black.Towers)
+                    {
+                        foreach (Tower t in Black.Towers)
+                        {
+                            t.update(dt);
+                        }
+                    }
+                    lock (Projectiles)
+                    {
+                        List<Projectile> toRemove = new List<Projectile>();
+                        foreach (Projectile p in Projectiles)
+                        {
+                            p.update(dt);
+
+                            if (!p.Active)
+                                toRemove.Add(p);
+                        }
+                        foreach (Projectile p in toRemove)
+                        {
+                            if(Projectiles.Contains(p))
+                                Projectiles.Remove(p);
                         }
                     }
                 }
@@ -411,7 +454,7 @@ namespace schismTD
                         else
                             mBoard.BlackPath = path;
 
-                        c.Tower = new Tower(p, c.Position);
+                        c.Tower = new Tower(this, p, c.Position);
                         c.Buildable = false;
                         c.Passable = false;
 

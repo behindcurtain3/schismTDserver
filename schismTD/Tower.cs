@@ -8,6 +8,9 @@ namespace schismTD
 {
     public class Tower
     {
+        private int mFireRatePostion;
+        private Game mGame;
+
         public Point Position
         {
             get
@@ -34,7 +37,7 @@ namespace schismTD
         }
         private Player mPlayer;
 
-        public long FireRate
+        public int FireRate
         {
             get
             {
@@ -45,7 +48,7 @@ namespace schismTD
                 mFireRate = value;
             }
         }
-        private long mFireRate = Settings.DEFAULT_FIRE_RATE; // in milliseconds
+        private int mFireRate = Settings.DEFAULT_FIRE_RATE; // in milliseconds
 
         public int Damage
         {
@@ -73,12 +76,55 @@ namespace schismTD
         }
         private float mRange = Settings.DEFAULT_RANGE;
 
+        public Boolean Enabled
+        {
+            get
+            {
+                return mEnabled;
+            }
+            set
+            {
+                mEnabled = value;
+            }
+        }
+        private Boolean mEnabled = true;
+
+
         public String Type = "basic";
 
-        public Tower(Player p, Point pos)
+        public Tower(Game g, Player p, Point pos)
         {
+            mGame = g;
             Player = p;
             Position = pos;
+
+            mFireRatePostion = mFireRate;
+        }
+
+        public void update(int dt)
+        {
+            if (Enabled)
+            {
+                mFireRatePostion -= dt;
+
+                // Fire the tower
+                if (mFireRatePostion <= 0)
+                {
+                    mFireRatePostion = mFireRate;
+
+                    if(Player == mGame.White)
+                    {
+                        // Shoot at black creeps only
+                        
+                    }
+                    else
+                    {
+
+                    }
+                    if(mGame.Creeps.Count > 0)
+                        mGame.Projectiles.Add(new Projectile(mGame, Position, mGame.Creeps[0]));
+                }
+            }
         }
     }
 }

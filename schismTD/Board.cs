@@ -10,6 +10,8 @@ namespace schismTD
 
         private List<int> blackCellsIndex;
         private List<int> whiteCellsIndex;
+        private List<int> blackBases;
+        private List<int> whiteBases;
 
         // Height/width are in cells
         public int Width
@@ -106,7 +108,7 @@ namespace schismTD
         }
         private Cell mWhiteSpawn = null;
 
-        public Cell BlackBase
+        public List<Cell> BlackBase
         {
             get
             {
@@ -117,9 +119,9 @@ namespace schismTD
                 mBlackBase = value;
             }
         }
-        private Cell mBlackBase = null;
+        private List<Cell> mBlackBase = new List<Cell>();
 
-        public Cell WhiteBase
+        public List<Cell> WhiteBase
         {
             get
             {
@@ -130,7 +132,7 @@ namespace schismTD
                 mWhiteBase = value;
             }
         }
-        private Cell mWhiteBase = null;
+        private List<Cell> mWhiteBase = new List<Cell>();
 
         public List<Cell> WhiteCells
         {
@@ -344,20 +346,20 @@ namespace schismTD
                     BlackCells.Add(c);
                 }
 
-                if (c.Index == Settings.DEFAULT_BLACK_BASE)
+                if (blackBases.Contains(c.Index))
                 {
                     c.Passable = true;
                     c.Player = black;
 
-                    BlackBase = c;
+                    BlackBase.Add(c);
                     BlackCells.Add(c);
                 }
-                else if (c.Index == Settings.DEFAULT_WHITE_BASE)
+                else if (whiteBases.Contains(c.Index))
                 {
                     c.Passable = true;
                     c.Player = white;
 
-                    WhiteBase = c;
+                    WhiteBase.Add(c);
                     WhiteCells.Add(c);
                 }
             }
@@ -365,6 +367,11 @@ namespace schismTD
 
         private void setupLists()
         {
+            int[] bBases = new int[] { 242, 243, 260, 261 };
+            blackBases = new List<int>(bBases);
+            int[] wBases = new int[] { 62, 63, 80, 81 };
+            whiteBases = new List<int>(wBases);
+
             // Add black home cells here
             int[] b = new int[] {
                                         068,069,

@@ -29,11 +29,9 @@ namespace schismTD
 
         public const int DEFAULT_BLACK_SPAWN = 050;
         public const int DEFAULT_WHITE_SPAWN = 273;
-        public const int DEFAULT_BLACK_BASE = 260;
-        public const int DEFAULT_WHITE_BASE = 63;
 
         // Towers
-        public const long DEFAULT_FIRE_RATE = 500;
+        public const int DEFAULT_FIRE_RATE = 800;
         public const int DEFAULT_DAMAGE = 10;
         public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 3.5f;
 
