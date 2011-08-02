@@ -8,7 +8,7 @@ namespace schismTD
     public class Creep
     {
         // World position
-        public PointF Position
+        public Vector2 Position
         {
             get
             {
@@ -19,7 +19,7 @@ namespace schismTD
                 mPosition = value;
             }
         }
-        private PointF mPosition;
+        private Vector2 mPosition;
 
         public PointF Center
         {
@@ -29,7 +29,7 @@ namespace schismTD
             }
             set
             {
-                mCenter = value;
+                mCenter = new PointF(value.X + mWidth / 2, value.Y + mHeight / 2);
             }
         }
         private PointF mCenter;
@@ -151,7 +151,7 @@ namespace schismTD
                 mLife = value;
             }
         }
-        private int mLife;
+        private int mLife = Settings.CREEP_LIFE;
 
         public int Speed
         {
@@ -164,7 +164,7 @@ namespace schismTD
                 mSpeed = value;
             }
         }
-        private int mSpeed;
+        private int mSpeed = Settings.CREEP_SPEED;
 
         public int Damage
         {
@@ -213,14 +213,11 @@ namespace schismTD
             Player = player;
             mOpponent = opponent;
             CurrentPath = new Path(p);
-            Position = pos;
+            Position = new Vector2(pos);
             Height = Settings.BOARD_CELL_HEIGHT;
             Width = Settings.BOARD_CELL_WIDTH;
 
-            Center = new PointF(Position.X + (Width / 2), Position.Y + (Height / 2));
-
-            Life = 10;
-            Speed = 50;
+            Center = Position.getPointF();
 
             Valid = false;
             Alive = true;
@@ -254,7 +251,7 @@ namespace schismTD
                     {
                         // Remove creep
                         Alive = false;
-
+                        // Deal damage
                         Opponent.Life -= Damage;
                     }
                     else
@@ -270,6 +267,12 @@ namespace schismTD
                     float dd = Speed * dv;
 
                     // Do movement
+                    Vector2 movement = new Vector2(Center) - new Vector2(MovingTo.Center);
+                    movement.Normalize();
+                    movement *= dd;
+                    Position -= movement;
+                    Center = Position.getPointF();
+                    /*
                     if (Math.Abs(Center.X - MovingTo.Center.X) >= Settings.CREEP_WIGGLE)
                     {
                         if (Center.X < MovingTo.Center.X)
@@ -284,10 +287,10 @@ namespace schismTD
                         else
                             mPosition.Y -= dd;
                     }
-
+                    */
                     // Update center
-                    mCenter.X = Position.X + Width / 2;
-                    mCenter.Y = Position.Y + Height / 2;
+                    //mCenter.X = Position.X + Width / 2;
+                    //mCenter.Y = Position.Y + Height / 2;
                 }
 
             }

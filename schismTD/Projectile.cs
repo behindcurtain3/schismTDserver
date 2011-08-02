@@ -88,15 +88,18 @@ namespace schismTD
                 float dv = dt * 0.001f;
                 float dd = mVelocity * dv;
 
+                // Movement vector will point in the correct direction
                 Vector2 movement = Position - new Vector2(Target.Center);
-                movement.Normalize();
-                movement *= dd;
+                movement.Normalize(); // Normalize it
+                movement *= dd; // Scale it based on the velocity calculated above
 
-                Position -= movement;
-                Center = Position.getPointF();
+                Position -= movement; // Apply it to the position
+                Center = Position.getPointF(); // Get new center
 
+                // If the projectile is within the radius of the target
                 if (Target.getDistance(Center) <= Target.Width / 2)
                 {
+                    // It hits
                     Target.Life -= Damage;
                     mActive = false;
                 }
