@@ -43,6 +43,8 @@ namespace schismTD
             set
             {
                 mLife = value;
+                if (mLife < 0)
+                    mLife = 0;
             }
         }
         private int mLife = Settings.DEFAULT_LIFE;

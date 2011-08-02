@@ -24,7 +24,7 @@ namespace schismTD
 
         // Game
         public const int DEFAULT_GAME_COUNTDOWN = 5;
-        public const int DEFAULT_LIFE = 50;
+        public const int DEFAULT_LIFE = 20;
         public const int DEFAULT_MANA = 250;
 
         public const int DEFAULT_BLACK_SPAWN = 050;
@@ -36,8 +36,9 @@ namespace schismTD
         public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 3.5f;
 
         // Creeps
-        public const int CREEP_LIFE = 10;
+        public const int CREEP_LIFE = 50;
         public const int CREEP_SPEED = 50;
         public const int CREEP_WIGGLE = 2;
+        public const int CREEP_DAMAGE = 2;
     }
 }

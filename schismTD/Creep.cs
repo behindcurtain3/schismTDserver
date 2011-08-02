@@ -117,6 +117,15 @@ namespace schismTD
         }
         private Player mPlayer;
 
+        public Player Opponent
+        {
+            get
+            {
+                return mOpponent;
+            }
+        }
+        private Player mOpponent;
+
         // Stats
         public Boolean Alive
         {
@@ -157,6 +166,19 @@ namespace schismTD
         }
         private int mSpeed;
 
+        public int Damage
+        {
+            get
+            {
+                return mDamage;
+            }
+            set
+            {
+                mDamage = value;
+            }
+        }
+        private int mDamage = Settings.CREEP_DAMAGE;
+
         // Network state
         public String ID
         {
@@ -185,10 +207,11 @@ namespace schismTD
         }
         private Boolean mValid;
 
-        public Creep(Player player, Point pos, Path p)
+        public Creep(Player player, Player opponent, Point pos, Path p)
         {
             ID = Guid.NewGuid().ToString();
             Player = player;
+            mOpponent = opponent;
             CurrentPath = new Path(p);
             Position = pos;
             Height = Settings.BOARD_CELL_HEIGHT;
@@ -231,6 +254,8 @@ namespace schismTD
                     {
                         // Remove creep
                         Alive = false;
+
+                        Opponent.Life -= Damage;
                     }
                     else
                     {
@@ -275,7 +300,7 @@ namespace schismTD
 
         public float getDistance(Tower t)
         {
-            return Math.Abs(Center.X - t.Position.X) + Math.Abs(Center.Y - t.Position.Y);
+            return Math.Abs(Center.X - t.Center.X) + Math.Abs(Center.Y - t.Center.Y);
         }
 
         public float getDistance(PointF p)

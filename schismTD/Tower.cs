@@ -129,24 +129,32 @@ namespace schismTD
         {
             if (Enabled)
             {
-                mFireRatePostion -= dt;
-
-                // Fire the tower
-                if (mFireRatePostion <= 0)
+                if(mFireRatePostion > 0)
+                    mFireRatePostion -= dt;
+                else
                 {
-                    mFireRatePostion = mFireRate;
-
-                    if(Player == mGame.White)
+                    // Fire the tower
+                    lock (mOpponent.Creeps)
                     {
-                        // Shoot at black creeps only
-                        
-                    }
-                    else
-                    {
+                        float closestDistance = Range;
+                        Creep closestCreep = null;
 
-                    }
-                    if(mOpponent.Creeps.Count > 0)
-                        mGame.Projectiles.Add(new Projectile(mGame, Center, mOpponent.Creeps[0]));
+                        foreach (Creep creep in mOpponent.Creeps)
+                        {
+                            float d = creep.getDistance(this);
+                            if (d < closestDistance)
+                            {
+                                closestDistance = d;
+                                closestCreep = creep;
+                            }
+                        }
+
+                        if (closestCreep != null)
+                        {
+                            mFireRatePostion = mFireRate;
+                            mGame.Projectiles.Add(new Projectile(mGame, Center, closestCreep));
+                        }
+                    }                    
                 }
             }
         }

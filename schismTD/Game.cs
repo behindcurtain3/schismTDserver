@@ -182,13 +182,25 @@ namespace schismTD
                 {
                     mTotalTimeElapsed += dt;
 
+                    // Check if anyone has died
+                    if (Black.Life <= 0)
+                    {
+                        // White wins
+                        finish();
+                    }
+                    if (White.Life <= 0)
+                    {
+                        // Black wins
+                        finish();
+                    }
+
                     lock (Black.Creeps)
                     {
                         mCreepTimerPosition -= dt;
                         if (mCreepTimerPosition <= 0)
                         {
                             mCreepTimerPosition = mCreepTimerLength;
-                            Creep c = new Creep(Black, mBoard.WhiteSpawn.Position, mBoard.WhitePath);
+                            Creep c = new Creep(Black, White, mBoard.WhiteSpawn.Position, mBoard.WhitePath);
                             Black.Creeps.Add(c);
                             mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);                            
                         }
@@ -224,7 +236,7 @@ namespace schismTD
                         if (mCreepTimerPosition <= 0)
                         {
                             mCreepTimerPosition = mCreepTimerLength;
-                            Creep c = new Creep(White, mBoard.BlackSpawn.Position, mBoard.BlackPath);
+                            Creep c = new Creep(White, Black, mBoard.BlackSpawn.Position, mBoard.BlackPath);
                             White.Creeps.Add(c);
                             mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
 
