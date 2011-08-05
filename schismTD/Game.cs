@@ -204,7 +204,7 @@ namespace schismTD
                             {
                                 if (!c.Valid)
                                 {
-                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
+                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE_POSITION, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
                                 }
                             }                            
                         }
@@ -241,7 +241,7 @@ namespace schismTD
                             {
                                 if (!c.Valid)
                                 {
-                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
+                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE_POSITION, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
                                 }
                             }
                         }
@@ -294,31 +294,39 @@ namespace schismTD
 
                 if (c.Up != null && c.Left != null)
                 {
-                    if (c.Up.Neighbors.ContainsKey(c.Left))
-                        c.Up.Neighbors[c.Left] = true;
-                    if (c.Left.Neighbors.ContainsKey(c.Up))
-                        c.Left.Neighbors[c.Up] = true;
+                    lock (c.Up.Neighbors)
+                        if (c.Up.Neighbors.ContainsKey(c.Left))
+                            c.Up.Neighbors[c.Left] = true;
+                    lock (c.Left.Neighbors)
+                        if (c.Left.Neighbors.ContainsKey(c.Up))
+                            c.Left.Neighbors[c.Up] = true;
                 }
                 if (c.Up != null && c.Right != null)
                 {
-                    if (c.Up.Neighbors.ContainsKey(c.Right))
-                        c.Up.Neighbors[c.Right] = true;
-                    if (c.Right.Neighbors.ContainsKey(c.Up))
-                        c.Right.Neighbors[c.Up] = true;
+                    lock (c.Up.Neighbors)
+                        if (c.Up.Neighbors.ContainsKey(c.Right))
+                            c.Up.Neighbors[c.Right] = true;
+                    lock (c.Right.Neighbors)
+                        if (c.Right.Neighbors.ContainsKey(c.Up))
+                            c.Right.Neighbors[c.Up] = true;
                 }
                 if (c.Down != null && c.Right != null)
                 {
-                    if (c.Down.Neighbors.ContainsKey(c.Right))
-                        c.Down.Neighbors[c.Right] = true;
-                    if (c.Right.Neighbors.ContainsKey(c.Down))
-                        c.Right.Neighbors[c.Down] = true;
+                    lock (c.Down.Neighbors)
+                        if (c.Down.Neighbors.ContainsKey(c.Right))
+                            c.Down.Neighbors[c.Right] = true;
+                    lock (c.Right.Neighbors)
+                        if (c.Right.Neighbors.ContainsKey(c.Down))
+                            c.Right.Neighbors[c.Down] = true;
                 }
                 if (c.Down != null && c.Left != null)
                 {
-                    if (c.Down.Neighbors.ContainsKey(c.Left))
-                        c.Down.Neighbors[c.Left] = true;
-                    if (c.Left.Neighbors.ContainsKey(c.Down))
-                        c.Left.Neighbors[c.Down] = true;
+                    lock (c.Down.Neighbors)
+                        if (c.Down.Neighbors.ContainsKey(c.Left))
+                            c.Down.Neighbors[c.Left] = true;
+                    lock (c.Left.Neighbors)
+                        if (c.Left.Neighbors.ContainsKey(c.Down))
+                            c.Left.Neighbors[c.Down] = true;
                 }
             }
 

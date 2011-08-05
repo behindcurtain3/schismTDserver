@@ -7,19 +7,6 @@ namespace schismTD
 {
     public class Creep : Entity
     {
-        public RectangleF HitBox
-        {
-            get
-            {
-                return mHitBox;
-            }
-            set
-            {
-                mHitBox = value;
-            }
-        }
-        private RectangleF mHitBox;
-
         // Pathing
         public Path CurrentPath
         {
@@ -124,20 +111,6 @@ namespace schismTD
         }
         private int mDamage = Settings.CREEP_DAMAGE;
 
-        // Network state
-        public String ID
-        {
-            get
-            {
-                return mID;
-            }
-            set
-            {
-                mID = value;
-            }
-        }
-        private String mID;
-
         // An invalid creep needs to be resynched with clients
         public Boolean Valid
         {
@@ -154,7 +127,6 @@ namespace schismTD
 
         public Creep(Player player, Player opponent, Vector2 pos, Path p)
         {
-            ID = Guid.NewGuid().ToString();
             Player = player;
             mOpponent = opponent;
             CurrentPath = new Path(p);
@@ -163,6 +135,7 @@ namespace schismTD
             Width = Settings.BOARD_CELL_WIDTH;
 
             Position = pos;
+            HitBox = new RectangleF(Position.X, Position.Y, Width, Height);
 
             Valid = false;
             Alive = true;

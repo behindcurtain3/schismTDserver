@@ -71,8 +71,8 @@ namespace schismTD
 
                 Position -= movement; // Apply it to the position
 
-                // If the projectile is within the radius of the target
-                if (Target.getDistance(Center) <= Target.Width / 2)
+                // Collision check
+                if (Target.HitBox.Contains(Center))
                 {
                     // It hits
                     Target.Life -= Damage;

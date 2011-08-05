@@ -7,6 +7,20 @@ namespace schismTD
 {
     public class Entity
     {
+        // Network state
+        public String ID
+        {
+            get
+            {
+                return mID;
+            }
+            set
+            {
+                mID = value;
+            }
+        }
+        private String mID;
+
         // World position
         public Vector2 Position
         {
@@ -18,6 +32,7 @@ namespace schismTD
             {
                 mPosition = value;
                 Center = mPosition.getPointF();
+                HitBox = new RectangleF(mPosition.X, mPosition.Y, Width, Height);
             }
         }
         private Vector2 mPosition;
@@ -62,5 +77,23 @@ namespace schismTD
             }
         }
         private int mHeight;
+
+        public RectangleF HitBox
+        {
+            get
+            {
+                return mHitBox;
+            }
+            set
+            {
+                mHitBox = value;
+            }
+        }
+        private RectangleF mHitBox;
+
+        public Entity()
+        {
+            ID = Guid.NewGuid().ToString();
+        }
     }
 }

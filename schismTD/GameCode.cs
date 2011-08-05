@@ -278,49 +278,55 @@ namespace schismTD
             if (mShowPassable)
             {
                 if (c.Passable)
-                    g.FillEllipse(Brushes.Tomato, c.Position.X + 8, c.Position.Y + 8, 9, 9);
+                    g.FillEllipse(Brushes.Tomato, c.Position.X + 10, c.Position.Y + 10, 10, 10);
             }
 
         }
 
         // Debug actions
-        [DebugAction("Toggle Creeps", DebugAction.Icon.Green)]
+        [DebugAction("Creeps", DebugAction.Icon.Green)]
         public void ToogleCreeps()
         {
             mShowCreeps = !mShowCreeps;
         }
 
-        [DebugAction("Toggle Paths", DebugAction.Icon.Green)]
+        [DebugAction("Paths", DebugAction.Icon.Green)]
         public void TooglePaths()
         {
             mShowPaths = !mShowPaths;
         }
 
-        [DebugAction("Toggle Neighbors", DebugAction.Icon.Green)]
+        [DebugAction("Neighbors", DebugAction.Icon.Green)]
         public void ToogleNeighbors()
         {
             mShowNeighbors = !mShowNeighbors;
         }
 
-        [DebugAction("Toggle Passable", DebugAction.Icon.Green)]
+        [DebugAction("Passable", DebugAction.Icon.Green)]
         public void TooglePassable()
         {
             mShowPassable = !mShowPassable;
         }
 
-        [DebugAction("Toggle Towers", DebugAction.Icon.Green)]
+        [DebugAction("Towers", DebugAction.Icon.Green)]
         public void ToogleTowers()
         {
             mShowTowers = !mShowTowers;
         }
 
-        [DebugAction("Toggle Labels", DebugAction.Icon.Green)]
+        [DebugAction("Projectiles", DebugAction.Icon.Green)]
+        public void ToogleProjectiles()
+        {
+            mShowProjectiles = !mShowProjectiles;
+        }
+
+        [DebugAction("Labels", DebugAction.Icon.Green)]
         public void ToogleLabels()
         {
             mShowLabels = !mShowLabels;
         }
 
-        [DebugAction("Toggle Wire Frame", DebugAction.Icon.Green)]
+        [DebugAction("Wire Frame", DebugAction.Icon.Green)]
         public void ToogleWireFrame()
         {
             mShowWireFrame = !mShowWireFrame;
