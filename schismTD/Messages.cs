@@ -21,6 +21,7 @@ namespace schismTD
         public const String GAME_FINISHED = "game_finish";
         public const String GAME_MANA = "game_mana";
         public const String GAME_LIFE = "game_life";
+        public const String GAME_TIME = "game_time";
 
         public const String GAME_ADD_CELL = "game_add_cell";
 

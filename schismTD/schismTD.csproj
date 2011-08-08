@@ -44,6 +44,7 @@
     <Compile Include="AStar.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Cell.cs" />
+    <Compile Include="Costs.cs" />
     <Compile Include="Creep.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Game.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Tower.cs" />
     <Compile Include="Vector2.cs" />
+    <Compile Include="Wave.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

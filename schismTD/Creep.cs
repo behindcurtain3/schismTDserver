@@ -125,11 +125,25 @@ namespace schismTD
         }
         private Boolean mValid;
 
+        public int Worth
+        {
+            get
+            {
+                return mWorth;
+            }
+            set
+            {
+                mWorth = value;
+            }
+        }
+        private int mWorth;
+
         public Creep(Player player, Player opponent, Vector2 pos, Path p)
         {
             Player = player;
             mOpponent = opponent;
             CurrentPath = new Path(p);
+            Worth = 5;
             
             Height = Settings.BOARD_CELL_HEIGHT;
             Width = Settings.BOARD_CELL_WIDTH;

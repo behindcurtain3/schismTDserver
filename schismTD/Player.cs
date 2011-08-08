@@ -20,6 +20,19 @@ namespace schismTD
         }
         private String mName;
 
+        public Player Opponent
+        {
+            get
+            {
+                return mOpponent;
+            }
+            set
+            {
+                mOpponent = value;
+            }
+        }
+        private Player mOpponent;
+
         // Game data
         public int Mana
         {
@@ -75,13 +88,27 @@ namespace schismTD
         }
         private List<Creep> mCreeps = new List<Creep>();
 
-        public void reset()
+        public List<Wave> Waves
+        {
+            get
+            {
+                return mWaves;
+            }
+            set
+            {
+                mWaves = value;
+            }
+        }
+        private List<Wave> mWaves = new List<Wave>();
+
+        public void reset(GameCode gc, Game game)
         {
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
 
             Towers.Clear();
             Creeps.Clear();
+            Waves.Clear();
         }
 
     }

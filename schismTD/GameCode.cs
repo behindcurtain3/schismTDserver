@@ -14,8 +14,8 @@ namespace schismTD
         public Match mMatch;
 
         // Debug
-        private Boolean mShowNeighbors = true;
-        private Boolean mShowPassable = true;
+        private Boolean mShowNeighbors = false;
+        private Boolean mShowPassable = false;
         private Boolean mShowTowers = true;
         private Boolean mShowLabels = true;
         private Boolean mShowPaths = true;

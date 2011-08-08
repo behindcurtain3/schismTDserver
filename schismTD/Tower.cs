@@ -85,6 +85,19 @@ namespace schismTD
         }
         private Boolean mEnabled = true;
 
+        public int Cost
+        {
+            get
+            {
+                return mCost;
+            }
+            set
+            {
+                mCost = value;
+            }
+        }
+        private int mCost;
+
 
         public String Type = "basic";
 
@@ -97,6 +110,7 @@ namespace schismTD
             Width = Settings.BOARD_CELL_WIDTH;
             Height = Settings.BOARD_CELL_HEIGHT;
             Position = pos;
+            Cost = Costs.BASIC;
             
 
             mFireRatePostion = mFireRate;

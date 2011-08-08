@@ -9,14 +9,21 @@ namespace schismTD
 {
     public class Game
     {
+        public GameCode Context
+        {
+            get
+            {
+                return mCtx;
+            }
+        }
         private GameCode mCtx;
 
         // Seconds to countdown at start of game (IE: dead period)
         private const int mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
         private int mCountdownPosition;
 
-        private int mCreepTimerLength = 1000;
-        private int mCreepTimerPosition;
+        private int mWaveTimerLength = Settings.WAVE_LENGTH;
+        private int mWaveTimerPosition;
 
         private long mTotalTimeElapsed = 0;
 
@@ -111,7 +118,7 @@ namespace schismTD
             }
 
             mCountdownPosition = mCountdownLength;
-            mCreepTimerPosition = 0;
+            mWaveTimerPosition = 0;
         }
 
         public void start()
@@ -121,15 +128,37 @@ namespace schismTD
             mTotalTimeElapsed = 0;
 
             // Reset both players
-            Black.reset();
-            White.reset();
+            Black.reset(mCtx, this);
+            White.reset(mCtx, this);
 
             // Send player info
-            Black.Send(Messages.GAME_LIFE, Black.Life);
-            Black.Send(Messages.GAME_MANA, Black.Mana);
+            mCtx.Broadcast(Messages.GAME_LIFE, Black.Id, Black.Life);
+            mCtx.Broadcast(Messages.GAME_MANA, Black.Id, Black.Mana);
 
-            White.Send(Messages.GAME_LIFE, White.Life);
-            White.Send(Messages.GAME_MANA, White.Mana);
+            mCtx.Broadcast(Messages.GAME_LIFE, White.Id, White.Life);
+            mCtx.Broadcast(Messages.GAME_MANA, White.Id, White.Mana);
+
+            // Setup the waves
+            for (int i = 0; i < Settings.DEFAULT_NUM_WAVES; i++)
+            {
+                Black.Waves.Add(new Wave(mCtx, this, Black, White));
+                White.Waves.Add(new Wave(mCtx, this, White, Black));
+            }
+
+            float healthMod = 1;
+            foreach (Wave wave in Black.Waves)
+            {
+                wave.HealthModifier = healthMod;
+                healthMod *= 1.5f;
+            }
+
+            healthMod = 1;
+            foreach (Wave wave in White.Waves)
+            {
+                wave.HealthModifier = healthMod;
+                healthMod *= 1.5f;
+            }
+
 
             // Finally send the message to start the game
             mCtx.Broadcast(Messages.GAME_START);
@@ -179,17 +208,35 @@ namespace schismTD
                         finish();
                     }
 
+                    // Spawn new creeps
+                    mWaveTimerPosition += dt;
+                    if (mWaveTimerPosition <= mWaveTimerLength)
+                    {
+                        lock (Black.Waves)
+                        {
+                            Black.Waves[0].update(dt);
+                        }
+                        lock (White.Waves)
+                        {
+                            White.Waves[0].update(dt);
+                        }
+                    }
+                    else
+                    {
+                        mWaveTimerPosition = 0;
+                        if(Black.Waves.Count > 0)
+                            Black.Waves.RemoveAt(0);
+                        if(White.Waves.Count > 0)
+                            White.Waves.RemoveAt(0);
+
+                        if (Black.Waves.Count == 0)
+                        {
+                            finish();
+                        }
+                    }
+
                     lock (Black.Creeps)
                     {
-                        mCreepTimerPosition -= dt;
-                        if (mCreepTimerPosition <= 0)
-                        {
-                            mCreepTimerPosition = mCreepTimerLength;
-                            Creep c = new Creep(Black, White, mBoard.WhiteSpawn.Position, mBoard.WhitePath);
-                            Black.Creeps.Add(c);
-                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);                            
-                        }
-
                         List<Creep> toRemove = new List<Creep>();
                         foreach (Creep c in Black.Creeps)
                         {
@@ -217,16 +264,6 @@ namespace schismTD
                     }
                     lock (White.Creeps)
                     {
-                        mCreepTimerPosition -= dt;
-                        if (mCreepTimerPosition <= 0)
-                        {
-                            mCreepTimerPosition = mCreepTimerLength;
-                            Creep c = new Creep(White, Black, mBoard.BlackSpawn.Position, mBoard.BlackPath);
-                            White.Creeps.Add(c);
-                            mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
-
-                        }
-
                         List<Creep> toRemove = new List<Creep>();
                         foreach (Creep c in White.Creeps)
                         {
@@ -308,7 +345,7 @@ namespace schismTD
                             c.Up.Neighbors[c.Right] = true;
                     lock (c.Right.Neighbors)
                         if (c.Right.Neighbors.ContainsKey(c.Up))
-                            c.Right.Neighbors[c.Up] = true;
+                             c.Right.Neighbors[c.Up] = true;
                 }
                 if (c.Down != null && c.Right != null)
                 {
@@ -337,7 +374,6 @@ namespace schismTD
         {
             if (Finished || !Started)
             {
-                //invalidTower(p, null, m.GetInt(0), m.GetInt(0));
                 return;
             }
 
@@ -345,13 +381,21 @@ namespace schismTD
 
             if (c == null)
             {
-                invalidTower(p, null, m.GetInt(0), m.GetInt(0));
+                invalidTower(p, null, m.GetInt(0), m.GetInt(1));
                 return;
             }
 
             // Check for correct player on the cell && that it is in a buildable area
             if (c.Tower == null && p == c.Player && c.Buildable && c.Passable)
             {
+
+                // Make sure the player has enough mana
+                if (p.Mana < Costs.BASIC)
+                {
+                    invalidTower(p, null, m.GetInt(0), m.GetInt(1));
+                    return;
+                }
+
                 Player self = p;
                 Player opponent = (p == White) ? Black : White;
 
@@ -563,7 +607,11 @@ namespace schismTD
                         c.Neighbors.Clear();
 
                         // Add the tower to the player
-                        p.Towers.Add(c.Tower);
+                        lock(p.Towers)
+                            p.Towers.Add(c.Tower);
+
+                        // Take the mana away from the player
+                        p.Mana -= c.Tower.Cost;
 
                         // Send the players the new tower information
                         mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);

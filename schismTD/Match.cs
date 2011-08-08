@@ -92,6 +92,10 @@ namespace schismTD
         public void start()
         {
             Started = true;
+
+            p1.Opponent = p2;
+            p2.Opponent = p1;
+
             mCtx.Broadcast(Messages.MATCH_READY);
 
             // Possibly add a countdown or both players click a ready button before calling this?

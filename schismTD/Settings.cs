@@ -24,6 +24,7 @@ namespace schismTD
 
         // Game
         public const int DEFAULT_GAME_COUNTDOWN = 5;
+        public const int DEFAULT_NUM_WAVES = 7;
         public const int DEFAULT_LIFE = 20;
         public const int DEFAULT_MANA = 250;
 
@@ -41,5 +42,9 @@ namespace schismTD
         public const int CREEP_SPEED = 50;
         public const int CREEP_WIGGLE = 2;
         public const int CREEP_DAMAGE = 2;
+
+        // Waves
+        public const int WAVE_LENGTH = 20000; // Length of time between waves
+        public const int WAVE_WINDOW = 15000; // Length of time a wave has to spawn its creeps
     }
 }

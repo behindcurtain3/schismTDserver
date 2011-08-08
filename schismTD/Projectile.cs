@@ -76,6 +76,14 @@ namespace schismTD
                 {
                     // It hits
                     Target.Life -= Damage;
+
+                    if (Target.Life < 0)
+                    {
+                        Target.Alive = false;
+                        Target.Player.Opponent.Mana += Target.Worth; // Increase the opponents mana
+                        mGame.Context.Broadcast(Messages.GAME_MANA, Target.Player.Opponent.Id, Target.Player.Opponent.Mana);
+                    }
+
                     mActive = false;
                 }
             }
