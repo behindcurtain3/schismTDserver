@@ -80,8 +80,17 @@ namespace schismTD
             }
             set
             {
+                if (mLife <= 0)
+                    return;
+
                 mLife = value;
                 Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, this.ID, mLife);
+
+                if (mLife < 0)
+                {
+                    Alive = false;
+                    Opponent.Mana += Worth; // Increase the opponents mana
+                }
             }
         }
         private int mLife = Settings.CREEP_LIFE;
@@ -154,6 +163,7 @@ namespace schismTD
 
             Valid = false;
             Alive = true;
+            Life = Settings.CREEP_LIFE;
         }
 
         public void update(int dt)

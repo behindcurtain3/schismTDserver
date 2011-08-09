@@ -18,7 +18,7 @@ namespace schismTD
         private Boolean mShowPassable = false;
         private Boolean mShowTowers = true;
         private Boolean mShowLabels = true;
-        private Boolean mShowPaths = true;
+        private Boolean mShowPaths = false;
         private Boolean mShowCreeps = true;
         private Boolean mShowProjectiles = true;
         private Boolean mShowWireFrame = false;

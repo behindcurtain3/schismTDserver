@@ -41,7 +41,7 @@ namespace schismTD
         public const int CREEP_LIFE = 50;
         public const int CREEP_SPEED = 50;
         public const int CREEP_WIGGLE = 2;
-        public const int CREEP_DAMAGE = 2;
+        public const int CREEP_DAMAGE = 1;
 
         // Waves
         public const int WAVE_LENGTH = 20000; // Length of time between waves
