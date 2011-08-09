@@ -92,11 +92,5 @@ namespace schismTD
                 mActive = false;
             }
         }
-
-        public Boolean collidesWith(Creep creep)
-        {
-            //if(Center.X >= creep.Position.X && Center.X <= creep.Position.X + creep.Width)
-            return false;
-        }
     }
 }

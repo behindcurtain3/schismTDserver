@@ -7,6 +7,15 @@ namespace schismTD
 {
     public class Player : BasePlayer
     {
+        public Game Game
+        {
+            get
+            {
+                return mGame;
+            }
+        }
+        private Game mGame = null;
+
         public String Name
         {
             get
@@ -43,6 +52,7 @@ namespace schismTD
             set
             {
                 mMana = value;
+                mGame.Context.Broadcast(Messages.GAME_MANA, this.Id, mMana);
             }
         }
         private int mMana = Settings.DEFAULT_MANA;
@@ -58,6 +68,8 @@ namespace schismTD
                 mLife = value;
                 if (mLife < 0)
                     mLife = 0;
+
+                mGame.Context.Broadcast(Messages.GAME_LIFE, this.Id, mLife);
             }
         }
         private int mLife = Settings.DEFAULT_LIFE;
@@ -101,8 +113,10 @@ namespace schismTD
         }
         private List<Wave> mWaves = new List<Wave>();
 
-        public void reset(GameCode gc, Game game)
+        public void reset(Game game)
         {
+            mGame = game;
+
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
 

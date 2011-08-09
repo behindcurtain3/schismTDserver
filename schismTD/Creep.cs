@@ -81,6 +81,7 @@ namespace schismTD
             set
             {
                 mLife = value;
+                Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, this.ID, mLife);
             }
         }
         private int mLife = Settings.CREEP_LIFE;

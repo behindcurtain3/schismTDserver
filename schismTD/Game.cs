@@ -83,6 +83,8 @@ namespace schismTD
             }
         }
         private Boolean mIsFinished = false;
+        // Waiting to finish is true after all waves have been ran but creeps are still alive
+        private Boolean mWaitingToFinish = false;
 
         public List<Projectile> Projectiles
         {
@@ -128,15 +130,15 @@ namespace schismTD
             mTotalTimeElapsed = 0;
 
             // Reset both players
-            Black.reset(mCtx, this);
-            White.reset(mCtx, this);
+            Black.reset(this);
+            White.reset(this);
 
             // Send player info
-            mCtx.Broadcast(Messages.GAME_LIFE, Black.Id, Black.Life);
-            mCtx.Broadcast(Messages.GAME_MANA, Black.Id, Black.Mana);
+            //mCtx.Broadcast(Messages.GAME_LIFE, Black.Id, Black.Life);
+            //mCtx.Broadcast(Messages.GAME_MANA, Black.Id, Black.Mana);
 
-            mCtx.Broadcast(Messages.GAME_LIFE, White.Id, White.Life);
-            mCtx.Broadcast(Messages.GAME_MANA, White.Id, White.Mana);
+            //mCtx.Broadcast(Messages.GAME_LIFE, White.Id, White.Life);
+            //mCtx.Broadcast(Messages.GAME_MANA, White.Id, White.Mana);
 
             // Setup the waves
             for (int i = 0; i < Settings.DEFAULT_NUM_WAVES; i++)
@@ -196,21 +198,33 @@ namespace schismTD
                 {
                     mTotalTimeElapsed += dt;
 
+                    // Check if we are waiting to finish
+                    if (mWaitingToFinish)
+                    {
+                        if (Black.Creeps.Count == 0 && White.Creeps.Count == 0)
+                        {
+                            finish();
+                            return;
+                        }
+                    }
+
                     // Check if anyone has died
                     if (Black.Life <= 0)
                     {
                         // White wins
                         finish();
+                        return;
                     }
                     if (White.Life <= 0)
                     {
                         // Black wins
                         finish();
+                        return;
                     }
 
                     // Spawn new creeps
                     mWaveTimerPosition += dt;
-                    if (mWaveTimerPosition <= mWaveTimerLength)
+                    if (mWaveTimerPosition <= mWaveTimerLength && !mWaitingToFinish)
                     {
                         lock (Black.Waves)
                         {
@@ -229,10 +243,8 @@ namespace schismTD
                         if(White.Waves.Count > 0)
                             White.Waves.RemoveAt(0);
 
-                        if (Black.Waves.Count == 0)
-                        {
-                            finish();
-                        }
+                        if (Black.Waves.Count == 0 && White.Waves.Count == 0)
+                            mWaitingToFinish = true;
                     }
 
                     lock (Black.Creeps)
@@ -399,18 +411,19 @@ namespace schismTD
                 Player self = p;
                 Player opponent = (p == White) ? Black : White;
 
+                Dictionary<Creep, Cell> creepsInTheseCells = new Dictionary<Creep, Cell>();
                 lock (opponent.Creeps)
                 {
-
                     // Check to see if any creeps are on the cell
-                    Dictionary<Creep, Cell> creepsIn = new Dictionary<Creep, Cell>();
                     foreach (Creep cr in opponent.Creeps)
                     {
                         if (cr.Player == p)
                             continue;
 
                         Cell crIn = findCellByPoint(cr.Center);
-                        creepsIn.Add(cr, crIn); // Save for later
+                        creepsInTheseCells.Add(cr, crIn); // Save for later
+
+                        // If a creep is in the cell we are trying to place a tower at don't let them
                         if (crIn == c)
                         {
                             invalidTower(p, c, m.GetInt(0), m.GetInt(1));
@@ -418,78 +431,81 @@ namespace schismTD
                         }
 
                     }
+                }
 
-                    // Set to non-passable
-                    c.Passable = false;
+                // Set to non-passable
+                c.Passable = false;
 
-                    // Disable all links involving this square and the diagonals that go past it
-                    if (c.Up != null && c.Left != null)
-                    {
-                        lock(c.Up.Neighbors)
-                            if (c.Up.Neighbors.ContainsKey(c.Left))
-                                c.Up.Neighbors[c.Left] = false;
-                        lock(c.Left.Neighbors)
-                            if (c.Left.Neighbors.ContainsKey(c.Up))
-                                c.Left.Neighbors[c.Up] = false;
-                    }
-                    if (c.Up != null && c.Right != null)
-                    {
-                        lock (c.Up.Neighbors)
-                            if (c.Up.Neighbors.ContainsKey(c.Right))
-                                c.Up.Neighbors[c.Right] = false;
-                        lock(c.Right.Neighbors)
-                            if (c.Right.Neighbors.ContainsKey(c.Up))
-                                c.Right.Neighbors[c.Up] = false;
-                    }
-                    if (c.Down != null && c.Right != null)
-                    {
-                        lock(c.Down.Neighbors)
-                            if (c.Down.Neighbors.ContainsKey(c.Right))
-                                c.Down.Neighbors[c.Right] = false;
-                        lock (c.Right.Neighbors)
-                            if (c.Right.Neighbors.ContainsKey(c.Down))
-                                c.Right.Neighbors[c.Down] = false;
-                    }
-                    if (c.Down != null && c.Left != null)
-                    {
-                        lock (c.Down.Neighbors)
-                            if (c.Down.Neighbors.ContainsKey(c.Left))
-                                c.Down.Neighbors[c.Left] = false;
-                        lock (c.Left.Neighbors)
-                            if (c.Left.Neighbors.ContainsKey(c.Down))
-                                c.Left.Neighbors[c.Down] = false;
-                    }
+                // Disable all links involving this square and the diagonals that go past it
+                if (c.Up != null && c.Left != null)
+                {
+                    lock(c.Up.Neighbors)
+                        if (c.Up.Neighbors.ContainsKey(c.Left))
+                            c.Up.Neighbors[c.Left] = false;
+                    lock(c.Left.Neighbors)
+                        if (c.Left.Neighbors.ContainsKey(c.Up))
+                            c.Left.Neighbors[c.Up] = false;
+                }
+                if (c.Up != null && c.Right != null)
+                {
+                    lock (c.Up.Neighbors)
+                        if (c.Up.Neighbors.ContainsKey(c.Right))
+                            c.Up.Neighbors[c.Right] = false;
+                    lock(c.Right.Neighbors)
+                        if (c.Right.Neighbors.ContainsKey(c.Up))
+                            c.Right.Neighbors[c.Up] = false;
+                }
+                if (c.Down != null && c.Right != null)
+                {
+                    lock(c.Down.Neighbors)
+                        if (c.Down.Neighbors.ContainsKey(c.Right))
+                            c.Down.Neighbors[c.Right] = false;
+                    lock (c.Right.Neighbors)
+                        if (c.Right.Neighbors.ContainsKey(c.Down))
+                            c.Right.Neighbors[c.Down] = false;
+                }
+                if (c.Down != null && c.Left != null)
+                {
+                    lock (c.Down.Neighbors)
+                        if (c.Down.Neighbors.ContainsKey(c.Left))
+                            c.Down.Neighbors[c.Left] = false;
+                    lock (c.Left.Neighbors)
+                        if (c.Left.Neighbors.ContainsKey(c.Down))
+                            c.Left.Neighbors[c.Down] = false;
+                }
 
 
-                    // Now try and find a path to make sure the maze is valid
-                    Path path;
-                    if (p == White)
-                        path = mBoard.getWhitePath();
-                    else
-                        path = mBoard.getBlackPath();
+                // Now try and find a path to make sure the maze is valid
+                Path newPath;
+                if (p == White)
+                    newPath = mBoard.getWhitePath();
+                else
+                    newPath = mBoard.getBlackPath();
 
-                    // If there is no valid path, reject the tower placement
-                    if (path.Count <= 0)
-                    {
-                        invalidTower(p, c, m.GetInt(0), m.GetInt(1));
-                        return;
-                    }
-                    else
-                    {
-                        // Valid path from the spawn
+                // If there is no valid path, reject the tower placement
+                if (newPath.Count <= 0)
+                {
+                    invalidTower(p, c, m.GetInt(0), m.GetInt(1));
+                    return;
+                }
+                else
+                {
+                    // Valid path from the spawn
 
+                    Dictionary<Creep, Path> tmpPaths = new Dictionary<Creep, Path>();
+                    lock(opponent.Creeps)
+                    {
                         // Now Recheck each existing creep's path, if any are invalid return an error
-                        Dictionary<Creep, Path> tmpPaths = new Dictionary<Creep, Path>();
                         foreach (Creep cr in opponent.Creeps)
                         {
                             if (cr.Player == p)
                                 continue;
 
-                            Cell crIn = creepsIn[cr];
+                            Cell crIn = creepsInTheseCells[cr];
 
                             // We only need to recalc the path if the creeps current path contains where the tower is placed
                             // and if the path we generated doesn't contain the creeps current cell
-                            if (cr.CurrentPath.Contains(c) && !path.Contains(crIn))
+                            if (!newPath.Contains(crIn))
                             {
                                 Path tmpPath;
                                 // Recalc the path for this creep
@@ -507,7 +523,10 @@ namespace schismTD
                                     tmpPaths.Add(cr, tmpPath);
                             }
                         }
+                    }
 
+                    lock(opponent.Creeps)
+                    {
                         // If we made it this far the tower is valid!
                         // Update the creeps paths
                         foreach (Creep cr in opponent.Creeps)
@@ -524,12 +543,12 @@ namespace schismTD
                             else
                             {
                                 // else, check to see if we should use the updated main path
-                                if (path.Contains(creepsIn[cr]))
+                                if (newPath.Contains(creepsInTheseCells[cr]))
                                 {
                                     // Reapply the main path, removing any cells the creeper has already passed
-                                    cr.CurrentPath = new Path(path);
+                                    cr.CurrentPath = new Path(newPath);
 
-                                    while (cr.CurrentPath.Peek() != creepsIn[cr])
+                                    while (cr.CurrentPath.Peek() != creepsInTheseCells[cr])
                                     {
                                         cr.CurrentPath.Pop();
                                     }
@@ -541,16 +560,19 @@ namespace schismTD
                                 }
                             }
                         }
+                    }
 
-                        if (p == White)
-                            mBoard.WhitePath = path;
-                        else
-                            mBoard.BlackPath = path;
+                    if (p == White)
+                        mBoard.WhitePath = newPath;
+                    else
+                        mBoard.BlackPath = newPath;
 
-                        c.Tower = new Tower(this, self, opponent, c.Position);
-                        c.Buildable = false;
-                        c.Passable = false;
+                    c.Tower = new Tower(this, self, opponent, c.Position);
+                    c.Buildable = false;
+                    c.Passable = false;
 
+                    lock(c.Neighbors)
+                    {
                         // Remove neighbor links
                         foreach (KeyValuePair<Cell, Boolean> neighbor in c.Neighbors)
                         {
@@ -559,63 +581,65 @@ namespace schismTD
                                 neighbor.Key.Neighbors.Remove(c);
                             }
                         }
+                    }
                         
-                        // Check the diagonals that go past this cell
-                        // Upper left
-                        if (c.Up != null && c.Left != null)
-                        {
-                            lock (c.Up.Neighbors)
-                                if (c.Up.Neighbors.ContainsKey(c.Left))
-                                    c.Up.Neighbors.Remove(c.Left);
-                            lock (c.Left.Neighbors)
-                                if (c.Left.Neighbors.ContainsKey(c.Up))
-                                    c.Left.Neighbors.Remove(c.Up);
-                        }
-                        // Upper right
-                        if (c.Up != null && c.Right != null)
-                        {
-                            lock(c.Up.Neighbors)
-                                if (c.Up.Neighbors.ContainsKey(c.Right))
-                                    c.Up.Neighbors.Remove(c.Right);
-                            lock (c.Right.Neighbors)
-                                if (c.Right.Neighbors.ContainsKey(c.Up))
-                                    c.Right.Neighbors.Remove(c.Up);
-                        }
-                        // Lower right
-                        if (c.Down != null && c.Right != null)
-                        {
-                            lock (c.Down.Neighbors)
-                                if (c.Down.Neighbors.ContainsKey(c.Right))
-                                    c.Down.Neighbors.Remove(c.Right);
-                            lock(c.Right.Neighbors)
-                                if (c.Right.Neighbors.ContainsKey(c.Down))
-                                    c.Right.Neighbors.Remove(c.Down);
-                        }
-                        // Lower left
-                        if (c.Down != null && c.Left != null)
-                        {
-                            lock(c.Down.Neighbors)
-                                if (c.Down.Neighbors.ContainsKey(c.Left))
-                                    c.Down.Neighbors.Remove(c.Left);
-                            lock (c.Left.Neighbors)
-                                if (c.Left.Neighbors.ContainsKey(c.Down))
-                                    c.Left.Neighbors.Remove(c.Down);
-                        }
+                    // Check the diagonals that go past this cell
+                    // Upper left
+                    if (c.Up != null && c.Left != null)
+                    {
+                        lock (c.Up.Neighbors)
+                            if (c.Up.Neighbors.ContainsKey(c.Left))
+                                c.Up.Neighbors.Remove(c.Left);
+                        lock (c.Left.Neighbors)
+                            if (c.Left.Neighbors.ContainsKey(c.Up))
+                                c.Left.Neighbors.Remove(c.Up);
+                    }
+                    // Upper right
+                    if (c.Up != null && c.Right != null)
+                    {
+                        lock(c.Up.Neighbors)
+                            if (c.Up.Neighbors.ContainsKey(c.Right))
+                                c.Up.Neighbors.Remove(c.Right);
+                        lock (c.Right.Neighbors)
+                            if (c.Right.Neighbors.ContainsKey(c.Up))
+                                c.Right.Neighbors.Remove(c.Up);
+                    }
+                    // Lower right
+                    if (c.Down != null && c.Right != null)
+                    {
+                        lock (c.Down.Neighbors)
+                            if (c.Down.Neighbors.ContainsKey(c.Right))
+                                c.Down.Neighbors.Remove(c.Right);
+                        lock(c.Right.Neighbors)
+                            if (c.Right.Neighbors.ContainsKey(c.Down))
+                                c.Right.Neighbors.Remove(c.Down);
+                    }
+                    // Lower left
+                    if (c.Down != null && c.Left != null)
+                    {
+                        lock(c.Down.Neighbors)
+                            if (c.Down.Neighbors.ContainsKey(c.Left))
+                                c.Down.Neighbors.Remove(c.Left);
+                        lock (c.Left.Neighbors)
+                            if (c.Left.Neighbors.ContainsKey(c.Down))
+                                c.Left.Neighbors.Remove(c.Down);
+                    }
                          
-
+                    lock(c.Neighbors)
+                    {
                         // Clear the cells neighbors
                         c.Neighbors.Clear();
-
-                        // Add the tower to the player
-                        lock(p.Towers)
-                            p.Towers.Add(c.Tower);
-
-                        // Take the mana away from the player
-                        p.Mana -= c.Tower.Cost;
-
-                        // Send the players the new tower information
-                        mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
                     }
+
+                    // Add the tower to the player
+                    lock(p.Towers)
+                        p.Towers.Add(c.Tower);
+
+                    // Take the mana away from the player
+                    p.Mana -= c.Tower.Cost;
+
+                    // Send the players the new tower information
+                    mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
                 }
             }
         }

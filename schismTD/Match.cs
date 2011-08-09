@@ -99,7 +99,7 @@ namespace schismTD
             mCtx.Broadcast(Messages.MATCH_READY);
 
             // Possibly add a countdown or both players click a ready button before calling this?
-            mCtx.Broadcast(Messages.MATCH_STARTED);
+            mCtx.Broadcast(Messages.MATCH_STARTED, p1.Id, p2.Id);
         }
 
         public void finish()
