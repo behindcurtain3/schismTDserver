@@ -323,7 +323,10 @@ namespace schismTD
                             p.update(dt);
 
                             if (!p.Active)
+                            {
                                 toRemove.Add(p);
+                                mCtx.Broadcast(Messages.GAME_PROJECTILE_REMOVE, p.ID);
+                            }
                         }
                         foreach (Projectile p in toRemove)
                         {

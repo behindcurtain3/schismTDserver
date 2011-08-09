@@ -54,6 +54,8 @@ namespace schismTD
 
             mVelocity = 200;
             mDamage = 10;
+
+            mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, mVelocity, mTarget.ID);
         }
 
         public void update(int dt)
