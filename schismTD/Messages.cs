@@ -16,9 +16,10 @@ namespace schismTD
         public const String MATCH_STARTED = "match_start";
         public const String MATCH_FINISHED = "match_finish";
 
-        public const String GAME_COUNTDOWN = "game_countdown"; // Countdown status at start of each game
-        public const String GAME_START = "game_start";
-        public const String GAME_FINISHED = "game_finish";
+        public const String GAME_COUNTDOWN = "game_countdown";  // Countdown status at start of each game
+        public const String GAME_ACTIVATE = "game_activate";    // Activates tower building
+        public const String GAME_START = "game_start";          // The game actually starts
+        public const String GAME_FINISHED = "game_finish";      // The game is finished
         public const String GAME_MANA = "game_mana";
         public const String GAME_LIFE = "game_life";
         public const String GAME_TIME = "game_time";
@@ -32,6 +33,7 @@ namespace schismTD
         public const String GAME_PLACE_TOWER = "game_place_tower";
         public const String GAME_REMOVE_TOWER = "game_remove_tower";
         public const String GAME_INVALID_TOWER = "game_invalid_tower";
+        public const String GAME_UPGRADE_TOWER = "game_upgrade_tower";
 
         public const String GAME_CREEP_ADD = "game_creep_add";
         public const String GAME_CREEP_REMOVE = "game_creep_remove";

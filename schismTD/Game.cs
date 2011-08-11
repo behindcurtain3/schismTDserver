@@ -154,6 +154,10 @@ namespace schismTD
                 healthMod *= 1.5f;
             }
 
+            mCtx.Broadcast(Messages.GAME_ACTIVATE);
+            mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
+            mCtx.AddMessageHandler(Messages.GAME_UPGRADE_TOWER, upgradeTower);
+
             mIsGameSetup = true;
         }
 
@@ -167,8 +171,6 @@ namespace schismTD
 
             // Finally send the message to start the game
             mCtx.Broadcast(Messages.GAME_START);
-            mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
-
         }
 
         public void finish()
@@ -427,7 +429,7 @@ namespace schismTD
 
         private void placeTower(Player p, Message m)
         {
-            if (Finished || !Started)
+            if (Finished || !mIsGameSetup)
             {
                 return;
             }
@@ -685,6 +687,76 @@ namespace schismTD
                     mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
                 }
             }
+        }
+
+        public void upgradeTower(Player p, Message m)
+        {
+            if (Finished || !mIsGameSetup)
+                return;
+
+            Cell c = findCellByPoint(new Point(m.GetInt(0), m.GetInt(1)));
+
+            if (c == null)
+                return;
+
+            switch (m.GetInt(2))
+            {
+                // Tier 2 towers
+                case 1: // RAPID FIRE
+                    if (c.Tower.Type != "basic")
+                        return;
+
+                    if (p.Mana < Costs.RAPID_FIRE)
+                        return;
+
+                    // Remove the old tower
+                    removeTower(p, c.Tower);
+
+                    p.Mana -= Costs.RAPID_FIRE;
+                    lock(c.Tower)
+                        c.Tower = new RapidFireTower(this, p, c.Player.Opponent, c.Position);
+
+                    addTower(p, c.Tower);
+                    break;
+                case 2:
+                    if (c.Tower.Type != "basic")
+                        return;
+
+                    if (p.Mana < Costs.SLOW)
+                        return;
+
+                    // Remove the old tower
+                    removeTower(p, c.Tower);
+
+                    p.Mana -= Costs.SLOW;
+                    lock(c.Tower)
+                        c.Tower = new SlowTower(this, p, c.Player.Opponent, c.Position);
+
+                    addTower(p, c.Tower);
+                    break;
+
+                // Tier 3 towers
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+            }            
+        }
+
+        public void removeTower(Player p, Tower t)
+        {
+            lock (p.Towers)
+                p.Towers.Remove(t);
+        }
+
+        public void addTower(Player p, Tower t)
+        {
+            lock (p.Towers)
+                p.Towers.Add(t);
         }
 
         public Cell findCellByPoint(PointF p)

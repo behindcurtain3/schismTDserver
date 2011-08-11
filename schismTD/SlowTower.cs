@@ -12,6 +12,8 @@ namespace schismTD
             FireRate = Settings.DEFAULT_FIRE_RATE;
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = 0;
+
+            Type = "Slow";
         }
 
         public override void fire()

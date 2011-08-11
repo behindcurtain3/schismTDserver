@@ -9,5 +9,7 @@ namespace schismTD
     public class Costs
     {
         public const int BASIC = 10;
+        public const int RAPID_FIRE = 90;
+        public const int SLOW = 90;
     }
 }
