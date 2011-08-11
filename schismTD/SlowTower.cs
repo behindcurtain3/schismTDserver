@@ -26,7 +26,8 @@ namespace schismTD
                     {
                         if (!creep.hasEffect("slow"))
                         {
-                            creep.Effects.Add(new SlowEffect(creep));
+                            lock(creep.Effects)
+                                creep.Effects.Add(new SlowEffect(creep));
                         }
                     }
                 }
