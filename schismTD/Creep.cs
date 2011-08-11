@@ -84,12 +84,16 @@ namespace schismTD
                     return;
 
                 mLife = value;
-                Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, this.ID, mLife);
 
-                if (mLife < 0)
+                if (mLife <= 0)
                 {
                     Alive = false;
                     Opponent.Mana += Worth; // Increase the opponents mana
+                    Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+                }
+                else
+                {
+                    Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
                 }
             }
         }
@@ -159,7 +163,6 @@ namespace schismTD
             Width = Settings.BOARD_CELL_WIDTH;
 
             Position = pos;
-            HitBox = new RectangleF(Position.X, Position.Y, Width, Height);
 
             Valid = false;
             Alive = true;
@@ -196,6 +199,8 @@ namespace schismTD
                         Alive = false;
                         // Deal damage
                         Opponent.Life -= Damage;
+
+                        Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
                     }
                     else
                     {

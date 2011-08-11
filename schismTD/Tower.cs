@@ -143,7 +143,10 @@ namespace schismTD
                         if (closestCreep != null)
                         {
                             mFireRatePostion = mFireRate;
-                            mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), closestCreep));
+                            lock (mGame.Projectiles)
+                            {
+                                mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), closestCreep));
+                            }
                         }
                     }                    
                 }

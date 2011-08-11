@@ -20,13 +20,14 @@ namespace schismTD
         public const int BOARD_CELL_HEIGHT = 30;
 
         // Match
-        public const int GAMES_PER_MATCH = 3;
+        public const int GAMES_PER_MATCH = 1;
+        public const int DEFAULT_MATCH_COOLDOWN = 10;
 
         // Game
         public const int DEFAULT_GAME_COUNTDOWN = 5;
-        public const int DEFAULT_NUM_WAVES = 7;
+        public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
-        public const int DEFAULT_MANA = 250;
+        public const int DEFAULT_MANA = 100;
 
         // Cell index to spawn creeps on
         public const int DEFAULT_BLACK_SPAWN = 050;
@@ -44,7 +45,7 @@ namespace schismTD
         public const int CREEP_DAMAGE = 1;
 
         // Waves
-        public const int WAVE_LENGTH = 20000; // Length of time between waves
-        public const int WAVE_WINDOW = 15000; // Length of time a wave has to spawn its creeps
+        public const int WAVE_LENGTH = 35000; // Length of time between waves
+        public const int WAVE_WINDOW = 30000; // Length of time a wave has to spawn its creeps
     }
 }

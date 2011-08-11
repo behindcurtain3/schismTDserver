@@ -26,6 +26,7 @@ namespace schismTD
         private int mWaveTimerPosition;
 
         private long mTotalTimeElapsed = 0;
+        private Boolean mIsGameSetup = false;
 
         public Board Board
         {
@@ -99,6 +100,9 @@ namespace schismTD
         }
         private List<Projectile> mProjectiles = new List<Projectile>();
 
+        private Player mWinner;
+        private Player mLoser;
+
         public Game(GameCode gc, Player p1, Player p2)
         {
             mCtx = gc;
@@ -123,22 +127,11 @@ namespace schismTD
             mWaveTimerPosition = 0;
         }
 
-        public void start()
+        public void setup()
         {
-            
-            mIsStarted = true;
-            mTotalTimeElapsed = 0;
-
             // Reset both players
             Black.reset(this);
             White.reset(this);
-
-            // Send player info
-            //mCtx.Broadcast(Messages.GAME_LIFE, Black.Id, Black.Life);
-            //mCtx.Broadcast(Messages.GAME_MANA, Black.Id, Black.Mana);
-
-            //mCtx.Broadcast(Messages.GAME_LIFE, White.Id, White.Life);
-            //mCtx.Broadcast(Messages.GAME_MANA, White.Id, White.Mana);
 
             // Setup the waves
             for (int i = 0; i < Settings.DEFAULT_NUM_WAVES; i++)
@@ -161,6 +154,16 @@ namespace schismTD
                 healthMod *= 1.5f;
             }
 
+            mIsGameSetup = true;
+        }
+
+        public void start()
+        {
+            if (!mIsGameSetup)
+                setup();
+
+            mIsStarted = true;
+            mTotalTimeElapsed = 0;
 
             // Finally send the message to start the game
             mCtx.Broadcast(Messages.GAME_START);
@@ -170,8 +173,39 @@ namespace schismTD
 
         public void finish()
         {
+            if (Finished)
+                return;
+
+            int gameResult;
+
+            // Score the game
+            if (Black.Life == White.Life)
+            {
+                // Draw
+                gameResult = Result.DRAW;
+                mCtx.Broadcast(Messages.GAME_FINISHED, -1);
+            }
+            else if (Black.Life < White.Life)
+            {
+                // White Wins
+                gameResult = Result.WIN;
+                mWinner = White;
+                mLoser = Black;
+            }
+            else
+            {
+                // Black wins
+                gameResult = Result.WIN;
+                mWinner = Black;
+                mLoser = White;
+            }
+
+            if(gameResult != Result.DRAW)
+            {
+                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id);
+            }
+
             mIsFinished = true;
-            mCtx.Broadcast(Messages.GAME_FINISHED);
         }
 
         public void update(int dt)
@@ -179,6 +213,15 @@ namespace schismTD
             if (!Started)
             {
                 mCountdownPosition -= dt;
+
+                // Run setup() after counting down for one second
+                if (!mIsGameSetup)
+                {
+                    if (mCountdownPosition < Settings.DEFAULT_GAME_COUNTDOWN * 1000 - 1000)
+                    {
+                        setup();
+                    }
+                }
 
                 if (mCountdownPosition <= 0)
                 {
@@ -257,7 +300,6 @@ namespace schismTD
                             if (!c.Alive)
                             {
                                 toRemove.Add(c);
-                                mCtx.Broadcast(Messages.GAME_CREEP_REMOVE, c.ID);
                             }
                             else
                             {
@@ -284,7 +326,6 @@ namespace schismTD
                             if (!c.Alive)
                             {
                                 toRemove.Add(c);
-                                mCtx.Broadcast(Messages.GAME_CREEP_REMOVE, c.ID);
                             }
                             else
                             {
@@ -325,7 +366,6 @@ namespace schismTD
                             if (!p.Active)
                             {
                                 toRemove.Add(p);
-                                mCtx.Broadcast(Messages.GAME_PROJECTILE_REMOVE, p.ID);
                             }
                         }
                         foreach (Projectile p in toRemove)

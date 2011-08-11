@@ -13,6 +13,8 @@ namespace schismTD
         private Player p2 = null;
         private int mNumGames = Settings.GAMES_PER_MATCH;
         private int mCurrentGameNum = 0;
+        private int mCooldownTime = Settings.DEFAULT_MATCH_COOLDOWN * 1000;
+        private int mCooldownPosition;
 
         public Game Game
         {
@@ -49,6 +51,12 @@ namespace schismTD
         }
         private Boolean mIsFinished = false;
 
+        public Boolean ReadyForRestart
+        {
+            get { return mReadyForRestart; }
+        }
+        private Boolean mReadyForRestart = false;
+
         public int Players
         {
             get
@@ -61,6 +69,7 @@ namespace schismTD
         public Match(GameCode gc)
         {
             mCtx = gc;
+            mCooldownPosition = mCooldownTime;
         }
 
         public void addPlayer(Player p)
@@ -117,7 +126,15 @@ namespace schismTD
         public void update(int dt)
         {
             if (Finished)
-                return;
+            {
+                mCooldownPosition -= dt;
+
+                if (mCooldownPosition <= 0)
+                {
+                    mReadyForRestart = true;
+                }
+                return; // always return here if finished
+            }
 
             if (Started)
             {
@@ -135,8 +152,8 @@ namespace schismTD
             {
                 if (p1 != null && p2 != null)
                 {
-                    startNextGame();
                     start();
+                    startNextGame();                    
                 }
             }
         }

@@ -67,7 +67,7 @@ namespace schismTD
             mWaveTimeWindow = Settings.WAVE_WINDOW;
             mWaveTimeElapsed = 0;
             mTimeToNextSpawn = 0;
-            mNumCreepsInWave = 12;
+            mNumCreepsInWave = 25;
             mNumCreepsSpawned = 0;
         }
 

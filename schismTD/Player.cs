@@ -120,9 +120,12 @@ namespace schismTD
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
 
-            Towers.Clear();
-            Creeps.Clear();
-            Waves.Clear();
+            lock(Towers)
+                Towers.Clear();
+            lock(Creeps)
+                Creeps.Clear();
+            lock(Waves)
+                Waves.Clear();
         }
 
     }

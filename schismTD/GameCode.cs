@@ -41,7 +41,7 @@ namespace schismTD
             {
                 if (mMatch != null)
                 {
-                    if (mMatch.Finished)
+                    if (mMatch.ReadyForRestart)
                     {
                         // For now just create a new match & add players
                         mMatch = new Match(this);

@@ -16,6 +16,15 @@ namespace schismTD
             {
                 return mActive;
             }
+            set
+            {
+                mActive = value;
+
+                if (!mActive)
+                {
+                    mGame.Context.Broadcast(Messages.GAME_PROJECTILE_REMOVE, ID);
+                }
+            }
         }
         private Boolean mActive = true;
 
@@ -78,12 +87,12 @@ namespace schismTD
                 {
                     // It hits
                     Target.Life -= Damage;
-                    mActive = false;
+                    Active = false;
                 }
             }
             else
             {
-                mActive = false;
+                Active = false;
             }
         }
     }
