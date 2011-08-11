@@ -6,10 +6,10 @@ using System.Text;
 
 namespace schismTD
 {
-    public class Tower : Entity
+    public class Tower : EffectEntity
     {
-        private int mFireRatePostion;
-        private Game mGame;
+        protected int mFireRatePostion;
+        protected Game mGame;
 
         public Player Player
         {
@@ -45,6 +45,19 @@ namespace schismTD
             }
         }
         private int mFireRate = Settings.DEFAULT_FIRE_RATE; // in milliseconds
+
+        public int EffectedFireRate
+        {
+            get
+            {
+                return mEffectedFireRate;
+            }
+            set
+            {
+                mEffectedFireRate = value;
+            }
+        }
+        private int mEffectedFireRate;
 
         public int Damage
         {
@@ -111,44 +124,61 @@ namespace schismTD
             Height = Settings.BOARD_CELL_HEIGHT;
             Position = pos;
             Cost = Costs.BASIC;
-            
+
+            FireRate = Settings.DEFAULT_FIRE_RATE * 3;
+            Range = Settings.DEFAULT_RANGE * 2;
+            Damage = Settings.DEFAULT_DAMAGE;
 
             mFireRatePostion = mFireRate;
         }
 
-        public void update(int dt)
+        public virtual void fire()
+        {
+            // Fire the tower
+            lock (mOpponent.Creeps)
+            {
+                int leastPathLength = 999;
+                Creep targetCreep = null;
+
+                foreach (Creep creep in mOpponent.Creeps)
+                {
+                    float d = creep.getDistance(this);
+                    if (d < Range)
+                    {
+                        if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting())
+                        {
+                            leastPathLength = creep.CurrentPath.Count;
+                            targetCreep = creep;
+                        }
+                    }
+                }
+
+                if (targetCreep != null)
+                {
+                    mFireRatePostion = mFireRate;
+                    lock (mGame.Projectiles)
+                    {
+                        mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep));
+                    }
+                }
+            }
+        }
+
+        public virtual void update(int dt)
         {
             if (Enabled)
             {
+                // Reset our values
+                EffectedFireRate = FireRate;
+
+                // Apply effects
+                applyEffects(dt);
+
                 if(mFireRatePostion > 0)
                     mFireRatePostion -= dt;
                 else
                 {
-                    // Fire the tower
-                    lock (mOpponent.Creeps)
-                    {
-                        float closestDistance = Range;
-                        Creep closestCreep = null;
-
-                        foreach (Creep creep in mOpponent.Creeps)
-                        {
-                            float d = creep.getDistance(this);
-                            if (d < closestDistance)
-                            {
-                                closestDistance = d;
-                                closestCreep = creep;
-                            }
-                        }
-
-                        if (closestCreep != null)
-                        {
-                            mFireRatePostion = mFireRate;
-                            lock (mGame.Projectiles)
-                            {
-                                mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), closestCreep));
-                            }
-                        }
-                    }                    
+                    fire();                        
                 }
             }
         }

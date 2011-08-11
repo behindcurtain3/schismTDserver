@@ -34,9 +34,9 @@ namespace schismTD
         public const int DEFAULT_WHITE_SPAWN = 273;
 
         // Towers
-        public const int DEFAULT_FIRE_RATE = 800;
-        public const int DEFAULT_DAMAGE = 10;
-        public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 3.5f;
+        public const int DEFAULT_FIRE_RATE = 300;                   // Corresponds to speed rating of 5, so a rating of 1 would equal 1500 (5 times as slow)
+        public const int DEFAULT_DAMAGE = 10;                       // Corresponds to dmg rating of 1
+        public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 1.5f; // Corresponds to rating of 1
 
         // Creeps
         public const int CREEP_LIFE = 50;
@@ -47,5 +47,8 @@ namespace schismTD
         // Waves
         public const int WAVE_LENGTH = 35000; // Length of time between waves
         public const int WAVE_WINDOW = 30000; // Length of time a wave has to spawn its creeps
+
+        // Effects
+        public const int DEFAULT_SLOW_DURATION = 2500;
     }
 }

@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace schismTD
 {
-    public class Creep : Entity
+    public class Creep : EffectEntity
     {
         // Pathing
         public Path CurrentPath
@@ -112,6 +112,19 @@ namespace schismTD
         }
         private int mSpeed = Settings.CREEP_SPEED;
 
+        public int EffectedSpeed
+        {
+            get
+            {
+                return mEffectedSpeed;
+            }
+            set
+            {
+                mEffectedSpeed = value;
+            }
+        }
+        private int mEffectedSpeed = Settings.CREEP_SPEED;
+
         public int Damage
         {
             get
@@ -176,6 +189,13 @@ namespace schismTD
                 Alive = false;
             }
 
+            // Reset values
+            EffectedSpeed = Speed;
+
+
+            // Apply effects
+            applyEffects(dt);
+
             // Move creep
             if(CurrentPath.Count > 0)
             {
@@ -212,7 +232,7 @@ namespace schismTD
                 if (Alive)
                 {
                     float dv = dt * 0.001f;
-                    float dd = Speed * dv;
+                    float dd = EffectedSpeed * dv;
 
                     // Do movement
                     Vector2 movement = new Vector2(Center) - new Vector2(MovingTo.Center);
@@ -241,6 +261,26 @@ namespace schismTD
         public void invalidate()
         {
             Valid = false;
+        }
+
+        /*
+         * isDeathWaiting looks at all the projectiles currently fired at this creep.
+         * If the total damage of those projectiles exceeds its current life this will return true
+         */
+        public Boolean isDeathWaiting()
+        {
+            int totalDamage = 0;
+
+            lock (Player.Game.Projectiles)
+            {
+                foreach(Projectile p in Player.Game.Projectiles)
+                {
+                    if (p.Target == this)
+                        totalDamage += p.Damage;
+                }
+            }
+
+            return totalDamage >= Life;
         }
     }
 }
