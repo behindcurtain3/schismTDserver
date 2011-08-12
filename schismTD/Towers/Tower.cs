@@ -138,7 +138,7 @@ namespace schismTD
             mFireRatePostion = mFireRate;
         }
 
-        public virtual void fire()
+        public virtual Boolean fire()
         {
             // Fire the tower
             lock (mOpponent.Creeps)
@@ -161,13 +161,14 @@ namespace schismTD
 
                 if (targetCreep != null)
                 {
-                    mFireRatePostion = mFireRate;
                     lock (mGame.Projectiles)
                     {
                         mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, Damage));
                     }
+                    return true;
                 }
             }
+            return false;
         }
 
         public virtual void update(int dt)
@@ -184,7 +185,8 @@ namespace schismTD
                     mFireRatePostion -= dt;
                 else
                 {
-                    fire();                        
+                    if(fire())
+                        mFireRatePostion = mFireRate;    
                 }
             }
         }

@@ -16,8 +16,9 @@ namespace schismTD
             Type = Tower.PULSE;
         }
 
-        public override void fire()
+        public override Boolean fire()
         {
+            Boolean fired = false;
             lock (Opponent.Creeps)
             {
                 foreach (Creep creep in Opponent.Creeps)
@@ -25,9 +26,12 @@ namespace schismTD
                     if (creep.getDistance(this) <= Range)
                     {
                         creep.Life -= Damage;
+                        fired = true;
                     }
                 }
             }
+
+            return fired;
         }
 
     }

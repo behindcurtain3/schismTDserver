@@ -7,7 +7,13 @@ namespace schismTD
 {
     public class Projectile : Entity
     {
-        private Game mGame;
+        protected Game mGame;
+
+        public float Velocity
+        {
+            get { return mVelocity; }
+            set { mVelocity = value; }
+        }
         private float mVelocity;
 
         public Boolean Active
@@ -34,6 +40,10 @@ namespace schismTD
             {
                 return mDamage;
             }
+            set
+            {
+                mDamage = value;
+            }
         }
         private int mDamage;
 
@@ -59,15 +69,22 @@ namespace schismTD
 
             // The position passed in is the center of the tower, we need to recalc the projectiles position so the center is aligned with the center of the tower
             Position = new Vector2(position.X - Width / 2, position.Y - Height / 2);
-            mTarget = target;
+            Target = target;
 
-            mVelocity = 200;
-            mDamage = damage;
+            Velocity = 200;
+            Damage = damage;
 
             mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, mVelocity, mTarget.ID);
         }
 
-        public void update(int dt)
+        public virtual void onHit()
+        {
+            // It hits
+            Target.Life -= Damage;
+            Active = false;
+        }
+
+        public virtual void update(int dt)
         {
             if (Target != null)
             {
@@ -85,9 +102,7 @@ namespace schismTD
                 // Collision check
                 if (Target.HitBox.Contains(HitBox))
                 {
-                    // It hits
-                    Target.Life -= Damage;
-                    Active = false;
+                    onHit();
                 }
             }
             else
