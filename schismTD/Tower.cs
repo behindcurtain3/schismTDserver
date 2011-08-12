@@ -12,6 +12,7 @@ namespace schismTD
         public const String RAPID_FIRE = "rapid_fire";
         public const String SLOW = "slow";
         public const String SNIPER = "sniper";
+        public const String PULSE = "pulse";
 
         protected int mFireRatePostion;
         protected Game mGame;

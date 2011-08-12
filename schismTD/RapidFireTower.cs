@@ -16,10 +16,5 @@ namespace schismTD
             Type = Tower.RAPID_FIRE;
         }
 
-        public override void update(int dt)
-        {
-            base.update(dt);
-        }
-
     }
 }

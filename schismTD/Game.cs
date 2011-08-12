@@ -676,15 +676,12 @@ namespace schismTD
                         c.Neighbors.Clear();
                     }
 
-                    // Add the tower to the player
-                    lock(p.Towers)
-                        p.Towers.Add(c.Tower);
-
                     // Take the mana away from the player
                     p.Mana -= c.Tower.Cost;
 
-                    // Send the players the new tower information
-                    mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
+                    // Add the tower to the player
+                    addTower(p, c);
+                    
                 }
             }
         }
@@ -723,7 +720,7 @@ namespace schismTD
                         lock (c.Tower)
                             c.Tower = new RapidFireTower(this, p, c.Player.Opponent, c.Position);
 
-                        addTower(p, c.Tower);
+                        addTower(p, c);
                     }
                     else if(choice == 2)
                     {
@@ -737,7 +734,7 @@ namespace schismTD
                         lock (c.Tower)
                             c.Tower = new SlowTower(this, p, c.Player.Opponent, c.Position);
 
-                        addTower(p, c.Tower);
+                        addTower(p, c);
                     }
                     break;
                 case Tower.RAPID_FIRE:
@@ -753,7 +750,20 @@ namespace schismTD
                         lock (c.Tower)
                             c.Tower = new SniperTower(this, p, c.Player.Opponent, c.Position);
 
-                        addTower(p, c.Tower);
+                        addTower(p, c);
+                    }
+                    else if (choice == 2)
+                    {
+                        if (p.Mana < Costs.PULSE)
+                            return;
+
+                        removeTower(p, c.Tower);
+                        p.Mana -= Costs.PULSE;
+
+                        lock (c.Tower)
+                            c.Tower = new PulseTower(this, p, c.Player.Opponent, c.Position);
+
+                        addTower(p, c);
                     }
                     break;
             }            
@@ -765,10 +775,12 @@ namespace schismTD
                 p.Towers.Remove(t);
         }
 
-        public void addTower(Player p, Tower t)
+        public void addTower(Player p, Cell c)
         {
             lock (p.Towers)
-                p.Towers.Add(t);
+                p.Towers.Add(c.Tower);
+
+            mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
         }
 
         public Cell findCellByPoint(PointF p)
