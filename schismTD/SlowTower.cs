@@ -13,7 +13,7 @@ namespace schismTD
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = 0;
 
-            Type = "Slow";
+            Type = Tower.SLOW;
         }
 
         public override void fire()

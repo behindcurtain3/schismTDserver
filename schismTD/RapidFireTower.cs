@@ -13,7 +13,7 @@ namespace schismTD
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = Settings.DEFAULT_DAMAGE * 2;
 
-            Type = "RapidFire";
+            Type = Tower.RAPID_FIRE;
         }
 
         public override void update(int dt)

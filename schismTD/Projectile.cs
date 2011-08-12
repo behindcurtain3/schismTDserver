@@ -50,7 +50,7 @@ namespace schismTD
         }
         private Creep mTarget;
 
-        public Projectile(Game game, Vector2 position, Creep target)
+        public Projectile(Game game, Vector2 position, Creep target, int damage = Settings.DEFAULT_DAMAGE)
         {
             mGame = game;
 
@@ -62,7 +62,7 @@ namespace schismTD
             mTarget = target;
 
             mVelocity = 200;
-            mDamage = 10;
+            mDamage = damage;
 
             mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, mVelocity, mTarget.ID);
         }

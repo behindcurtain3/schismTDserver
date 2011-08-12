@@ -8,6 +8,11 @@ namespace schismTD
 {
     public class Tower : EffectEntity
     {
+        public const String BASIC = "basic";
+        public const String RAPID_FIRE = "rapid_fire";
+        public const String SLOW = "slow";
+        public const String SNIPER = "sniper";
+
         protected int mFireRatePostion;
         protected Game mGame;
 
@@ -112,7 +117,7 @@ namespace schismTD
         private int mCost;
 
 
-        public String Type = "basic";
+        public String Type = Tower.BASIC;
 
         public Tower(Game g, Player p, Player opponent, Vector2 pos)
         {
@@ -158,7 +163,7 @@ namespace schismTD
                     mFireRatePostion = mFireRate;
                     lock (mGame.Projectiles)
                     {
-                        mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep));
+                        mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, Damage));
                     }
                 }
             }

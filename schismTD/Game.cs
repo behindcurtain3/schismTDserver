@@ -699,50 +699,62 @@ namespace schismTD
             if (c == null)
                 return;
 
-            switch (m.GetInt(2))
+            if (c.Tower == null)
+                return;
+
+            int choice = m.GetInt(2);
+
+            if (choice != 1 && choice != 2)
+                return;
+
+            switch (c.Tower.Type)
             {
                 // Tier 2 towers
-                case 1: // RAPID FIRE
-                    if (c.Tower.Type != "basic")
-                        return;
+                case Tower.BASIC: // Upgrading from tier 1
+                    if (choice == 1)
+                    {
+                        if (p.Mana < Costs.RAPID_FIRE)
+                            return;
 
-                    if (p.Mana < Costs.RAPID_FIRE)
-                        return;
+                        // Remove the old tower
+                        removeTower(p, c.Tower);
 
-                    // Remove the old tower
-                    removeTower(p, c.Tower);
+                        p.Mana -= Costs.RAPID_FIRE;
+                        lock (c.Tower)
+                            c.Tower = new RapidFireTower(this, p, c.Player.Opponent, c.Position);
 
-                    p.Mana -= Costs.RAPID_FIRE;
-                    lock(c.Tower)
-                        c.Tower = new RapidFireTower(this, p, c.Player.Opponent, c.Position);
+                        addTower(p, c.Tower);
+                    }
+                    else if(choice == 2)
+                    {
+                        if (p.Mana < Costs.SLOW)
+                            return;
 
-                    addTower(p, c.Tower);
+                        // Remove the old tower
+                        removeTower(p, c.Tower);
+
+                        p.Mana -= Costs.SLOW;
+                        lock (c.Tower)
+                            c.Tower = new SlowTower(this, p, c.Player.Opponent, c.Position);
+
+                        addTower(p, c.Tower);
+                    }
                     break;
-                case 2:
-                    if (c.Tower.Type != "basic")
-                        return;
+                case Tower.RAPID_FIRE:
+                    // Sniper
+                    if (choice == 1)
+                    {
+                        if (p.Mana < Costs.SNIPER)
+                            return;
 
-                    if (p.Mana < Costs.SLOW)
-                        return;
+                        removeTower(p, c.Tower);
+                        p.Mana -= Costs.SNIPER;
 
-                    // Remove the old tower
-                    removeTower(p, c.Tower);
+                        lock (c.Tower)
+                            c.Tower = new SniperTower(this, p, c.Player.Opponent, c.Position);
 
-                    p.Mana -= Costs.SLOW;
-                    lock(c.Tower)
-                        c.Tower = new SlowTower(this, p, c.Player.Opponent, c.Position);
-
-                    addTower(p, c.Tower);
-                    break;
-
-                // Tier 3 towers
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
+                        addTower(p, c.Tower);
+                    }
                     break;
             }            
         }
