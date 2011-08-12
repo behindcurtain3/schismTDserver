@@ -29,7 +29,7 @@ namespace schismTD
                     float d = creep.getDistance(this);
                     if (d < Range)
                     {
-                        if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting())
+                        if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting() && !creep.hasEffect("slow"))
                         {
                             leastPathLength = creep.CurrentPath.Count;
                             targetCreep = creep;
@@ -39,13 +39,10 @@ namespace schismTD
 
                 if (targetCreep != null)
                 {
-                    if (!targetCreep.hasEffect("slow"))
-                    {
-                        lock (mGame.Projectiles)
-                            mGame.Projectiles.Add(new SlowProjectile(mGame, new Vector2(Center), targetCreep));
+                    lock (mGame.Projectiles)
+                        mGame.Projectiles.Add(new SlowProjectile(mGame, new Vector2(Center), targetCreep));
 
-                        return true;
-                    }
+                    return true;
                 }
             }
 
