@@ -13,8 +13,8 @@ namespace schismTD
         private Player p2 = null;
         private int mNumGames = Settings.GAMES_PER_MATCH;
         private int mCurrentGameNum = 0;
-        private int mCooldownTime = Settings.DEFAULT_MATCH_COOLDOWN * 1000;
-        private int mCooldownPosition;
+        private long mCooldownTime = Settings.DEFAULT_MATCH_COOLDOWN * 1000;
+        private long mCooldownPosition;
 
         public Game Game
         {
@@ -123,7 +123,7 @@ namespace schismTD
             mCtx.Broadcast(Messages.MATCH_FINISHED);
         }
 
-        public void update(int dt)
+        public void update(long dt)
         {
             if (Finished)
             {

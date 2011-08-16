@@ -16,7 +16,7 @@ namespace schismTD
             type = "slow";
         }
 
-        public override void apply(int dt)
+        public override void apply(long dt)
         {
             if (Entity is Tower)
             {

@@ -21,7 +21,7 @@ namespace schismTD
         }
         private List<Effect> mEffects = new List<Effect>();
 
-        public void applyEffects(int dt)
+        public void applyEffects(long dt)
         {
             // Apply any effects
             lock (Effects)

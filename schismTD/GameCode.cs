@@ -23,12 +23,17 @@ namespace schismTD
         private Boolean mShowProjectiles = true;
         private Boolean mShowWireFrame = false;
 
+        private Stopwatch mStopWatch = new Stopwatch();
+
         // This method is called when an instance of your the game is created
         public override void GameStarted()
         {
             if (mMatch == null)
             {
                 mMatch = new Match(this);
+
+                mStopWatch.Reset();
+                mStopWatch.Start();
             }
 
 
@@ -41,6 +46,10 @@ namespace schismTD
             {
                 if (mMatch != null)
                 {
+                    lock (mStopWatch)
+                    {
+                        mStopWatch.Stop();
+                    }
                     if (mMatch.ReadyForRestart)
                     {
                         // For now just create a new match & add players
@@ -52,7 +61,9 @@ namespace schismTD
                     }
                     else
                     {
-                        mMatch.update(40);
+                        mMatch.update(mStopWatch.ElapsedMilliseconds);
+                        mStopWatch.Reset();
+                        mStopWatch.Start();
                     }
                     RefreshDebugView();
                 }

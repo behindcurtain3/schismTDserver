@@ -19,11 +19,11 @@ namespace schismTD
         private GameCode mCtx;
 
         // Seconds to countdown at start of game (IE: dead period)
-        private const int mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
-        private int mCountdownPosition;
+        private const long mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
+        private long mCountdownPosition;
 
-        private int mWaveTimerLength = Settings.WAVE_LENGTH;
-        private int mWaveTimerPosition;
+        private long mWaveTimerLength = Settings.WAVE_LENGTH;
+        private long mWaveTimerPosition;
 
         private long mTotalTimeElapsed = 0;
         private Boolean mIsGameSetup = false;
@@ -154,6 +154,10 @@ namespace schismTD
                 healthMod *= 1.5f;
             }
 
+            // synch the paths
+            sendUpdatedPath(Black, Board.BlackPath);
+            sendUpdatedPath(White, Board.WhitePath);
+
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
             mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
             mCtx.AddMessageHandler(Messages.GAME_UPGRADE_TOWER, upgradeTower);
@@ -210,7 +214,7 @@ namespace schismTD
             mIsFinished = true;
         }
 
-        public void update(int dt)
+        public void update(long dt)
         {
             if (!Started)
             {
@@ -233,7 +237,7 @@ namespace schismTD
                 else
                 {
                     // Update countdown timer
-                    mCtx.Broadcast(Messages.GAME_COUNTDOWN, mCountdownPosition);
+                    mCtx.Broadcast(Messages.GAME_COUNTDOWN, (int)mCountdownPosition);
                 }
             }
             else
@@ -302,15 +306,7 @@ namespace schismTD
                             if (!c.Alive)
                             {
                                 toRemove.Add(c);
-                            }
-                            /*
-                            else
-                            {
-                                if (!c.Valid)
-                                {
-                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE_POSITION, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
-                                }
-                            } */                           
+                            }                       
                         }
 
                         foreach (Creep r in toRemove)
@@ -330,14 +326,6 @@ namespace schismTD
                             {
                                 toRemove.Add(c);
                             }
-                            /*
-                            else
-                            {
-                                if (!c.Valid)
-                                {
-                                    mCtx.Broadcast(Messages.GAME_CREEP_UPDATE_POSITION, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
-                                }
-                            } */
                         }
 
                         foreach (Creep r in toRemove)
@@ -706,9 +694,9 @@ namespace schismTD
             // Now update the path for each creep that is already out there
             if (p == Black)
             {
-                lock (Black.Creeps)
+                lock (White.Creeps)
                 {
-                    foreach (Creep creep in Black.Creeps)
+                    foreach (Creep creep in White.Creeps)
                     {
                         msg = Message.Create(Messages.GAME_CREEP_PATH);
                         msg.Add(creep.ID);
@@ -726,9 +714,9 @@ namespace schismTD
             }
             else if (p == White)
             {
-                lock (White.Creeps)
+                lock (Black.Creeps)
                 {
-                    foreach (Creep creep in White.Creeps)
+                    foreach (Creep creep in Black.Creeps)
                     {
                         msg = Message.Create(Messages.GAME_CREEP_PATH);
                         msg.Add(creep.ID);

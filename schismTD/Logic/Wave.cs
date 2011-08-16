@@ -15,8 +15,8 @@ namespace schismTD
         private int mNumCreepsInWave;
         private int mNumCreepsSpawned;
 
-        private float mWaveTimeElapsed;
-        private float mWaveTimeWindow;
+        private long mWaveTimeElapsed;
+        private long mWaveTimeWindow;
         private float mTimeToNextSpawn;
 
         public float HealthModifier
@@ -71,7 +71,7 @@ namespace schismTD
             mNumCreepsSpawned = 0;
         }
 
-        public void update(int dt)
+        public void update(long dt)
         {
             mWaveTimeElapsed += dt;
 

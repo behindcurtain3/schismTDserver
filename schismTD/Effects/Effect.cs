@@ -26,17 +26,17 @@ namespace schismTD
             }
         }
 
-        protected int mDuration;
-        protected int mDurationPosition;
+        protected long mDuration;
+        protected long mDurationPosition;
 
-        public Effect(Entity e, int duration)
+        public Effect(Entity e, long duration)
         {
             mEntity = e;
             mDuration = duration;
             mDurationPosition = 0;
         }
 
-        public virtual void apply(int dt) 
+        public virtual void apply(long dt) 
         {
             mDurationPosition += dt;
         }

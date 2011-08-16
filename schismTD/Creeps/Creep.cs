@@ -182,7 +182,7 @@ namespace schismTD
             Life = Settings.CREEP_LIFE;
         }
 
-        public void update(int dt)
+        public void update(long dt)
         {
             if (Life <= 0)
             {

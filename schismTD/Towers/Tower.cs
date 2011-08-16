@@ -14,7 +14,7 @@ namespace schismTD
         public const String SNIPER = "sniper";
         public const String PULSE = "pulse";
 
-        protected int mFireRatePostion;
+        protected long mFireRatePostion;
         protected Game mGame;
 
         public Player Player
@@ -171,7 +171,7 @@ namespace schismTD
             return false;
         }
 
-        public virtual void update(int dt)
+        public virtual void update(long dt)
         {
             if (Enabled)
             {

@@ -84,7 +84,7 @@ namespace schismTD
             Active = false;
         }
 
-        public virtual void update(int dt)
+        public virtual void update(long dt)
         {
             if (Target != null)
             {
