@@ -40,7 +40,7 @@ namespace schismTD
 
         // Creeps
         public const int CREEP_LIFE = 50;
-        public const int CREEP_SPEED = 50;
+        public const int CREEP_SPEED = 60;
         public const int CREEP_WIGGLE = 2;
         public const int CREEP_DAMAGE = 1;
 

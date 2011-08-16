@@ -192,7 +192,6 @@ namespace schismTD
             // Reset values
             EffectedSpeed = Speed;
 
-
             // Apply effects
             applyEffects(dt);
 

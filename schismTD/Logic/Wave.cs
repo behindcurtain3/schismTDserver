@@ -94,7 +94,7 @@ namespace schismTD
                     lock(mPlayer.Creeps)
                         mPlayer.Creeps.Add(c);
 
-                    mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Center.X, c.Center.Y, c.Speed);
+                    mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Player.Id, c.Center.X, c.Center.Y, c.Speed);
                     mNumCreepsSpawned++;
                 }
             }

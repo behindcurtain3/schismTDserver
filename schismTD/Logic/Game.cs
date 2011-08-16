@@ -303,13 +303,14 @@ namespace schismTD
                             {
                                 toRemove.Add(c);
                             }
+                            /*
                             else
                             {
                                 if (!c.Valid)
                                 {
                                     mCtx.Broadcast(Messages.GAME_CREEP_UPDATE_POSITION, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
                                 }
-                            }                            
+                            } */                           
                         }
 
                         foreach (Creep r in toRemove)
@@ -329,13 +330,14 @@ namespace schismTD
                             {
                                 toRemove.Add(c);
                             }
+                            /*
                             else
                             {
                                 if (!c.Valid)
                                 {
                                     mCtx.Broadcast(Messages.GAME_CREEP_UPDATE_POSITION, c.ID, c.Center.X, c.Center.Y, c.MovingTo.Center.X, c.MovingTo.Center.Y);
                                 }
-                            }
+                            } */
                         }
 
                         foreach (Creep r in toRemove)
@@ -612,6 +614,8 @@ namespace schismTD
                     else
                         mBoard.BlackPath = newPath;
 
+                    sendUpdatedPath(p, newPath);
+
                     c.Tower = new Tower(this, self, opponent, c.Position);
                     c.Buildable = false;
                     c.Passable = false;
@@ -682,6 +686,62 @@ namespace schismTD
                     // Add the tower to the player
                     addTower(p, c);
                     
+                }
+            }
+        }
+
+        public void sendUpdatedPath(Player p, Path path)
+        {
+            // Update the cached path all new creeps take
+            Message msg = Message.Create(Messages.GAME_ALL_CREEPS_PATH);
+            msg.Add(p.Id);
+
+            foreach (Cell c in path)
+            {
+                msg.Add(c.Index);
+            }
+
+            mCtx.Broadcast(msg);
+
+            // Now update the path for each creep that is already out there
+            if (p == Black)
+            {
+                lock (Black.Creeps)
+                {
+                    foreach (Creep creep in Black.Creeps)
+                    {
+                        msg = Message.Create(Messages.GAME_CREEP_PATH);
+                        msg.Add(creep.ID);
+
+                        lock (creep.CurrentPath)
+                        {
+                            foreach (Cell c in creep.CurrentPath)
+                            {
+                                msg.Add(c.Index);
+                            }
+                        }
+                        mCtx.Broadcast(msg);
+                    }
+                }
+            }
+            else if (p == White)
+            {
+                lock (White.Creeps)
+                {
+                    foreach (Creep creep in White.Creeps)
+                    {
+                        msg = Message.Create(Messages.GAME_CREEP_PATH);
+                        msg.Add(creep.ID);
+
+                        lock (creep.CurrentPath)
+                        {
+                            foreach (Cell c in creep.CurrentPath)
+                            {
+                                msg.Add(c.Index);
+                            }
+                        }
+                        mCtx.Broadcast(msg);
+                    }
                 }
             }
         }
