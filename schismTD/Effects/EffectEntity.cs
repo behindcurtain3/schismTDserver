@@ -14,10 +14,6 @@ namespace schismTD
             {
                 return mEffects;
             }
-            set
-            {
-                mEffects = value;
-            }
         }
         private List<Effect> mEffects = new List<Effect>();
 
@@ -50,6 +46,14 @@ namespace schismTD
                             });
 
             return result != null;
+        }
+
+        public virtual void addEffect(Effect e)
+        {
+            lock (mEffects)
+            {
+                mEffects.Add(e);
+            }
         }
     }
 }

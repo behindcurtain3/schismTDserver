@@ -26,6 +26,13 @@ namespace schismTD
             }
         }
 
+        public long Duration
+        {
+            get
+            {
+                return mDuration;
+            }
+        }
         protected long mDuration;
         protected long mDurationPosition;
 

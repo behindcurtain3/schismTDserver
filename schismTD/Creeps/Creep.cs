@@ -138,20 +138,6 @@ namespace schismTD
         }
         private int mDamage = Settings.CREEP_DAMAGE;
 
-        // An invalid creep needs to be resynched with clients
-        public Boolean Valid
-        {
-            get
-            {
-                return mValid;
-            }
-            set
-            {
-                mValid = value;
-            }
-        }
-        private Boolean mValid;
-
         public int Worth
         {
             get
@@ -177,7 +163,6 @@ namespace schismTD
 
             Position = pos;
 
-            Valid = false;
             Alive = true;
             Life = Settings.CREEP_LIFE;
         }
@@ -201,7 +186,6 @@ namespace schismTD
                 if (MovingTo == null)
                 {
                     MovingTo = CurrentPath.Peek();
-                    invalidate();
                 }
 
                 float d = getDistance(MovingTo);
@@ -224,7 +208,6 @@ namespace schismTD
                     else
                     {
                         MovingTo = CurrentPath.Peek();
-                        invalidate();
                     }
                 }
 
@@ -257,11 +240,6 @@ namespace schismTD
             return Math.Abs(Center.X - p.X) + Math.Abs(Center.Y - p.Y);
         }
 
-        public void invalidate()
-        {
-            Valid = false;
-        }
-
         /*
          * isDeathWaiting looks at all the projectiles currently fired at this creep.
          * If the total damage of those projectiles exceeds its current life this will return true
@@ -280,6 +258,13 @@ namespace schismTD
             }
 
             return totalDamage >= Life;
+        }
+
+        public override void addEffect(Effect e)
+        {
+            Player.Game.Context.Broadcast(Messages.GAME_CREEP_EFFECT, ID, e.type, (int)e.Duration);
+
+            base.addEffect(e);
         }
     }
 }

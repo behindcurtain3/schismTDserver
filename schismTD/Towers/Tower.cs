@@ -17,6 +17,19 @@ namespace schismTD
         protected long mFireRatePostion;
         protected Game mGame;
 
+        public int SellValue
+        {
+            get
+            {
+                return mSellValue;
+            }
+            set
+            {
+                mSellValue = value;
+            }
+        }
+        private int mSellValue = Costs.BASIC / 2;
+
         public Player Player
         {
             get

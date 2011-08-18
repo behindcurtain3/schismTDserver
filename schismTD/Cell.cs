@@ -11,14 +11,8 @@ namespace schismTD
         // Index in the list
         public int Index
         {
-            get
-            {
-                return mIndex;
-            }
-            set
-            {
-                mIndex = value;
-            }
+            get;
+            set;
         }
         private int mIndex;
 

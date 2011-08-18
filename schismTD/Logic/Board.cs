@@ -7,6 +7,16 @@ namespace schismTD
 {
     public class Board
     {
+        public const int UP = -18;
+        public const int UPL = -19;
+        public const int UPR = -17;
+
+        public const int LEFT = -1;
+        public const int RIGHT = 1;
+
+        public const int DOWN = 18;
+        public const int DOWNL = 17;
+        public const int DOWNR = 19;
 
         private List<int> blackCellsIndex;
         private List<int> whiteCellsIndex;
@@ -233,16 +243,7 @@ namespace schismTD
 
         private void setupPathFinding()
         {
-            int UP = -18;
-            int UPL = -19;
-            int UPR = -17;
-
-            int LEFT = -1;
-            int RIGHT = 1;
-
-            int DOWN = 18;
-            int DOWNL = 17;
-            int DOWNR = 19;
+            
 
             // First we go through and set all the LEFT, RIGHT, UP & DOWN neighbors, even if they aren't passable or the other team etc
             foreach (Cell c in Cells)
@@ -306,6 +307,54 @@ namespace schismTD
                 if (neighbor.Player == c.Player && neighbor.Passable)
                 {
                     c.Neighbors.Add(neighbor, true);
+                }
+            }
+        }
+
+        public void setupCellNeighbors(Cell c)
+        {
+            addNeighborToCell(c, findCellByIndex(c.Index + UP));
+            addNeighborToCell(findCellByIndex(c.Index + UP), c);
+
+            addNeighborToCell(c, findCellByIndex(c.Index + LEFT));
+            addNeighborToCell(findCellByIndex(c.Index + LEFT), c);
+
+            addNeighborToCell(c, findCellByIndex(c.Index + RIGHT));
+            addNeighborToCell(findCellByIndex(c.Index + RIGHT), c);
+
+            addNeighborToCell(c, findCellByIndex(c.Index + DOWN));
+            addNeighborToCell(findCellByIndex(c.Index + DOWN), c);
+
+            if (c.Up != null && c.Left != null)
+            {
+                if (c.Up.Player == c.Player && c.Left.Player == c.Player && c.Up.Passable && c.Left.Passable)
+                {
+                    addNeighborToCell(c, findCellByIndex(c.Index + UPL));
+                    addNeighborToCell(findCellByIndex(c.Index + UPL), c);
+                }
+            }
+            if (c.Up != null && c.Right != null)
+            {
+                if (c.Up.Player == c.Player && c.Right.Player == c.Player && c.Up.Passable && c.Right.Passable)
+                {
+                    addNeighborToCell(c, findCellByIndex(c.Index + UPR));
+                    addNeighborToCell(findCellByIndex(c.Index + UPR), c);
+                }
+            }
+            if (c.Down != null && c.Left != null)
+            {
+                if (c.Down.Player == c.Player && c.Left.Player == c.Player && c.Down.Passable && c.Left.Passable)
+                {
+                    addNeighborToCell(c, findCellByIndex(c.Index + DOWNL));
+                    addNeighborToCell(findCellByIndex(c.Index + DOWNL), c);
+                }
+            }
+            if (c.Down != null && c.Right != null)
+            {
+                if (c.Down.Player == c.Player && c.Right.Player == c.Player && c.Down.Passable && c.Right.Passable)
+                {
+                    addNeighborToCell(c, findCellByIndex(c.Index + DOWNR));
+                    addNeighborToCell(findCellByIndex(c.Index + DOWNR), c);
                 }
             }
         }

@@ -17,8 +17,7 @@ namespace schismTD
         {
             if (!Target.hasEffect("slow"))
             {
-                lock (Target.Effects)
-                    Target.Effects.Add(new SlowEffect(Target));
+                Target.addEffect(new SlowEffect(Target));
             }
 
             Active = false;

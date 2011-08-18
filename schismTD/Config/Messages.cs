@@ -34,6 +34,7 @@ namespace schismTD
         public const String GAME_REMOVE_TOWER = "game_remove_tower";
         public const String GAME_INVALID_TOWER = "game_invalid_tower";
         public const String GAME_UPGRADE_TOWER = "game_upgrade_tower";
+        public const String GAME_SELL_TOWER = "game_sell_tower";
 
         public const String GAME_CREEP_ADD = "game_creep_add";
         public const String GAME_CREEP_REMOVE = "game_creep_remove";
@@ -41,6 +42,7 @@ namespace schismTD
         public const String GAME_ALL_CREEPS_PATH = "game_all_creeps_path"; // updates the cached path
         public const String GAME_CREEP_UPDATE_POSITION = "game_creep_update_position";
         public const String GAME_CREEP_UPDATE_LIFE = "game_creep_update_life";
+        public const String GAME_CREEP_EFFECT = "game_creep_effect";
 
         public const String GAME_PROJECTILE_ADD = "game_projectile_add";
         public const String GAME_PROJECTILE_REMOVE = "game_projectile_remove";

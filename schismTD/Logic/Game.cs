@@ -161,7 +161,7 @@ namespace schismTD
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
             mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
             mCtx.AddMessageHandler(Messages.GAME_UPGRADE_TOWER, upgradeTower);
-
+            mCtx.AddMessageHandler(Messages.GAME_SELL_TOWER, sellTower);
             mIsGameSetup = true;
         }
 
@@ -734,6 +734,96 @@ namespace schismTD
             }
         }
 
+        /*
+         * You can ALWAYS sell a tower unless it is stunned. Therefore there is no need to check things like are the paths valid,
+         * just recalculate them as it is impossible to stop creeps getting to the base by selling.
+         */
+        public void sellTower(Player p, Message m)
+        {
+            if (Finished || !mIsGameSetup)
+                return;
+
+            Cell c = findCellByPoint(new Point(m.GetInt(0), m.GetInt(1)));
+
+            if (c == null)
+                return;
+
+            if (c.Tower == null)
+                return;
+
+            // Update the players mana
+            p.Mana += c.Tower.SellValue;
+
+            // Remove the tower
+            removeTower(p, c, true);
+            c.Tower = null;
+
+            // Update the board
+            c.Passable = true;
+            c.Buildable = true;
+
+            // Add neighbors
+            Board.setupCellNeighbors(c);
+
+            // Recalc the paths
+            List<Creep> creepsToRePath = new List<Creep>();
+            List<Cell> targetBase = new List<Cell>();
+            Boolean recalcCreeps = false;
+            Path newPath;
+            if (p == White)
+            {
+                newPath = mBoard.getWhitePath();
+
+                if (newPath != Board.WhitePath)
+                {
+                    recalcCreeps = true;
+                    creepsToRePath = Black.Creeps;
+                    targetBase = Board.WhiteBase;
+                    Board.WhitePath = newPath;
+                }
+            }
+            else
+            {
+                newPath = mBoard.getBlackPath();
+
+                if (newPath != Board.BlackPath)
+                {
+                    recalcCreeps = true;
+                    creepsToRePath = White.Creeps;
+                    targetBase = Board.BlackBase;
+                    Board.BlackPath = newPath;
+                }
+            }
+
+            if (recalcCreeps)
+            {
+                foreach(Creep cr in creepsToRePath)
+                {
+                    Cell crIn = findCellByPoint(cr.Center);
+
+                    cr.CurrentPath = AStar.getPath(crIn, targetBase);
+
+                    if (cr.CurrentPath.Count == 0)
+                        cr.CurrentPath.Push(crIn);
+
+                    cr.MovingTo = cr.CurrentPath.Peek();
+                }
+            }
+
+            sendUpdatedPath(p, newPath);
+            
+        }
+
+        /*
+         * onBoardChanged is called whenever a tower is placed or sold thus changing the layout of the board.
+         * This method will check all the paths for the creeps and ensure they are updated/valid. It returns false
+         * if the new state of the board is invalid.
+         */
+        public Boolean onBoardChanged(Player p, Message m)
+        {
+            return false;
+        }
+
         public void upgradeTower(Player p, Message m)
         {
             if (Finished || !mIsGameSetup)
@@ -762,7 +852,7 @@ namespace schismTD
                             return;
 
                         // Remove the old tower
-                        removeTower(p, c.Tower);
+                        removeTower(p, c);
 
                         p.Mana -= Costs.RAPID_FIRE;
                         lock (c.Tower)
@@ -776,7 +866,7 @@ namespace schismTD
                             return;
 
                         // Remove the old tower
-                        removeTower(p, c.Tower);
+                        removeTower(p, c);
 
                         p.Mana -= Costs.SLOW;
                         lock (c.Tower)
@@ -792,7 +882,7 @@ namespace schismTD
                         if (p.Mana < Costs.SNIPER)
                             return;
 
-                        removeTower(p, c.Tower);
+                        removeTower(p, c);
                         p.Mana -= Costs.SNIPER;
 
                         lock (c.Tower)
@@ -805,7 +895,7 @@ namespace schismTD
                         if (p.Mana < Costs.PULSE)
                             return;
 
-                        removeTower(p, c.Tower);
+                        removeTower(p, c);
                         p.Mana -= Costs.PULSE;
 
                         lock (c.Tower)
@@ -817,10 +907,13 @@ namespace schismTD
             }            
         }
 
-        public void removeTower(Player p, Tower t)
+        public void removeTower(Player p, Cell c, Boolean update = false)
         {
             lock (p.Towers)
-                p.Towers.Remove(t);
+                p.Towers.Remove(c.Tower);
+
+            if(update)
+                mCtx.Broadcast(Messages.GAME_REMOVE_TOWER, c.Index);
         }
 
         public void addTower(Player p, Cell c)
