@@ -52,7 +52,7 @@ namespace schismTD
             set
             {
                 mMana = value;
-                mGame.Context.Broadcast(Messages.GAME_MANA, this.Id, mMana);
+                mGame.Context.Broadcast(Messages.PLAYER_MANA, this.Id, mMana);
             }
         }
         private int mMana = Settings.DEFAULT_MANA;
@@ -69,7 +69,7 @@ namespace schismTD
                 if (mLife < 0)
                     mLife = 0;
 
-                mGame.Context.Broadcast(Messages.GAME_LIFE, this.Id, mLife);
+                mGame.Context.Broadcast(Messages.PLAYER_LIFE, this.Id, mLife);
             }
         }
         private int mLife = Settings.DEFAULT_LIFE;

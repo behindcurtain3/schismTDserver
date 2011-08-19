@@ -7,49 +7,44 @@ namespace schismTD
 {
     public static class Messages
     {
-        public const String CHAT = "chat_message";
-        public const String PLAYER_JOINED = "player_joined";
-        public const String PLAYER_LEFT = "player_left";
+        public const String CHAT = "cm";
+        public const String PLAYER_JOINED = "pj";
+        public const String PLAYER_LEFT = "pl";
+        public const String PLAYER_MANA = "pm";
+        public const String PLAYER_LIFE = "pli";
 
         // Match
-        public const String MATCH_READY = "match_ready"; // Called when 2 players have joined
-        public const String MATCH_STARTED = "match_start";
-        public const String MATCH_FINISHED = "match_finish";
+        public const String MATCH_READY = "mr"; // Called when 2 players have joined
+        public const String MATCH_STARTED = "ms";
+        public const String MATCH_FINISHED = "mf";
 
-        public const String GAME_COUNTDOWN = "game_countdown";  // Countdown status at start of each game
-        public const String GAME_ACTIVATE = "game_activate";    // Activates tower building
-        public const String GAME_START = "game_start";          // The game actually starts
-        public const String GAME_FINISHED = "game_finish";      // The game is finished
-        public const String GAME_MANA = "game_mana";
-        public const String GAME_LIFE = "game_life";
-        public const String GAME_TIME = "game_time";
+        public const String GAME_COUNTDOWN = "gc";  // Countdown status at start of each game
+        public const String GAME_ACTIVATE = "ga";    // Activates tower building
+        public const String GAME_START = "gs";          // The game actually starts
+        public const String GAME_FINISHED = "gf";      // The game is finished
+        public const String GAME_TIME = "gt";
 
-        public const String GAME_ADD_CELL = "game_add_cell";
+        public const String GAME_CELL_ADD = "gca";
 
-        public const String GAME_PLACE_WALL = "game_place_wall";
-        public const String GAME_REMOVE_WALL = "game_remove_wall";
-        public const String GAME_INVALID_WALL = "game_invalid_wall";
+        public const String GAME_TOWER_PLACE = "gtp";
+        public const String GAME_TOWER_REMOVE = "gtr";
+        public const String GAME_TOWER_INVALID = "gti";
+        public const String GAME_TOWER_UPGRADE = "gtu";
+        public const String GAME_TOWER_SELL = "gts";
 
-        public const String GAME_PLACE_TOWER = "game_place_tower";
-        public const String GAME_REMOVE_TOWER = "game_remove_tower";
-        public const String GAME_INVALID_TOWER = "game_invalid_tower";
-        public const String GAME_UPGRADE_TOWER = "game_upgrade_tower";
-        public const String GAME_SELL_TOWER = "game_sell_tower";
+        public const String GAME_CREEP_ADD = "gcra";
+        public const String GAME_CREEP_REMOVE = "gcrr";
+        public const String GAME_CREEP_PATH = "gcrp"; // updates path of single creep
+        public const String GAME_ALL_CREEPS_PATH = "gacrp"; // updates the cached path
+        public const String GAME_CREEP_UPDATE_LIFE = "gcrul";
+        public const String GAME_CREEP_EFFECT = "gcre";
 
-        public const String GAME_CREEP_ADD = "game_creep_add";
-        public const String GAME_CREEP_REMOVE = "game_creep_remove";
-        public const String GAME_CREEP_PATH = "game_creep_path"; // updates path of single creep
-        public const String GAME_ALL_CREEPS_PATH = "game_all_creeps_path"; // updates the cached path
-        public const String GAME_CREEP_UPDATE_POSITION = "game_creep_update_position";
-        public const String GAME_CREEP_UPDATE_LIFE = "game_creep_update_life";
-        public const String GAME_CREEP_EFFECT = "game_creep_effect";
-
-        public const String GAME_PROJECTILE_ADD = "game_projectile_add";
-        public const String GAME_PROJECTILE_REMOVE = "game_projectile_remove";
-        public const String GAME_PROJECTILE_UPDATE = "game_projectile_update";
+        public const String GAME_PROJECTILE_ADD = "gpa";
+        public const String GAME_PROJECTILE_REMOVE = "gpr";
+        public const String GAME_PROJECTILE_UPDATE = "gpu";
 
         // Lobby messages
-        public const String LOBBY_LOGIN = "lobby_login";
-        public const String LOBBY_WAVE_LIST = "lobby_wave_list";
+        public const String LOBBY_LOGIN = "ll";
+        public const String LOBBY_WAVE_LIST = "lwl";
     }
 }

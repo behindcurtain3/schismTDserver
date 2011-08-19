@@ -114,13 +114,13 @@ namespace schismTD
             // Send the cells to the players
             foreach (Cell c in mBoard.BlackCells)
             {
-                Black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
-                White.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
+                Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
             foreach (Cell c in mBoard.WhiteCells)
             {
-                White.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
-                Black.Send(Messages.GAME_ADD_CELL, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
+                White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
 
             mCountdownPosition = mCountdownLength;
@@ -159,9 +159,9 @@ namespace schismTD
             sendUpdatedPath(White, Board.WhitePath);
 
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
-            mCtx.AddMessageHandler(Messages.GAME_PLACE_TOWER, placeTower);
-            mCtx.AddMessageHandler(Messages.GAME_UPGRADE_TOWER, upgradeTower);
-            mCtx.AddMessageHandler(Messages.GAME_SELL_TOWER, sellTower);
+            mCtx.AddMessageHandler(Messages.GAME_TOWER_PLACE, placeTower);
+            mCtx.AddMessageHandler(Messages.GAME_TOWER_UPGRADE, upgradeTower);
+            mCtx.AddMessageHandler(Messages.GAME_TOWER_SELL, sellTower);
             mIsGameSetup = true;
         }
 
@@ -414,7 +414,7 @@ namespace schismTD
                 }
             }
 
-            p.Send(Messages.GAME_INVALID_TOWER, x, y);
+            p.Send(Messages.GAME_TOWER_INVALID, x, y);
         }
 
         private void placeTower(Player p, Message m)
@@ -913,7 +913,7 @@ namespace schismTD
                 p.Towers.Remove(c.Tower);
 
             if(update)
-                mCtx.Broadcast(Messages.GAME_REMOVE_TOWER, c.Index);
+                mCtx.Broadcast(Messages.GAME_TOWER_REMOVE, c.Index);
         }
 
         public void addTower(Player p, Cell c)
@@ -921,7 +921,7 @@ namespace schismTD
             lock (p.Towers)
                 p.Towers.Add(c.Tower);
 
-            mCtx.Broadcast(Messages.GAME_PLACE_TOWER, c.Index, c.Tower.Type);
+            mCtx.Broadcast(Messages.GAME_TOWER_PLACE, c.Index, c.Tower.Type);
         }
 
         public Cell findCellByPoint(PointF p)
