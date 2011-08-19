@@ -12,6 +12,7 @@ namespace schismTD
             FireRate = Settings.DEFAULT_FIRE_RATE * 3;
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = 0;
+            SellValue = (int)(Costs.SLOW * 0.75);
 
             Type = Tower.SLOW;
         }

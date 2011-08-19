@@ -12,6 +12,7 @@ namespace schismTD
             FireRate = Settings.DEFAULT_FIRE_RATE * 5;
             Range = Settings.DEFAULT_RANGE * 10;
             Damage = Settings.DEFAULT_DAMAGE * 15;
+            SellValue = (int)(Costs.SNIPER * 0.75);
 
             Type = Tower.SNIPER;
         }

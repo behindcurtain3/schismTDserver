@@ -189,8 +189,10 @@ namespace schismTD
                 }
 
                 float d = getDistance(MovingTo);
+                float dv = dt * 0.001f;
+                float dd = EffectedSpeed * dv;
 
-                if (d <= 3)
+                if (d <= dd)
                 {
                     // Remove last cell
                     CurrentPath.Pop();
@@ -213,9 +215,6 @@ namespace schismTD
 
                 if (Alive)
                 {
-                    float dv = dt * 0.001f;
-                    float dd = EffectedSpeed * dv;
-
                     // Do movement
                     Vector2 movement = new Vector2(Center) - new Vector2(MovingTo.Center);
                     movement.Normalize();
