@@ -58,6 +58,7 @@
     <Compile Include="Pathfinding\Path.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Projectiles\Projectile.cs" />
+    <Compile Include="Projectiles\PulseProjectile.cs" />
     <Compile Include="Projectiles\SlowProjectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Towers\PulseTower.cs" />

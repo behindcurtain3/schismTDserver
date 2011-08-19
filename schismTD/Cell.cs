@@ -14,7 +14,6 @@ namespace schismTD
             get;
             set;
         }
-        private int mIndex;
 
         // A cell belongs to a player
         public Player Player

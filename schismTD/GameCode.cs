@@ -232,7 +232,8 @@ namespace schismTD
                             {
                                 foreach (Projectile p in mMatch.Game.Projectiles)
                                 {
-                                    g.FillEllipse(Brushes.DarkTurquoise, p.Position.X, p.Position.Y, 5, 5);
+                                    p.draw(g);
+                                    //g.FillEllipse(Brushes.DarkTurquoise, p.Position.X, p.Position.Y, 5, 5);
                                 }
                             }
                         }

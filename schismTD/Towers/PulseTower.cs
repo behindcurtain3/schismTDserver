@@ -10,7 +10,7 @@ namespace schismTD
             : base(g, p, opponent, pos)
         {
             FireRate = Settings.DEFAULT_FIRE_RATE * 4;
-            Range = Settings.DEFAULT_RANGE;
+            Range = Settings.DEFAULT_RANGE * 1.25f;
             Damage = Settings.DEFAULT_DAMAGE * 12;
             SellValue = (int)(Costs.PULSE * 0.75);
 
@@ -24,9 +24,13 @@ namespace schismTD
             {
                 foreach (Creep creep in Opponent.Creeps)
                 {
-                    if (creep.getDistance(this) <= Range)
+                    if (creep.getDistance(this) <= Range && !fired)
                     {
-                        creep.Life -= Damage;
+                        lock (mGame.Projectiles)
+                        {
+                            mGame.Projectiles.Add(new PulseProjectile(mGame, new Vector2(Center), Opponent, Damage, Range));
+                        }
+                        //creep.Life -= Damage;
                         fired = true;
                     }
                 }

@@ -239,6 +239,11 @@ namespace schismTD
             return Math.Abs(Center.X - p.X) + Math.Abs(Center.Y - p.Y);
         }
 
+        public float getDistance(Vector2 v)
+        {
+            return Math.Abs(Center.X - v.X) + Math.Abs(Center.Y - v.Y);
+        }
+
         /*
          * isDeathWaiting looks at all the projectiles currently fired at this creep.
          * If the total damage of those projectiles exceeds its current life this will return true

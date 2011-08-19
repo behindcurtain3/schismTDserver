@@ -74,6 +74,11 @@ namespace schismTD
             Velocity = 200;
             Damage = damage;
 
+            updateClients();
+        }
+
+        public virtual void updateClients()
+        {
             mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, mVelocity, mTarget.ID);
         }
 
@@ -88,16 +93,7 @@ namespace schismTD
         {
             if (Target != null)
             {
-
-                float dv = dt * 0.001f;
-                float dd = mVelocity * dv;
-
-                // Movement vector will point in the correct direction
-                Vector2 movement = new Vector2(Center) - new Vector2(Target.Center);
-                movement.Normalize(); // Normalize it
-                movement *= dd; // Scale it based on the velocity calculated above
-
-                Position -= movement; // Apply it to the position
+                move(dt);                
 
                 // Collision check
                 if (Target.HitBox.Contains(HitBox))
@@ -109,6 +105,24 @@ namespace schismTD
             {
                 Active = false;
             }
+        }
+
+        public virtual void move(long dt)
+        {
+            float dv = dt * 0.001f;
+            float dd = mVelocity * dv;
+
+            // Movement vector will point in the correct direction
+            Vector2 movement = new Vector2(Center) - new Vector2(Target.Center);
+            movement.Normalize(); // Normalize it
+            movement *= dd; // Scale it based on the velocity calculated above
+
+            Position -= movement; // Apply it to the position
+        }
+
+        public virtual void draw(Graphics g)
+        {
+            g.FillEllipse(Brushes.DarkTurquoise, Position.X - 2.5f, Position.Y - 2.5f, 5, 5);
         }
     }
 }
