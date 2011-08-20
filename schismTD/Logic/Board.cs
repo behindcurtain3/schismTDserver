@@ -306,7 +306,11 @@ namespace schismTD
             {
                 if (neighbor.Player == c.Player && neighbor.Passable)
                 {
-                    c.Neighbors.Add(neighbor, true);
+                    if(!c.Neighbors.ContainsKey(neighbor))
+                    {
+                        lock(c.Neighbors)
+                            c.Neighbors.Add(neighbor, true);
+                    }
                 }
             }
         }

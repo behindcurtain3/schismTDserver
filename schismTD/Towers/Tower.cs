@@ -9,10 +9,12 @@ namespace schismTD
     public class Tower : EffectEntity
     {
         public const String BASIC = "basic";
-        public const String RAPID_FIRE = "rapid_fire";
+        public const String RAPID_FIRE = "rapidfire";
         public const String SLOW = "slow";
         public const String SNIPER = "sniper";
         public const String PULSE = "pulse";
+        public const String SPELL = "spell";
+        public const String SEED = "seed";
 
         protected long mFireRatePostion;
         protected Game mGame;

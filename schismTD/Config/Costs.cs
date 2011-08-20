@@ -13,5 +13,6 @@ namespace schismTD
         public const int SLOW = 90;
         public const int SNIPER = 180;
         public const int PULSE = 180;
+        public const int SPELL = 180;
     }
 }

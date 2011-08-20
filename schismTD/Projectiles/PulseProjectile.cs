@@ -31,7 +31,7 @@ namespace schismTD
 
         public override void updateClients()
         {
-            mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, Velocity);
+            //mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, Velocity);
         }
 
         public override void onHit()

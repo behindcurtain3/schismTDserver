@@ -68,6 +68,7 @@
     <Compile Include="Effects\SlowEffect.cs" />
     <Compile Include="Towers\SlowTower.cs" />
     <Compile Include="Towers\SniperTower.cs" />
+    <Compile Include="Towers\SpellTower.cs" />
     <Compile Include="Towers\Tower.cs" />
     <Compile Include="Vector2.cs" />
     <Compile Include="Logic\Wave.cs" />

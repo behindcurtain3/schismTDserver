@@ -45,8 +45,8 @@ namespace schismTD
         }
         private float mDamageModifier;
 
-        private float mManaModifier;
-        private float mSpeedModifier;
+        //private float mManaModifier;
+        //private float mSpeedModifier;
 
         public List<Creep> CreepsToSpawn
         {

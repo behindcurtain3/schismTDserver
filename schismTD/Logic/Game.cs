@@ -904,6 +904,26 @@ namespace schismTD
                         addTower(p, c);
                     }
                     break;
+                case Tower.SLOW:
+                    // Spell
+                    if (choice == 1)
+                    {
+                        if (p.Mana < Costs.SPELL)
+                            return;
+
+                        removeTower(p, c);
+                        p.Mana -= Costs.SPELL;
+
+                        lock (c.Tower)
+                            c.Tower = new SpellTower(this, p, c.Player.Opponent, c.Position);
+
+                        addTower(p, c);
+                    }
+                    // Seed
+                    else if (choice == 2)
+                    {
+                    }
+                    break;
             }            
         }
 
