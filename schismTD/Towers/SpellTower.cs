@@ -12,7 +12,7 @@ namespace schismTD
             FireRate = Settings.DEFAULT_FIRE_RATE;
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = Settings.DEFAULT_DAMAGE * 10;
-            SellValue = (int)(Costs.SPELL * 0.75);
+            SellValue = (int)(Costs.SPELL * Costs.RESELL_VALUE);
 
             Type = Tower.SPELL;
         }

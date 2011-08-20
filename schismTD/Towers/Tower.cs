@@ -30,7 +30,7 @@ namespace schismTD
                 mSellValue = value;
             }
         }
-        private int mSellValue = Costs.BASIC / 2;
+        private int mSellValue = (int)(Costs.BASIC * Costs.RESELL_VALUE);
 
         public Player Player
         {

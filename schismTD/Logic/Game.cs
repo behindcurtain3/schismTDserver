@@ -437,7 +437,7 @@ namespace schismTD
             {
 
                 // Make sure the player has enough mana
-                if (p.Mana < Costs.BASIC)
+                if (p.Mana < Costs.BASIC && p.FreeTowers <= 0)
                 {
                     invalidTower(p, null, m.GetInt(0), m.GetInt(1));
                     return;
@@ -669,7 +669,10 @@ namespace schismTD
                     }
 
                     // Take the mana away from the player
-                    p.Mana -= c.Tower.Cost;
+                    if (p.FreeTowers > 0)
+                        p.FreeTowers--;
+                    else
+                        p.Mana -= c.Tower.Cost;
 
                     // Add the tower to the player
                     addTower(p, c);
@@ -922,6 +925,16 @@ namespace schismTD
                     // Seed
                     else if (choice == 2)
                     {
+                        if (p.Mana < Costs.SEED)
+                            return;
+
+                        removeTower(p, c);
+                        p.Mana -= Costs.SEED;
+
+                        lock (c.Tower)
+                            c.Tower = new SeedTower(this, p, c.Player.Opponent, c.Position);
+
+                        addTower(p, c);
                     }
                     break;
             }            

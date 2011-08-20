@@ -14,5 +14,8 @@ namespace schismTD
         public const int SNIPER = 180;
         public const int PULSE = 180;
         public const int SPELL = 180;
+        public const int SEED = 180;
+
+        public const float RESELL_VALUE = 0.75f;
     }
 }

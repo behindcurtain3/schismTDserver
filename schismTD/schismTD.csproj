@@ -41,6 +41,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Creeps\ChigenCreep.cs" />
     <Compile Include="Pathfinding\ANode.cs" />
     <Compile Include="Pathfinding\AStar.cs" />
     <Compile Include="Logic\Board.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Config\Result.cs" />
     <Compile Include="Config\Settings.cs" />
     <Compile Include="Effects\SlowEffect.cs" />
+    <Compile Include="Towers\SeedTower.cs" />
     <Compile Include="Towers\SlowTower.cs" />
     <Compile Include="Towers\SniperTower.cs" />
     <Compile Include="Towers\SpellTower.cs" />

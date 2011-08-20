@@ -88,13 +88,13 @@ namespace schismTD
                     if (mPlayer == mGame.Black)
                         c = new Creep(mPlayer, mOpponent, mGame.Board.WhiteSpawn.Position, mGame.Board.WhitePath);
                     else
-                        c = new Creep(mPlayer, mOpponent, mGame.Board.BlackSpawn.Position, mGame.Board.BlackPath);
+                        c = new ChigenCreep(mPlayer, mOpponent, mGame.Board.BlackSpawn.Position, mGame.Board.BlackPath);
 
                     c.Life = (int)(c.Life * mHealthModifier);
                     lock(mPlayer.Creeps)
                         mPlayer.Creeps.Add(c);
 
-                    mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Player.Id, c.Center.X, c.Center.Y, c.Speed);
+                    mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Type, c.Player.Id, c.Center.X, c.Center.Y, c.Speed);
                     mNumCreepsSpawned++;
                 }
             }

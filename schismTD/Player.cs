@@ -113,12 +113,20 @@ namespace schismTD
         }
         private List<Wave> mWaves = new List<Wave>();
 
+        public int FreeTowers
+        {
+            get;
+            set;
+        }
+
         public void reset(Game game)
         {
             mGame = game;
 
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
+
+            FreeTowers = 0;
 
             lock(Towers)
                 Towers.Clear();

@@ -151,6 +151,12 @@ namespace schismTD
         }
         private int mWorth;
 
+        public String Type
+        {
+            get;
+            set;
+        }
+
         public Creep(Player player, Player opponent, Vector2 pos, Path p)
         {
             Player = player;
@@ -165,9 +171,11 @@ namespace schismTD
 
             Alive = true;
             Life = Settings.CREEP_LIFE;
+
+            Type = "Basic";
         }
 
-        public void update(long dt)
+        public virtual void update(long dt)
         {
             if (Life <= 0)
             {
