@@ -86,7 +86,7 @@ namespace schismTD
 
                     Creep c;
                     if (mPlayer == mGame.Black)
-                        c = new Creep(mPlayer, mOpponent, mGame.Board.WhiteSpawn.Position, mGame.Board.WhitePath);
+                        c = new RegenCreep(mPlayer, mOpponent, mGame.Board.WhiteSpawn.Position, mGame.Board.WhitePath);
                     else
                         c = new ChigenCreep(mPlayer, mOpponent, mGame.Board.BlackSpawn.Position, mGame.Board.BlackPath);
 

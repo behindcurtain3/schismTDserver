@@ -99,6 +99,12 @@ namespace schismTD
         }
         private int mLife = Settings.CREEP_LIFE;
 
+        public int Armor
+        {
+            get;
+            set;
+        }
+
         public int Speed
         {
             get
@@ -163,6 +169,7 @@ namespace schismTD
             mOpponent = opponent;
             CurrentPath = new Path(p);
             Worth = 5;
+            Armor = 0;
             
             Height = Settings.BOARD_CELL_HEIGHT;
             Width = Settings.BOARD_CELL_WIDTH;

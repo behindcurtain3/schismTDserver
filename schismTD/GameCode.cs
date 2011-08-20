@@ -65,7 +65,7 @@ namespace schismTD
                         mStopWatch.Reset();
                         mStopWatch.Start();
                     }
-                    RefreshDebugView();
+                    //RefreshDebugView();
                 }
             }, 40);
 
