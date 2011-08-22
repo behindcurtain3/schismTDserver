@@ -120,7 +120,7 @@ namespace schismTD
                 mCurrentGame.finish();
             }
 
-            mCtx.Broadcast(Messages.MATCH_FINISHED);
+            mCtx.Broadcast(Messages.MATCH_FINISHED, mCurrentGame.Black.Life, mCurrentGame.White.Life, mCurrentGame.Black.DamageDealt, mCurrentGame.White.DamageDealt);
         }
 
         public void update(long dt)

@@ -289,6 +289,7 @@ namespace schismTD
                 return;
 
             mLife -= damage;
+            Player.Opponent.DamageDealt += (uint)damage;
 
             if (mLife <= 0)
             {

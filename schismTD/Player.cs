@@ -119,6 +119,12 @@ namespace schismTD
             set;
         }
 
+        public uint DamageDealt
+        {
+            get;
+            set;
+        }
+
         public void reset(Game game)
         {
             mGame = game;
@@ -127,6 +133,7 @@ namespace schismTD
             Life = Settings.DEFAULT_LIFE;
 
             FreeTowers = 0;
+            DamageDealt = 0;
 
             lock(Towers)
                 Towers.Clear();
