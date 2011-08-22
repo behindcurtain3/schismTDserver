@@ -16,7 +16,7 @@ namespace schismTD
 
             Type = Tower.SLOW;
         }
-
+        
         public override Boolean fire()
         {
             // Fire the tower
@@ -27,6 +27,10 @@ namespace schismTD
 
                 foreach (Creep creep in Opponent.Creeps)
                 {
+                    // Magic creeps are immune to slow, don't shoot at them
+                    if (creep.Type == "Magic")
+                        continue;
+
                     float d = creep.getDistance(this);
                     if (d < Range)
                     {

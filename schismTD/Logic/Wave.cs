@@ -57,6 +57,12 @@ namespace schismTD
         }
         private List<Creep> mCreepsToSpawn = new List<Creep>();
 
+        public Random Rnd
+        {
+            get;
+            set;
+        }
+
         public Wave(GameCode gc, Game game, Player player, Player opponent)
         {
             mCtx = gc;
@@ -69,6 +75,8 @@ namespace schismTD
             mTimeToNextSpawn = 0;
             mNumCreepsInWave = 25;
             mNumCreepsSpawned = 0;
+
+            Rnd = new Random(11);
         }
 
         public void update(long dt)
@@ -84,11 +92,7 @@ namespace schismTD
                     Random r = new Random();
                     mTimeToNextSpawn = (float)r.NextDouble() * 1000 * 1.5f;
 
-                    Creep c;
-                    if (mPlayer == mGame.Black)
-                        c = new RegenCreep(mPlayer, mOpponent, mGame.Board.WhiteSpawn.Position, mGame.Board.WhitePath);
-                    else
-                        c = new ChigenCreep(mPlayer, mOpponent, mGame.Board.BlackSpawn.Position, mGame.Board.BlackPath);
+                    Creep c = getNextCreep(mPlayer);                   
 
                     c.Life = (int)(c.Life * mHealthModifier);
                     lock(mPlayer.Creeps)
@@ -102,6 +106,48 @@ namespace schismTD
             {
                 return;
             }
+        }
+
+        public Creep getNextCreep(Player p)
+        {
+            Path path;
+            Vector2 v;
+            if (p == mGame.Black)
+            {
+                path = mGame.Board.WhitePath;
+                v = mGame.Board.WhiteSpawn.Position;
+            }
+            else
+            {
+                path = mGame.Board.BlackPath;
+                v = mGame.Board.BlackSpawn.Position;
+            }
+
+            int rand = Rnd.Next(1, 8);
+
+            switch (rand)
+            {
+                case 1:
+                    return new Creep(mPlayer, mOpponent, v, path);
+                case 2:
+                    return new RegenCreep(mPlayer, mOpponent, v, path);
+                case 3:
+                    return new ChigenCreep(mPlayer, mOpponent, v, path);
+                case 4:
+                    return new QuickCreep(mPlayer, mOpponent, v, path);
+                case 5:
+                    return new MagicCreep(mPlayer, mOpponent, v, path);
+                case 6:
+                    return new ArmorCreep(mPlayer, mOpponent, v, path);
+                case 7:
+                    return new SwarmCreep(mPlayer, mOpponent, v, path);
+
+                default:
+                    return new Creep(mPlayer, mOpponent, v, path);
+            }
+
+
+
         }
     }
 }

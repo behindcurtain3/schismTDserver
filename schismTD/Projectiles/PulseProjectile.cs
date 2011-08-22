@@ -27,6 +27,8 @@ namespace schismTD
             mRadius = 0.0f;
             mRange = range;
             Velocity = 5 * Settings.BOARD_CELL_WIDTH;
+
+            Type = "Pulse";
         }
 
         public override void updateClients()
@@ -57,7 +59,7 @@ namespace schismTD
                     {
                         if (!mCreepsHit.Contains(creep))
                         {
-                            creep.Life -= Damage;
+                            creep.onHit(Type, Damage);
                             mCreepsHit.Add(creep);
                         }
                         

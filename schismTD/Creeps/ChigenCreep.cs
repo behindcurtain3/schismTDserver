@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace schismTD
@@ -16,11 +15,11 @@ namespace schismTD
         {
             Type = "Chigen";
 
-            Speed = Settings.CREEP_SPEED / 2;
+            Speed = Settings.CREEP_SPEED;
             Damage = 1;
             Life = Settings.CREEP_LIFE * 2;
 
-            mChiTimer = 3000;
+            mChiTimer = 5000;
             mChiPosition = 0;
 
             mManaAdded = 1;

@@ -20,8 +20,8 @@ namespace schismTD
         {
             Type = "Regen";
 
-            Speed = Settings.CREEP_SPEED / 2;
-            Damage = 1;
+            Speed = (int)(Settings.CREEP_SPEED * 1.25f);
+            Damage = 2;
             Life = Settings.CREEP_LIFE * 2;
 
             mRegenTimer = 1000;

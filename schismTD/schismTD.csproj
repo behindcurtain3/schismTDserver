@@ -41,8 +41,12 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Creeps\ArmorCreep.cs" />
     <Compile Include="Creeps\ChigenCreep.cs" />
+    <Compile Include="Creeps\MagicCreep.cs" />
+    <Compile Include="Creeps\QuickCreep.cs" />
     <Compile Include="Creeps\RegenCreep.cs" />
+    <Compile Include="Creeps\SwarmCreep.cs" />
     <Compile Include="Pathfinding\ANode.cs" />
     <Compile Include="Pathfinding\AStar.cs" />
     <Compile Include="Logic\Board.cs" />
@@ -62,6 +66,8 @@
     <Compile Include="Projectiles\Projectile.cs" />
     <Compile Include="Projectiles\PulseProjectile.cs" />
     <Compile Include="Projectiles\SlowProjectile.cs" />
+    <Compile Include="Projectiles\SniperProjectile.cs" />
+    <Compile Include="Projectiles\SpellProjectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Towers\PulseTower.cs" />
     <Compile Include="Towers\RapidFireTower.cs" />

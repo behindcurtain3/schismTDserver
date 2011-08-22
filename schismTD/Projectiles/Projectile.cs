@@ -60,6 +60,12 @@ namespace schismTD
         }
         private Creep mTarget;
 
+        public String Type
+        {
+            get;
+            set;
+        }
+
         public Projectile(Game game, Vector2 position, Creep target, int damage = Settings.DEFAULT_DAMAGE)
         {
             mGame = game;
@@ -74,6 +80,8 @@ namespace schismTD
             Velocity = 200;
             Damage = damage;
 
+            Type = "Basic";
+
             updateClients();
         }
 
@@ -85,7 +93,7 @@ namespace schismTD
         public virtual void onHit()
         {
             // It hits
-            Target.Life -= Damage;
+            Target.onHit(Type, Damage);
             Active = false;
         }
 

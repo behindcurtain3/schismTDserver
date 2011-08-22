@@ -178,7 +178,12 @@ namespace schismTD
                 {
                     lock (mGame.Projectiles)
                     {
-                        mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, Damage));
+                        if(this is SpellTower)
+                            mGame.Projectiles.Add(new SpellProjectile(mGame, new Vector2(Center), targetCreep, Damage));
+                        else if(this is SniperTower)
+                            mGame.Projectiles.Add(new SniperProjectile(mGame, new Vector2(Center), targetCreep, Damage));
+                        else
+                            mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, Damage));
                     }
                     return true;
                 }

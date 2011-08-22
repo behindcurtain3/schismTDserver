@@ -10,7 +10,7 @@ namespace schismTD
         public SlowProjectile(Game game, Vector2 position, Creep target)
             :base(game, position, target, 0)
         {
-            
+            Type = "Slow";
         }
 
         public override void onHit()

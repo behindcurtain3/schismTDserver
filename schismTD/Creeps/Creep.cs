@@ -80,9 +80,6 @@ namespace schismTD
             }
             set
             {
-                if (mLife <= 0)
-                    return;
-
                 mLife = value;
 
                 if (mLife <= 0)
@@ -284,6 +281,25 @@ namespace schismTD
             Player.Game.Context.Broadcast(Messages.GAME_CREEP_EFFECT, ID, e.type, (int)e.Duration);
 
             base.addEffect(e);
+        }
+
+        public virtual void onHit(String towerType, int damage)
+        {
+            if (mLife <= 0)
+                return;
+
+            mLife -= damage;
+
+            if (mLife <= 0)
+            {
+                Alive = false;
+                Opponent.Mana += Worth; // Increase the opponents mana
+                Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+            }
+            else
+            {
+                Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
+            }
         }
     }
 }
