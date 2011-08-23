@@ -48,7 +48,7 @@ namespace schismTD
                 {
                     lock (mStopWatch)
                     {
-                        mStopWatch.Stop();
+                        mStopWatch.Stop(); // Hammertime!
                     }
                     if (mMatch.ReadyForRestart)
                     {
@@ -90,11 +90,13 @@ namespace schismTD
         // This method is called whenever a player joins the game
         public override void UserJoined(Player player)
         {
+            player.Name = player.JoinData["name"];
+
             // this is how you send a player a message
             player.Send(Messages.CHAT, "Welcome to schismTD!");
 
             // this is how you broadcast a message to all players connected to the game
-            Broadcast(Messages.PLAYER_JOINED, player.Id);
+            Broadcast(Messages.PLAYER_JOINED, player.Id, player.Name);
 
             if (mMatch != null)
             {

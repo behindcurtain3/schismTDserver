@@ -24,10 +24,10 @@ namespace schismTD
         public const int DEFAULT_MATCH_COOLDOWN = 10;
 
         // Game
-        public const int DEFAULT_GAME_COUNTDOWN = 5;
+        public const int DEFAULT_GAME_COUNTDOWN = 10;
         public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
-        public const int DEFAULT_MANA = 1000;
+        public const int DEFAULT_MANA = 100;
 
         // Cell index to spawn creeps on
         public const int DEFAULT_BLACK_SPAWN = 050;

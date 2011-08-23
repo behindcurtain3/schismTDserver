@@ -14,6 +14,7 @@ namespace schismTD
         public const String PLAYER_LIFE = "pli";
 
         // Match
+        public const String MATCH_ID = "mi";
         public const String MATCH_READY = "mr"; // Called when 2 players have joined
         public const String MATCH_STARTED = "ms";
         public const String MATCH_FINISHED = "mf";

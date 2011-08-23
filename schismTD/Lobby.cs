@@ -8,9 +8,42 @@ namespace schismTD
     [RoomType("$service-room$")]
     public class Lobby : Game<Player>
     {
+        private List<Player> idsSentTo = new List<Player>();
+
         public override void  GameStarted()
         {
+            AddTimer(delegate
+            {
+                if (PlayerCount < 2)
+                    return;
+
+                Guid gameId = Guid.NewGuid();
+                int playersAdded = 0;
+
+                foreach (Player p in Players)
+                {
+                    if (idsSentTo.Contains(p))
+                        continue;
+
+                    playersAdded++;
+                    p.Send(Messages.MATCH_ID, gameId.ToString());
+
+                    lock (idsSentTo)
+                        idsSentTo.Add(p);
+
+                    if(playersAdded == 2)
+                        break;
+                }
+            }, 500);
+
+
  	         base.GameStarted();
+        }
+
+        public override bool AllowUserJoin(Player player)
+        {
+            // TODO authentication
+            return base.AllowUserJoin(player);
         }
 
         public override void GameClosed()
@@ -20,6 +53,12 @@ namespace schismTD
 
         public override void UserJoined(Player player)
         {
+            if (idsSentTo.Contains(player))
+                lock (idsSentTo)
+                    idsSentTo.Remove(player);
+
+            player.Name = player.JoinData["name"];
+
             base.UserJoined(player);
         }
 
