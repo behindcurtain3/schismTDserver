@@ -123,12 +123,10 @@ namespace schismTD
                 v = mGame.Board.BlackSpawn.Position;
             }
 
-            int rand = Rnd.Next(1, 8);
+            int rand = Rnd.Next(2, 8);
 
             switch (rand)
             {
-                case 1:
-                    return new Creep(mPlayer, mOpponent, v, path);
                 case 2:
                     return new RegenCreep(mPlayer, mOpponent, v, path);
                 case 3:
@@ -141,13 +139,9 @@ namespace schismTD
                     return new ArmorCreep(mPlayer, mOpponent, v, path);
                 case 7:
                     return new SwarmCreep(mPlayer, mOpponent, v, path);
-
                 default:
-                    return new Creep(mPlayer, mOpponent, v, path);
+                    return new SwarmCreep(mPlayer, mOpponent, v, path);
             }
-
-
-
         }
     }
 }

@@ -118,9 +118,8 @@ namespace schismTD
             if (mCurrentGame != null)
             {
                 mCurrentGame.finish();
+                mCtx.Broadcast(Messages.MATCH_FINISHED, mCurrentGame.Black.Life, mCurrentGame.White.Life, mCurrentGame.Black.DamageDealt, mCurrentGame.White.DamageDealt);
             }
-
-            mCtx.Broadcast(Messages.MATCH_FINISHED, mCurrentGame.Black.Life, mCurrentGame.White.Life, mCurrentGame.Black.DamageDealt, mCurrentGame.White.DamageDealt);
         }
 
         public void update(long dt)
