@@ -113,12 +113,6 @@ namespace schismTD
         }
         private List<Wave> mWaves = new List<Wave>();
 
-        public int FreeTowers
-        {
-            get;
-            set;
-        }
-
         public uint DamageDealt
         {
             get;
@@ -132,7 +126,6 @@ namespace schismTD
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
 
-            FreeTowers = 0;
             DamageDealt = 0;
 
             lock(Towers)

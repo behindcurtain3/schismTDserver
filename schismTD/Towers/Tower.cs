@@ -15,6 +15,7 @@ namespace schismTD
         public const String PULSE = "pulse";
         public const String SPELL = "spell";
         public const String SEED = "seed";
+        public const String DAMAGE_BOOST = "damageboost";
 
         protected long mFireRatePostion;
         protected Game mGame;
@@ -92,6 +93,12 @@ namespace schismTD
             }
         }
         private int mDamage = Settings.DEFAULT_DAMAGE;
+
+        public int EffectedDamage
+        {
+            get;
+            set;
+        }
 
         public float Range
         {
@@ -197,6 +204,7 @@ namespace schismTD
             {
                 // Reset our values
                 EffectedFireRate = FireRate;
+                EffectedDamage = Damage;
 
                 // Apply effects
                 applyEffects(dt);
@@ -209,6 +217,14 @@ namespace schismTD
                         mFireRatePostion = mFireRate;    
                 }
             }
+        }
+
+        public virtual void onPlaced(Cell c)
+        {
+        }
+
+        public virtual void onRemoved(Cell c)
+        {
         }
     }
 }

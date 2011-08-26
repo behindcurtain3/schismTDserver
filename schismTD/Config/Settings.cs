@@ -12,7 +12,7 @@ namespace schismTD
         public const int BOARD_HEIGHT = 18;
 
         // Pixel offsets
-        public const int BOARD_X_OFFSET = 130;
+        public const int BOARD_X_OFFSET = 129;
         public const int BOARD_Y_OFFSET = 30;
 
         // Cell sizes, in pixels
@@ -27,7 +27,7 @@ namespace schismTD
         public const int DEFAULT_GAME_COUNTDOWN = 10;
         public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
-        public const int DEFAULT_MANA = 100;
+        public const int DEFAULT_MANA = 10000;
 
         // Cell index to spawn creeps on
         public const int DEFAULT_BLACK_SPAWN = 032;

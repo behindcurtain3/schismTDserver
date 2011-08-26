@@ -114,11 +114,17 @@ namespace schismTD
             // Send the cells to the players
             foreach (Cell c in mBoard.BlackCells)
             {
+                if (c.Index == Settings.DEFAULT_BLACK_SPAWN)
+                    continue;
+
                 Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
                 White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
             foreach (Cell c in mBoard.WhiteCells)
             {
+                if (c.Index == Settings.DEFAULT_WHITE_SPAWN)
+                    continue;
+
                 White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
                 Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
@@ -437,7 +443,7 @@ namespace schismTD
             {
 
                 // Make sure the player has enough mana
-                if (p.Mana < Costs.BASIC && p.FreeTowers <= 0)
+                if (p.Mana < Costs.BASIC)
                 {
                     invalidTower(p, null, m.GetInt(0), m.GetInt(1));
                     return;
@@ -669,10 +675,7 @@ namespace schismTD
                     }
 
                     // Take the mana away from the player
-                    if (p.FreeTowers > 0)
-                        p.FreeTowers--;
-                    else
-                        p.Mana -= c.Tower.Cost;
+                    p.Mana -= c.Tower.Cost;
 
                     // Add the tower to the player
                     addTower(p, c);
@@ -922,17 +925,17 @@ namespace schismTD
 
                         addTower(p, c);
                     }
-                    // Seed
+                    // Damage Boost
                     else if (choice == 2)
                     {
-                        if (p.Mana < Costs.SEED)
+                        if (p.Mana < Costs.DAMAGE_BOOST)
                             return;
 
                         removeTower(p, c);
-                        p.Mana -= Costs.SEED;
+                        p.Mana -= Costs.DAMAGE_BOOST;
 
                         lock (c.Tower)
-                            c.Tower = new SeedTower(this, p, c.Player.Opponent, c.Position);
+                            c.Tower = new DamageBoostTower(this, p, c.Player.Opponent, c.Position);
 
                         addTower(p, c);
                     }
@@ -942,6 +945,8 @@ namespace schismTD
 
         public void removeTower(Player p, Cell c, Boolean update = false)
         {
+            c.Tower.onRemoved(c);
+
             lock (p.Towers)
                 p.Towers.Remove(c.Tower);
 
@@ -951,6 +956,8 @@ namespace schismTD
 
         public void addTower(Player p, Cell c)
         {
+            c.Tower.onPlaced(c);
+
             lock (p.Towers)
                 p.Towers.Add(c.Tower);
 

@@ -19,7 +19,7 @@ namespace schismTD
 
         public override bool fire()
         {
-            Player.FreeTowers++;
+            //Player.FreeTowers++;
 
             return true;
         }
