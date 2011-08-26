@@ -6,6 +6,11 @@ namespace schismTD
 {
     public class ChigenCreep : Creep
     {
+        public const int DEFAULT_POINTS = 2;
+        public const int DEFAULT_SPEED = 40;
+        public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 2;
+        public const int DEFAULT_DAMAGE = 1;
+
         private long mChiTimer;
         private long mChiPosition;
         private int mManaAdded;
@@ -15,9 +20,10 @@ namespace schismTD
         {
             Type = "Chigen";
 
-            Speed = Settings.CREEP_SPEED;
-            Damage = 1;
-            Life = Settings.CREEP_LIFE * 2;
+            Speed = DEFAULT_SPEED;
+            Damage = DEFAULT_DAMAGE;
+            Life = DEFAULT_LIFE;
+            StartingLife = Life;
 
             mChiTimer = 5000;
             mChiPosition = 0;

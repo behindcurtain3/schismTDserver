@@ -7,16 +7,23 @@ namespace schismTD
 {
     public class ArmorCreep : Creep
     {
+        public const int DEFAULT_POINTS = 3;
+        public const int DEFAULT_SPEED = 25;
+        public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 4;
+        public const int DEFAULT_DAMAGE = 1;
+        public const int DEFAULT_ARMOR = 10;
 
         public ArmorCreep(Player player, Player opponent, Vector2 pos, Path p)
             : base(player, opponent, pos, p)
         {
             Type = "Armor";
 
-            Speed = Settings.CREEP_SPEED;
-            Damage = 3;
-            Life = Settings.CREEP_LIFE * 2;
-            Armor = (int)(Life * 0.1);
+            Speed = DEFAULT_SPEED;
+            Damage = DEFAULT_DAMAGE;
+            Life = DEFAULT_LIFE;
+            StartingLife = Life;
+
+            Armor = DEFAULT_ARMOR;
         }
 
         public override void onHit(string towerType, int damage)

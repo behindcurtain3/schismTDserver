@@ -30,8 +30,8 @@ namespace schismTD
         public const int DEFAULT_MANA = 100;
 
         // Cell index to spawn creeps on
-        public const int DEFAULT_BLACK_SPAWN = 050;
-        public const int DEFAULT_WHITE_SPAWN = 273;
+        public const int DEFAULT_BLACK_SPAWN = 032;
+        public const int DEFAULT_WHITE_SPAWN = 291;
 
         // Towers
         public const int DEFAULT_FIRE_RATE = 300;                   // Corresponds to speed rating of 5, so a rating of 1 would equal 1500 (5 times as slow)

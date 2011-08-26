@@ -432,6 +432,7 @@ namespace schismTD
 
             // Add black home cells here
             int[] b = new int[] {
+                                        050,
                                         068,069,
                                         086,087,088,
                                         104,105,106,
@@ -466,7 +467,8 @@ namespace schismTD
         198,199,200,201,
             217,218,219,
             235,236,237,
-                254,255
+                254,255,
+                    273
             };
             whiteCellsIndex = new List<int>(w);
         }

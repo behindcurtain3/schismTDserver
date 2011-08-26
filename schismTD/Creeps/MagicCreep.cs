@@ -7,15 +7,20 @@ namespace schismTD
 {
     public class MagicCreep : Creep
     {
+        public const int DEFAULT_POINTS = 2;
+        public const int DEFAULT_SPEED = 40;
+        public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 2;
+        public const int DEFAULT_DAMAGE = 1;
 
         public MagicCreep(Player player, Player opponent, Vector2 pos, Path p)
             : base(player, opponent, pos, p)
         {
             Type = "Magic";
 
-            Speed = (int)(Settings.CREEP_SPEED * 1.25f);
-            Damage = 2;
-            Life = Settings.CREEP_LIFE * 2;
+            Speed = DEFAULT_SPEED;
+            Damage = DEFAULT_DAMAGE;
+            Life = DEFAULT_LIFE;
+            StartingLife = Life;
         }
 
         public override void update(long dt)

@@ -76,7 +76,7 @@ namespace schismTD
             mNumCreepsInWave = 25;
             mNumCreepsSpawned = 0;
 
-            Rnd = new Random(11);
+            Rnd = new Random(DateTime.Now.Millisecond);
         }
 
         public void update(long dt)
@@ -89,8 +89,7 @@ namespace schismTD
 
                 if (mTimeToNextSpawn <= 0)
                 {
-                    Random r = new Random();
-                    mTimeToNextSpawn = (float)r.NextDouble() * 1000 * 1.5f;
+                    mTimeToNextSpawn = (float)Rnd.NextDouble() * 1000 * 1.5f;
 
                     Creep c = getNextCreep(mPlayer);                   
 

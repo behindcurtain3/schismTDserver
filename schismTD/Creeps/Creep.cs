@@ -96,6 +96,12 @@ namespace schismTD
         }
         private int mLife = Settings.CREEP_LIFE;
 
+        public int StartingLife
+        {
+            get;
+            set;
+        }
+
         public int Armor
         {
             get;
@@ -175,6 +181,7 @@ namespace schismTD
 
             Alive = true;
             Life = Settings.CREEP_LIFE;
+            StartingLife = Life;
 
             Type = "Basic";
         }

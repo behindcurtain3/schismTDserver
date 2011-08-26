@@ -7,14 +7,20 @@ namespace schismTD
 {
     public class SwarmCreep : Creep
     {
+        public const float DEFAULT_POINTS = 0.33f;
+        public const int DEFAULT_SPEED = 50;
+        public const float DEFAULT_LIFE = Settings.CREEP_LIFE * 0.33f;
+        public const int DEFAULT_DAMAGE = 1;
+
         public SwarmCreep(Player player, Player opponent, Vector2 pos, Path p)
             : base(player, opponent, pos, p)
         {
             Type = "Swarm";
 
-            Speed = (int)(Settings.CREEP_SPEED * 1.25f);
-            Damage = 1;
-            Life = Settings.CREEP_LIFE / 3;
+            Speed = DEFAULT_SPEED;
+            Damage = DEFAULT_DAMAGE;
+            Life = (int)DEFAULT_LIFE;
+            StartingLife = Life;
         }
     }
 }
