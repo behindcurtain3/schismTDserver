@@ -147,13 +147,18 @@ namespace schismTD
             }
 
             float healthMod = 1;
+            float armorMod = 1;
             foreach (Wave wave in Black.Waves)
             {
-                wave.HealthModifier = healthMod;
+                wave.HealthModifier = healthMod;                
                 healthMod *= 1.5f;
+
+                wave.ArmorModifier = armorMod;
+                armorMod *= 1.1f;
             }
 
             healthMod = 1;
+            armorMod = 1;
             foreach (Wave wave in White.Waves)
             {
                 wave.HealthModifier = healthMod;

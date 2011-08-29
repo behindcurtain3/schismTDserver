@@ -9,7 +9,7 @@ namespace schismTD
     {
         public const int DEFAULT_POINTS = 3;
         public const int DEFAULT_SPEED = 25;
-        public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 4;
+        public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 3;
         public const int DEFAULT_DAMAGE = 1;
         public const int DEFAULT_ARMOR = 10;
 
@@ -28,8 +28,12 @@ namespace schismTD
 
         public override void onHit(string towerType, int damage)
         {
-            if(towerType != "Spell")
+            if (towerType != "Spell")
+            {
                 damage -= Armor;
+                if (damage <= 0)
+                    return;
+            }
 
             base.onHit(towerType, damage);
         }
