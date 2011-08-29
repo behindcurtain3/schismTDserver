@@ -84,6 +84,9 @@
     <Compile Include="Vector2.cs" />
     <Compile Include="Logic\Wave.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Todo.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>del "$(SolutionDir)bin\$(TargetFileName)"</PreBuildEvent>

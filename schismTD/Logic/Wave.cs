@@ -50,12 +50,9 @@ namespace schismTD
 
         public List<Creep> CreepsToSpawn
         {
-            get
-            {
-                return mCreepsToSpawn;
-            }
+            get;
+            set;
         }
-        private List<Creep> mCreepsToSpawn = new List<Creep>();
 
         public Random Rnd
         {
@@ -76,6 +73,7 @@ namespace schismTD
             mNumCreepsInWave = 25;
             mNumCreepsSpawned = 0;
 
+            CreepsToSpawn = new List<Creep>();
             Rnd = new Random(DateTime.Now.Millisecond);
         }
 
