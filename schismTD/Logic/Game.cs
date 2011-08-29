@@ -148,6 +148,8 @@ namespace schismTD
 
             float healthMod = 1;
             float armorMod = 1;
+            float worthMod = 1;
+
             foreach (Wave wave in Black.Waves)
             {
                 wave.HealthModifier = healthMod;                
@@ -155,14 +157,24 @@ namespace schismTD
 
                 wave.ArmorModifier = armorMod;
                 armorMod *= 1.1f;
+
+                wave.WorthModifier = worthMod;
+                worthMod *= 1.2f;
             }
 
             healthMod = 1;
             armorMod = 1;
+            worthMod = 1;
             foreach (Wave wave in White.Waves)
             {
                 wave.HealthModifier = healthMod;
                 healthMod *= 1.5f;
+
+                wave.ArmorModifier = armorMod;
+                armorMod *= 1.1f;
+
+                wave.WorthModifier = worthMod;
+                worthMod *= 1.2f;
             }
 
             // synch the paths

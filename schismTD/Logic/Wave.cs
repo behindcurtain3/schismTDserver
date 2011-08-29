@@ -38,6 +38,12 @@ namespace schismTD
             set;
         }
 
+        public float WorthModifier
+        {
+            get;
+            set;
+        }
+
         //private float mManaModifier;
         //private float mSpeedModifier;
 
@@ -88,6 +94,7 @@ namespace schismTD
                     c.StartingLife = c.Life;
 
                     c.Armor = (int)(c.Armor * ArmorModifier);
+                    c.Worth = (int)(c.Worth * WorthModifier);
 
                     lock(mPlayer.Creeps)
                         mPlayer.Creeps.Add(c);
