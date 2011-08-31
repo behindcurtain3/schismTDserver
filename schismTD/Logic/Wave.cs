@@ -12,25 +12,27 @@ namespace schismTD
         private Player mPlayer;
         private Player mOpponent;
 
-        private int mNumCreepsInWave;
-        private int mNumCreepsSpawned;
-
         private long mWaveTimeElapsed;
         private long mWaveTimeWindow;
         private float mTimeToNextSpawn;
 
+        public Path Path
+        {
+            get;
+            set;
+        }
+
+        public Vector2 StartingPosition
+        {
+            get;
+            set;
+        }
+
         public float HealthModifier
         {
-            get
-            {
-                return mHealthModifier;
-            }
-            set
-            {
-                mHealthModifier = value;
-            }
+            get;
+            set;
         }
-        private float mHealthModifier;
 
         public float ArmorModifier
         {
@@ -44,16 +46,25 @@ namespace schismTD
             set;
         }
 
-        //private float mManaModifier;
-        //private float mSpeedModifier;
-
         public List<Creep> CreepsToSpawn
         {
             get;
             set;
         }
 
+        public Queue<Creep> SpawnQueue
+        {
+            get;
+            set;
+        }
+
         public Random Rnd
+        {
+            get;
+            set;
+        }
+
+        public int Points
         {
             get;
             set;
@@ -69,28 +80,40 @@ namespace schismTD
             mWaveTimeWindow = Settings.WAVE_WINDOW;
             mWaveTimeElapsed = 0;
             mTimeToNextSpawn = 0;
-            mNumCreepsInWave = 25;
-            mNumCreepsSpawned = 0;
 
+            Points = 24;
             CreepsToSpawn = new List<Creep>();
+            SpawnQueue = new Queue<Creep>();
             Rnd = new Random(DateTime.Now.Millisecond);
+
+            if (mPlayer == mGame.Black)
+            {
+                StartingPosition = mGame.Board.WhiteSpawn.Position;
+            }
+            else
+            {
+                StartingPosition = mGame.Board.BlackSpawn.Position;
+            }
         }
 
         public void update(long dt)
         {
             mWaveTimeElapsed += dt;
 
-            if (mWaveTimeElapsed <= mWaveTimeWindow && mNumCreepsSpawned < mNumCreepsInWave)
+            if (mWaveTimeElapsed <= mWaveTimeWindow && SpawnQueue.Count > 0)
             {
                 mTimeToNextSpawn -= dt;
 
                 if (mTimeToNextSpawn <= 0)
                 {
-                    mTimeToNextSpawn = (float)Rnd.NextDouble() * 1000 * 1.5f;
+                    mTimeToNextSpawn = (float)Rnd.NextDouble() * 1000 * 3.5f;
 
-                    Creep c = getNextCreep(mPlayer);                   
+                    Creep c;
+                    lock(SpawnQueue)
+                        c = SpawnQueue.Dequeue();  //getNextCreep(mPlayer);                   
 
-                    c.Life = (int)(c.Life * mHealthModifier);
+                    c.CurrentPath = new Path(getCurrentPath());
+                    c.Life = (int)(c.Life * HealthModifier);
                     c.StartingLife = c.Life;
 
                     c.Armor = (int)(c.Armor * ArmorModifier);
@@ -100,13 +123,122 @@ namespace schismTD
                         mPlayer.Creeps.Add(c);
 
                     mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Type, c.Player.Id, c.Center.X, c.Center.Y, c.Speed);
-                    mNumCreepsSpawned++;
                 }
             }
             else
             {
                 return;
             }
+        }
+
+        public void addCreep(Creep creep)
+        {
+            switch (creep.Type)
+            {
+                case "Armor":
+                    if (Points >= ArmorCreep.DEFAULT_POINTS)
+                    {
+                        Points -= ArmorCreep.DEFAULT_POINTS;
+                        SpawnQueue.Enqueue(creep);
+                    }
+                    break;
+                case "Chigen":
+                    if (Points >= ChigenCreep.DEFAULT_POINTS)
+                    {
+                        Points -= ChigenCreep.DEFAULT_POINTS;
+                        SpawnQueue.Enqueue(creep);
+                    }
+                    break;
+                case "Magic":
+                    if (Points >= MagicCreep.DEFAULT_POINTS)
+                    {
+                        Points -= MagicCreep.DEFAULT_POINTS;
+                        SpawnQueue.Enqueue(creep);
+                    }
+                    break;
+                case "Quick":
+                    if (Points >= QuickCreep.DEFAULT_POINTS)
+                    {
+                        Points -= QuickCreep.DEFAULT_POINTS;
+                        SpawnQueue.Enqueue(creep);
+                    }
+                    break;
+                case "Regen":
+                    if (Points >= RegenCreep.DEFAULT_POINTS)
+                    {
+                        Points -= RegenCreep.DEFAULT_POINTS;
+                        SpawnQueue.Enqueue(creep);
+                    }
+                    break;
+                case "Swarm":
+                    if (Points >= SwarmCreep.DEFAULT_POINTS)
+                    {
+                        Points -= SwarmCreep.DEFAULT_POINTS;
+                        // Queue three for each point
+                        SpawnQueue.Enqueue(creep);
+                        SpawnQueue.Enqueue(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                        SpawnQueue.Enqueue(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+
+                        //SpawnQueue.Enqueue(new SwarmCreep(creep.Player, creep.Opponent, creep.Position, creep.CurrentPath));
+                        //SpawnQueue.Enqueue(new SwarmCreep(creep.Player, creep.Opponent, creep.Position, creep.CurrentPath));
+                    }
+                    break;
+            }
+
+        }
+
+        public void fillWithRandom()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(getNextCreep(mPlayer));
+                }
+            }
+        }
+
+        public void fillWithArmor()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(new ArmorCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                }
+            }
+        }
+
+        public void fillWithQuick()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(new QuickCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                }
+            }
+        }
+
+        public Path getCurrentPath()
+        {
+            Path path;
+            if (mPlayer == mGame.Black)
+            {
+                path = mGame.Board.WhitePath;
+            }
+            else
+            {
+                path = mGame.Board.BlackPath;
+            }
+
+            return path;
         }
 
         public Creep getNextCreep(Player p)

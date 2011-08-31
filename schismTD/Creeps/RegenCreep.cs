@@ -35,6 +35,8 @@ namespace schismTD
             Life = DEFAULT_LIFE;
             StartingLife = Life;
 
+            Worth *= DEFAULT_POINTS;
+
             mRegenTimer = 1000;
             mRegenPosition = 0;
 

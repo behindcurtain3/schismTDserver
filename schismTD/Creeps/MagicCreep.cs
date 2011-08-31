@@ -21,6 +21,8 @@ namespace schismTD
             Damage = DEFAULT_DAMAGE;
             Life = DEFAULT_LIFE;
             StartingLife = Life;
+
+            Worth *= DEFAULT_POINTS;
         }
 
         public override void update(long dt)

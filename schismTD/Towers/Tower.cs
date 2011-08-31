@@ -155,7 +155,7 @@ namespace schismTD
 
             FireRate = Settings.DEFAULT_FIRE_RATE * 3;
             Range = Settings.DEFAULT_RANGE * 2;
-            Damage = Settings.DEFAULT_DAMAGE;
+            Damage = 15;
 
             mFireRatePostion = mFireRate;
         }

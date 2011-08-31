@@ -8,7 +8,7 @@ namespace schismTD
     public class ArmorCreep : Creep
     {
         public const int DEFAULT_POINTS = 3;
-        public const int DEFAULT_SPEED = 25;
+        public const int DEFAULT_SPEED = 20;
         public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 3;
         public const int DEFAULT_DAMAGE = 1;
         public const int DEFAULT_ARMOR = 10;
@@ -22,6 +22,8 @@ namespace schismTD
             Damage = DEFAULT_DAMAGE;
             Life = DEFAULT_LIFE;
             StartingLife = Life;
+
+            Worth *= DEFAULT_POINTS;
 
             Armor = DEFAULT_ARMOR;
         }

@@ -9,7 +9,7 @@ namespace schismTD
     {
         public SpellTower(Game g, Player p, Player opponent, Vector2 pos) : base(g, p, opponent, pos)
         {
-            FireRate = Settings.DEFAULT_FIRE_RATE;
+            FireRate = 700;
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = Settings.DEFAULT_DAMAGE * 10;
             SellValue = (int)(Costs.SPELL * Costs.RESELL_VALUE);

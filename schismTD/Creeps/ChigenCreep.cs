@@ -25,6 +25,8 @@ namespace schismTD
             Life = DEFAULT_LIFE;
             StartingLife = Life;
 
+            Worth *= DEFAULT_POINTS;
+
             mChiTimer = 5000;
             mChiPosition = 0;
 

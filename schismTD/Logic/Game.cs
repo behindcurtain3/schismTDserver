@@ -150,31 +150,41 @@ namespace schismTD
             float armorMod = 1;
             float worthMod = 1;
 
-            foreach (Wave wave in Black.Waves)
+            lock (Black.Waves)
             {
-                wave.HealthModifier = healthMod;                
-                healthMod *= 1.5f;
+                foreach (Wave wave in Black.Waves)
+                {
+                    wave.fillWithRandom();
 
-                wave.ArmorModifier = armorMod;
-                armorMod *= 1.1f;
+                    wave.HealthModifier = healthMod;
+                    healthMod *= Settings.WAVE_HEALTH_MOD;
 
-                wave.WorthModifier = worthMod;
-                worthMod *= 1.2f;
+                    wave.ArmorModifier = armorMod;
+                    armorMod *= Settings.WAVE_ARMOR_MOD;
+
+                    wave.WorthModifier = worthMod;
+                    worthMod *= Settings.WAVE_WORTH_MOD;
+                }
             }
 
             healthMod = 1;
             armorMod = 1;
             worthMod = 1;
-            foreach (Wave wave in White.Waves)
+            lock (White.Waves)
             {
-                wave.HealthModifier = healthMod;
-                healthMod *= 1.5f;
+                foreach (Wave wave in White.Waves)
+                {
+                    wave.fillWithRandom();
 
-                wave.ArmorModifier = armorMod;
-                armorMod *= 1.1f;
+                    wave.HealthModifier = healthMod;
+                    healthMod *= Settings.WAVE_HEALTH_MOD;
 
-                wave.WorthModifier = worthMod;
-                worthMod *= 1.2f;
+                    wave.ArmorModifier = armorMod;
+                    armorMod *= Settings.WAVE_ARMOR_MOD;
+
+                    wave.WorthModifier = worthMod;
+                    worthMod *= Settings.WAVE_WORTH_MOD;
+                }
             }
 
             // synch the paths
