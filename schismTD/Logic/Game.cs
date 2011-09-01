@@ -142,50 +142,27 @@ namespace schismTD
             // Setup the waves
             for (int i = 0; i < Settings.DEFAULT_NUM_WAVES; i++)
             {
-                Black.Waves.Add(new Wave(mCtx, this, Black, White));
-                White.Waves.Add(new Wave(mCtx, this, White, Black));
+                Wave w = new Wave(mCtx, this, Black, White);
+                w.setup(i + 1);
+                Black.QueuedWaves.Enqueue(w);
+
+                w = new Wave(mCtx, this, White, Black);
+                w.setup(i + 1);
+                White.QueuedWaves.Enqueue(w);
             }
 
-            float healthMod = 1;
-            float armorMod = 1;
-            float worthMod = 1;
+            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            Black.NextWave = Black.OnDeckWaves[0];
 
-            lock (Black.Waves)
-            {
-                foreach (Wave wave in Black.Waves)
-                {
-                    wave.fillWithRandom();
+            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            White.NextWave = White.OnDeckWaves[0];
 
-                    wave.HealthModifier = healthMod;
-                    healthMod *= Settings.WAVE_HEALTH_MOD;
-
-                    wave.ArmorModifier = armorMod;
-                    armorMod *= Settings.WAVE_ARMOR_MOD;
-
-                    wave.WorthModifier = worthMod;
-                    worthMod *= Settings.WAVE_WORTH_MOD;
-                }
-            }
-
-            healthMod = 1;
-            armorMod = 1;
-            worthMod = 1;
-            lock (White.Waves)
-            {
-                foreach (Wave wave in White.Waves)
-                {
-                    wave.fillWithRandom();
-
-                    wave.HealthModifier = healthMod;
-                    healthMod *= Settings.WAVE_HEALTH_MOD;
-
-                    wave.ArmorModifier = armorMod;
-                    armorMod *= Settings.WAVE_ARMOR_MOD;
-
-                    wave.WorthModifier = worthMod;
-                    worthMod *= Settings.WAVE_WORTH_MOD;
-                }
-            }
+            //TODO: Synch the OnDeckWaves w/ clients
+            //TODO: Listen for client wave selections
 
             // synch the paths
             sendUpdatedPath(Black, Board.BlackPath);
@@ -205,6 +182,7 @@ namespace schismTD
 
             mIsStarted = true;
             mTotalTimeElapsed = 0;
+            mWaveTimerPosition = mWaveTimerLength + 1;
 
             // Finally send the message to start the game
             mCtx.Broadcast(Messages.GAME_START);
@@ -308,25 +286,46 @@ namespace schismTD
                     mWaveTimerPosition += dt;
                     if (mWaveTimerPosition <= mWaveTimerLength && !mWaitingToFinish)
                     {
-                        lock (Black.Waves)
+                        lock (Black.ActiveWave)
                         {
-                            Black.Waves[0].update(dt);
+                            Black.ActiveWave.update(dt);
                         }
-                        lock (White.Waves)
+                        lock (White.ActiveWave)
                         {
-                            White.Waves[0].update(dt);
+                            White.ActiveWave.update(dt);
                         }
                     }
                     else
                     {
                         mWaveTimerPosition = 0;
-                        if(Black.Waves.Count > 0)
-                            Black.Waves.RemoveAt(0);
-                        if(White.Waves.Count > 0)
-                            White.Waves.RemoveAt(0);
 
-                        if (Black.Waves.Count == 0 && White.Waves.Count == 0)
+                        // Update the waves
+                        if (Black.NextWave == null && White.NextWave == null)
                             mWaitingToFinish = true;
+                        else
+                        {
+                            Black.ActiveWave = Black.NextWave;
+                            Black.OnDeckWaves.Remove(Black.NextWave);
+
+                            if (Black.QueuedWaves.Count > 0)
+                                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+
+                            if (Black.OnDeckWaves.Count > 0)
+                                Black.NextWave = Black.OnDeckWaves[0];
+                            else
+                                Black.NextWave = null;
+
+                            White.ActiveWave = White.NextWave;
+                            White.OnDeckWaves.Remove(White.NextWave);
+
+                            if (White.QueuedWaves.Count > 0)
+                                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+
+                            if (White.OnDeckWaves.Count > 0)
+                                White.NextWave = White.OnDeckWaves[0];
+                            else
+                                White.NextWave = null;
+                        }
                     }
 
                     lock (Black.Creeps)

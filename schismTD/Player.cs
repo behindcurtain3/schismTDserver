@@ -100,18 +100,29 @@ namespace schismTD
         }
         private List<Creep> mCreeps = new List<Creep>();
 
-        public List<Wave> Waves
+        public Wave ActiveWave
         {
-            get
-            {
-                return mWaves;
-            }
-            set
-            {
-                mWaves = value;
-            }
+            get;
+            set;
         }
-        private List<Wave> mWaves = new List<Wave>();
+
+        public Wave NextWave
+        {
+            get;
+            set;
+        }
+
+        public List<Wave> OnDeckWaves
+        {
+            get;
+            set;
+        }
+
+        public Queue<Wave> QueuedWaves
+        {
+            get;
+            set;
+        }
 
         public uint DamageDealt
         {
@@ -132,8 +143,11 @@ namespace schismTD
                 Towers.Clear();
             lock(Creeps)
                 Creeps.Clear();
-            lock(Waves)
-                Waves.Clear();
+
+            OnDeckWaves = new List<Wave>();
+            QueuedWaves = new Queue<Wave>();
+            ActiveWave = null;
+            NextWave = null;
         }
 
     }

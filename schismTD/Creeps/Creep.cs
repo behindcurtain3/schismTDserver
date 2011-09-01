@@ -90,7 +90,8 @@ namespace schismTD
                 }
                 else
                 {
-                    Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
+                    if(Player.Game.Started)
+                        Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
                 }
             }
         }

@@ -70,8 +70,21 @@ namespace schismTD
             set;
         }
 
+        public int Number
+        {
+            get;
+            set;
+        }
+
+        public String ID
+        {
+            get;
+            set;
+        }
+
         public Wave(GameCode gc, Game game, Player player, Player opponent)
         {
+            ID = Guid.NewGuid().ToString();
             mCtx = gc;
             mGame = game;
             mPlayer = player;
@@ -96,6 +109,18 @@ namespace schismTD
             }
         }
 
+        public void setup(int waveNum)
+        {
+            fillWithRandom();
+
+            Number = waveNum;
+            double expWave = waveNum - 1;
+
+            HealthModifier = (float)Math.Pow((double)Settings.WAVE_HEALTH_MOD, expWave);
+            ArmorModifier = (float)Math.Pow((double)Settings.WAVE_ARMOR_MOD, expWave);
+            WorthModifier = (float)Math.Pow((double)Settings.WAVE_WORTH_MOD, expWave);
+        }
+
         public void update(long dt)
         {
             mWaveTimeElapsed += dt;
@@ -110,7 +135,7 @@ namespace schismTD
 
                     Creep c;
                     lock(SpawnQueue)
-                        c = SpawnQueue.Dequeue();  //getNextCreep(mPlayer);                   
+                        c = SpawnQueue.Dequeue();         
 
                     c.CurrentPath = new Path(getCurrentPath());
                     c.Life = (int)(c.Life * HealthModifier);
@@ -178,9 +203,6 @@ namespace schismTD
                         SpawnQueue.Enqueue(creep);
                         SpawnQueue.Enqueue(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
                         SpawnQueue.Enqueue(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
-
-                        //SpawnQueue.Enqueue(new SwarmCreep(creep.Player, creep.Opponent, creep.Position, creep.CurrentPath));
-                        //SpawnQueue.Enqueue(new SwarmCreep(creep.Player, creep.Opponent, creep.Position, creep.CurrentPath));
                     }
                     break;
             }
