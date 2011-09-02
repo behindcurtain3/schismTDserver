@@ -9,6 +9,8 @@ namespace schismTD
 {
     public class Game
     {
+        public Random RandomGen = new Random(DateTime.Now.Millisecond);
+
         public GameCode Context
         {
             get
@@ -161,7 +163,15 @@ namespace schismTD
             White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
             White.NextWave = White.OnDeckWaves[0];
 
-            //TODO: Synch the OnDeckWaves w/ clients
+            foreach (Wave w in Black.OnDeckWaves)
+            {
+                w.queueClient();
+            }
+
+            foreach (Wave w in White.OnDeckWaves)
+            {
+                w.queueClient();
+            }
             //TODO: Listen for client wave selections
 
             // synch the paths
@@ -305,10 +315,15 @@ namespace schismTD
                         else
                         {
                             Black.ActiveWave = Black.NextWave;
+                            Black.ActiveWave.activateClient();
                             Black.OnDeckWaves.Remove(Black.NextWave);
 
                             if (Black.QueuedWaves.Count > 0)
-                                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                            {
+                                Wave qWave = Black.QueuedWaves.Dequeue();
+                                Black.OnDeckWaves.Add(qWave);
+                                qWave.queueClient();
+                            }
 
                             if (Black.OnDeckWaves.Count > 0)
                                 Black.NextWave = Black.OnDeckWaves[0];
@@ -316,10 +331,15 @@ namespace schismTD
                                 Black.NextWave = null;
 
                             White.ActiveWave = White.NextWave;
+                            White.ActiveWave.activateClient();
                             White.OnDeckWaves.Remove(White.NextWave);
 
                             if (White.QueuedWaves.Count > 0)
-                                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                            {
+                                Wave qWave = White.QueuedWaves.Dequeue();
+                                White.OnDeckWaves.Add(qWave);
+                                qWave.queueClient();
+                            }
 
                             if (White.OnDeckWaves.Count > 0)
                                 White.NextWave = White.OnDeckWaves[0];

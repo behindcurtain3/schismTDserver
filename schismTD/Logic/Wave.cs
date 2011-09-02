@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using PlayerIO.GameLibrary;
 
 namespace schismTD
 {
@@ -58,7 +58,7 @@ namespace schismTD
             set;
         }
 
-        public Random Rnd
+        public List<String> CreepTypes
         {
             get;
             set;
@@ -97,7 +97,7 @@ namespace schismTD
             Points = 24;
             CreepsToSpawn = new List<Creep>();
             SpawnQueue = new Queue<Creep>();
-            Rnd = new Random(DateTime.Now.Millisecond);
+            CreepTypes = new List<String>();
 
             if (mPlayer == mGame.Black)
             {
@@ -131,7 +131,7 @@ namespace schismTD
 
                 if (mTimeToNextSpawn <= 0)
                 {
-                    mTimeToNextSpawn = (float)Rnd.NextDouble() * 1000 * 3.5f;
+                    mTimeToNextSpawn = (float)mPlayer.Game.RandomGen.NextDouble() * 1000 * 3.5f;
 
                     Creep c;
                     lock(SpawnQueue)
@@ -165,6 +165,9 @@ namespace schismTD
                     {
                         Points -= ArmorCreep.DEFAULT_POINTS;
                         SpawnQueue.Enqueue(creep);
+
+                        if (!CreepTypes.Contains(creep.Type))
+                            CreepTypes.Add(creep.Type);
                     }
                     break;
                 case "Chigen":
@@ -172,6 +175,9 @@ namespace schismTD
                     {
                         Points -= ChigenCreep.DEFAULT_POINTS;
                         SpawnQueue.Enqueue(creep);
+
+                        if (!CreepTypes.Contains(creep.Type))
+                            CreepTypes.Add(creep.Type);
                     }
                     break;
                 case "Magic":
@@ -179,6 +185,9 @@ namespace schismTD
                     {
                         Points -= MagicCreep.DEFAULT_POINTS;
                         SpawnQueue.Enqueue(creep);
+
+                        if (!CreepTypes.Contains(creep.Type))
+                            CreepTypes.Add(creep.Type);
                     }
                     break;
                 case "Quick":
@@ -186,6 +195,9 @@ namespace schismTD
                     {
                         Points -= QuickCreep.DEFAULT_POINTS;
                         SpawnQueue.Enqueue(creep);
+
+                        if (!CreepTypes.Contains(creep.Type))
+                            CreepTypes.Add(creep.Type);
                     }
                     break;
                 case "Regen":
@@ -193,6 +205,9 @@ namespace schismTD
                     {
                         Points -= RegenCreep.DEFAULT_POINTS;
                         SpawnQueue.Enqueue(creep);
+
+                        if (!CreepTypes.Contains(creep.Type))
+                            CreepTypes.Add(creep.Type);
                     }
                     break;
                 case "Swarm":
@@ -203,10 +218,32 @@ namespace schismTD
                         SpawnQueue.Enqueue(creep);
                         SpawnQueue.Enqueue(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
                         SpawnQueue.Enqueue(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+
+                        if (!CreepTypes.Contains(creep.Type))
+                            CreepTypes.Add(creep.Type);
                     }
                     break;
             }
 
+        }
+
+        public void queueClient()
+        {
+            Message msg = Message.Create(Messages.GAME_WAVE_QUEUE);
+            msg.Add(mPlayer.Id);
+            msg.Add(ID);
+
+            foreach (String str in CreepTypes)
+            {
+                msg.Add(str);
+            }
+
+            mCtx.Broadcast(msg);
+        }
+
+        public void activateClient()
+        {
+            mCtx.Broadcast(Messages.GAME_WAVE_ACTIVATE, mPlayer.Id, ID, (float)mWaveTimeWindow);
         }
 
         public void fillWithRandom()
@@ -278,7 +315,7 @@ namespace schismTD
                 v = mGame.Board.BlackSpawn.Position;
             }
 
-            int rand = Rnd.Next(2, 8);
+            int rand = mPlayer.Game.RandomGen.Next(2, 8);
 
             switch (rand)
             {

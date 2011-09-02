@@ -27,6 +27,9 @@ namespace schismTD
 
         public const String GAME_CELL_ADD = "gca";
 
+        public const String GAME_WAVE_QUEUE = "gwq";
+        public const String GAME_WAVE_ACTIVATE = "gwa";
+
         public const String GAME_TOWER_PLACE = "gtp";
         public const String GAME_TOWER_REMOVE = "gtr";
         public const String GAME_TOWER_INVALID = "gti";

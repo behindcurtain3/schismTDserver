@@ -296,8 +296,12 @@ namespace schismTD
             if (mLife <= 0)
                 return;
 
+            if (damage > mLife)
+                Player.Opponent.DamageDealt += (uint)mLife;
+            else
+                Player.Opponent.DamageDealt += (uint)damage;
+
             mLife -= damage;
-            Player.Opponent.DamageDealt += (uint)damage;
 
             if (mLife <= 0)
             {
