@@ -13,7 +13,12 @@ namespace schismTD
 
         private long mChiTimer;
         private long mChiPosition;
-        private int mManaAdded;
+
+        public int ChiAdded
+        {
+            get;
+            set;
+        }
 
         public ChigenCreep(Player player, Player opponent, Vector2 pos, Path p)
             : base(player, opponent, pos, p)
@@ -27,10 +32,10 @@ namespace schismTD
 
             Worth *= DEFAULT_POINTS;
 
-            mChiTimer = 5000;
+            mChiTimer = 3000;
             mChiPosition = 0;
 
-            mManaAdded = 1;
+            ChiAdded = 1;
         }
 
         public override void update(long dt)
@@ -40,7 +45,7 @@ namespace schismTD
             if (mChiPosition >= mChiTimer)
             {
                 mChiPosition = 0;
-                Player.Mana += mManaAdded;
+                Player.Mana += ChiAdded;
             }
 
             base.update(dt);

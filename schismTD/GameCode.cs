@@ -272,7 +272,10 @@ namespace schismTD
             if (mShowTowers)
             {
                 if (c.Tower != null)
+                {
                     g.DrawString("T", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 6, c.Position.Y + 3);
+                    g.DrawString(c.Tower.EffectedDamage.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
+                }
             }
 
             // Draw Labels

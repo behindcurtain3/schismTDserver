@@ -7,7 +7,7 @@ namespace schismTD
 {
     public class DamageBoostEffect : Effect
     {
-        public DamageBoostEffect(Entity e, int duration = 0)
+        public DamageBoostEffect(Entity e, int duration = int.MaxValue)
             : base(e, duration)
         {
             type = "damageboost";

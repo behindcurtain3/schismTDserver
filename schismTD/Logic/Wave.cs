@@ -46,13 +46,13 @@ namespace schismTD
             set;
         }
 
-        public List<Creep> CreepsToSpawn
+        public Queue<Creep> SpawnQueue
         {
             get;
             set;
         }
 
-        public Queue<Creep> SpawnQueue
+        public Dictionary<Creep, long> SpawnTimers
         {
             get;
             set;
@@ -95,8 +95,9 @@ namespace schismTD
             mTimeToNextSpawn = 0;
 
             Points = 24;
-            CreepsToSpawn = new List<Creep>();
+
             SpawnQueue = new Queue<Creep>();
+            SpawnTimers = new Dictionary<Creep, long>();
             CreepTypes = new List<String>();
 
             if (mPlayer == mGame.Black)
@@ -111,7 +112,31 @@ namespace schismTD
 
         public void setup(int waveNum)
         {
-            fillWithRandom();
+            switch (waveNum)
+            {
+                case 2:
+                    fillWithChigen();
+                    break;
+                case 8:
+                    fillWithQuick();
+                    break;
+                case 9:
+                    fillWithArmor();
+                    break;
+                case 10:
+                    fillWithSwarm();
+                    break;
+                default:
+                    fillWithRandom();
+                    break;
+            }
+
+            long interval = mWaveTimeWindow / SpawnQueue.Count;
+
+            foreach (Creep creep in SpawnQueue)
+            {
+                SpawnTimers.Add(creep, interval);
+            }
 
             Number = waveNum;
             double expWave = waveNum - 1;
@@ -131,8 +156,6 @@ namespace schismTD
 
                 if (mTimeToNextSpawn <= 0)
                 {
-                    mTimeToNextSpawn = (float)mPlayer.Game.RandomGen.NextDouble() * 1000 * 3.5f;
-
                     Creep c;
                     lock(SpawnQueue)
                         c = SpawnQueue.Dequeue();         
@@ -144,10 +167,18 @@ namespace schismTD
                     c.Armor = (int)(c.Armor * ArmorModifier);
                     c.Worth = (int)(c.Worth * WorthModifier);
 
+                    if (c is ChigenCreep)
+                        (c as ChigenCreep).ChiAdded *= Number;
+
                     lock(mPlayer.Creeps)
                         mPlayer.Creeps.Add(c);
 
                     mCtx.Broadcast(Messages.GAME_CREEP_ADD, c.ID, c.Type, c.Player.Id, c.Center.X, c.Center.Y, c.Speed);
+
+                    if (SpawnQueue.Count > 0)
+                        mTimeToNextSpawn = SpawnTimers[SpawnQueue.Peek()];
+                    else
+                        mTimeToNextSpawn = 100000;
                 }
             }
             else
@@ -281,6 +312,32 @@ namespace schismTD
                 while (Points > 0)
                 {
                     addCreep(new QuickCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                }
+            }
+        }
+
+        public void fillWithSwarm()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                }
+            }
+        }
+
+        public void fillWithChigen()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(new ChigenCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
                 }
             }
         }
