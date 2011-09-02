@@ -186,11 +186,11 @@ namespace schismTD
                     lock (mGame.Projectiles)
                     {
                         if(this is SpellTower)
-                            mGame.Projectiles.Add(new SpellProjectile(mGame, new Vector2(Center), targetCreep, Damage));
+                            mGame.Projectiles.Add(new SpellProjectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
                         else if(this is SniperTower)
-                            mGame.Projectiles.Add(new SniperProjectile(mGame, new Vector2(Center), targetCreep, Damage));
+                            mGame.Projectiles.Add(new SniperProjectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
                         else
-                            mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, Damage));
+                            mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
                     }
                     return true;
                 }
@@ -209,12 +209,12 @@ namespace schismTD
                 // Apply effects
                 applyEffects(dt);
 
-                if(mFireRatePostion > 0)
-                    mFireRatePostion -= dt;
-                else
+                mFireRatePostion += dt;
+
+                if(mFireRatePostion > EffectedFireRate)
                 {
                     if(fire())
-                        mFireRatePostion = mFireRate;    
+                        mFireRatePostion = 0;
                 }
             }
         }

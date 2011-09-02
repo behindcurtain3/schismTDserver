@@ -17,9 +17,5 @@ namespace schismTD
             Type = Tower.SPELL;
         }
 
-        public override bool fire()
-        {
-            return base.fire();
-        }
     }
 }

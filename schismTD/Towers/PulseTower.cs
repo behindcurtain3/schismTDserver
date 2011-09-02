@@ -28,7 +28,7 @@ namespace schismTD
                     {
                         lock (mGame.Projectiles)
                         {
-                            mGame.Projectiles.Add(new PulseProjectile(mGame, new Vector2(Center), Opponent, Damage, Range));
+                            mGame.Projectiles.Add(new PulseProjectile(mGame, new Vector2(Center), Opponent, EffectedDamage, Range));
                         }
                         //creep.Life -= Damage;
                         fired = true;
