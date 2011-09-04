@@ -12,7 +12,7 @@ namespace schismTD
         public const int BOARD_HEIGHT = 18;
 
         // Pixel offsets
-        public const int BOARD_X_OFFSET = 130;
+        public const int BOARD_X_OFFSET = 129;
         public const int BOARD_Y_OFFSET = 30;
 
         // Cell sizes, in pixels
@@ -39,7 +39,7 @@ namespace schismTD
         public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 1.5f; // Corresponds to rating of 1
 
         // Creeps
-        public const int CREEP_LIFE = 70;
+        public const int CREEP_LIFE = 90;
         public const int CREEP_SPEED = 40;
         public const int CREEP_WIGGLE = 2;
         public const int CREEP_DAMAGE = 1;

@@ -43,7 +43,7 @@ namespace schismTD
             mLifeRegen = (int)(Life * 0.1f);
             mLastCheckedLife = Life;
             mInitialLife = Life;
-            Range = Settings.BOARD_CELL_WIDTH * 2;
+            Range = Settings.BOARD_CELL_WIDTH * 4;
         }
 
         public override void update(long dt)

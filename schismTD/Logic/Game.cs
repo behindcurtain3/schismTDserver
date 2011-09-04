@@ -898,7 +898,7 @@ namespace schismTD
             {
                 // Tier 2 towers
                 case Tower.BASIC: // Upgrading from tier 1
-                    if (choice == 1)
+                    if (choice == 2)
                     {
                         if (p.Mana < Costs.RAPID_FIRE)
                             return;
@@ -912,7 +912,7 @@ namespace schismTD
 
                         addTower(p, c);
                     }
-                    else if(choice == 2)
+                    else if(choice == 1)
                     {
                         if (p.Mana < Costs.SLOW)
                             return;
@@ -927,7 +927,7 @@ namespace schismTD
                         addTower(p, c);
                     }
                     break;
-                case Tower.RAPID_FIRE:
+                case Tower.SLOW:
                     // Sniper
                     if (choice == 1)
                     {
@@ -956,7 +956,7 @@ namespace schismTD
                         addTower(p, c);
                     }
                     break;
-                case Tower.SLOW:
+                case Tower.RAPID_FIRE:
                     // Spell
                     if (choice == 1)
                     {
