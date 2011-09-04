@@ -117,7 +117,7 @@ namespace schismTD
                 case 2:
                     fillWithChigen();
                     break;
-                case 1:
+                case 3:
                 case 8:
                     fillWithQuick();
                     break;
@@ -125,7 +125,7 @@ namespace schismTD
                 case 9:
                     fillWithArmor();
                     break;
-                case 3:
+                case 1:
                 case 10:
                     fillWithSwarm();
                     break;
@@ -138,11 +138,18 @@ namespace schismTD
             long useableInterval;
 
             String previousType = "";
+            int swarmCounter = 0;
             foreach (Creep creep in SpawnQueue)
             {
                 useableInterval = interval;
+
                 if (previousType == "Swarm")
-                    useableInterval /= 2;
+                {
+                    swarmCounter++;
+
+                    if (swarmCounter % 3 != 0)
+                        useableInterval /= 2;
+                }
 
                 SpawnTimers.Add(creep, useableInterval);
 
