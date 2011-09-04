@@ -24,13 +24,15 @@ namespace schismTD
             {
                 foreach (Creep creep in Opponent.Creeps)
                 {
+                    if (!creep.Active)
+                        continue;
+
                     if (creep.getDistance(this) <= Range && !fired)
                     {
                         lock (mGame.Projectiles)
                         {
                             mGame.Projectiles.Add(new PulseProjectile(mGame, new Vector2(Center), Opponent, EffectedDamage, Range));
                         }
-                        //creep.Life -= Damage;
                         fired = true;
                     }
                 }

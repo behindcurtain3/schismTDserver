@@ -27,6 +27,9 @@ namespace schismTD
 
                 foreach (Creep creep in Opponent.Creeps)
                 {
+                    if (!creep.Active)
+                        continue;
+
                     // Magic creeps are immune to slow, don't shoot at them
                     if (creep.Type == "Magic")
                         continue;

@@ -167,6 +167,14 @@ namespace schismTD
             set;
         }
 
+        public Boolean Active
+        {
+            get;
+            set;
+        }
+
+        private long mActivationTime;
+
         public Creep(Player player, Player opponent, Vector2 pos, Path p)
         {
             Player = player;
@@ -185,10 +193,21 @@ namespace schismTD
             StartingLife = Life;
 
             Type = "Basic";
+            Active = false;
+            mActivationTime = 0;
         }
 
         public virtual void update(long dt)
         {
+            if (!Active)
+            {
+                mActivationTime += dt;
+
+                if (mActivationTime >= 1000)
+                    Active = true;
+                return;
+            }
+
             if (Life <= 0)
             {
                 Alive = false;

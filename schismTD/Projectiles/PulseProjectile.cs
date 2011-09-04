@@ -55,6 +55,9 @@ namespace schismTD
             {
                 foreach (Creep creep in mOpponent.Creeps)
                 {
+                    if (!creep.Active)
+                        continue;
+
                     if (creep.getDistance(Position) <= mRadius)
                     {
                         if (!mCreepsHit.Contains(creep))

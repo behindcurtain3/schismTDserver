@@ -39,7 +39,7 @@ namespace schismTD
         public const float DEFAULT_RANGE = BOARD_CELL_WIDTH * 1.5f; // Corresponds to rating of 1
 
         // Creeps
-        public const int CREEP_LIFE = 30;
+        public const int CREEP_LIFE = 70;
         public const int CREEP_SPEED = 40;
         public const int CREEP_WIGGLE = 2;
         public const int CREEP_DAMAGE = 1;
@@ -47,7 +47,7 @@ namespace schismTD
         // Waves
         public const int WAVE_LENGTH = 35000; // Length of time between waves
         public const int WAVE_WINDOW = 30000; // Length of time a wave has to spawn its creeps
-        public const float WAVE_HEALTH_MOD = 1.75f;
+        public const float WAVE_HEALTH_MOD = 1.55f;
         public const float WAVE_ARMOR_MOD = 1.2f;
         public const float WAVE_WORTH_MOD = 1.25f;
 

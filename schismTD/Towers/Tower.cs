@@ -170,6 +170,9 @@ namespace schismTD
 
                 foreach (Creep creep in mOpponent.Creeps)
                 {
+                    if (!creep.Active)
+                        continue;
+
                     float d = creep.getDistance(this);
                     if (d < Range)
                     {

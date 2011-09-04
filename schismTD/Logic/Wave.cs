@@ -117,12 +117,15 @@ namespace schismTD
                 case 2:
                     fillWithChigen();
                     break;
+                case 1:
                 case 8:
                     fillWithQuick();
                     break;
+                case 4:
                 case 9:
                     fillWithArmor();
                     break;
+                case 3:
                 case 10:
                     fillWithSwarm();
                     break;
@@ -132,10 +135,18 @@ namespace schismTD
             }
 
             long interval = mWaveTimeWindow / SpawnQueue.Count;
+            long useableInterval;
 
+            String previousType = "";
             foreach (Creep creep in SpawnQueue)
             {
-                SpawnTimers.Add(creep, interval);
+                useableInterval = interval;
+                if (previousType == "Swarm")
+                    useableInterval /= 2;
+
+                SpawnTimers.Add(creep, useableInterval);
+
+                previousType = creep.Type;
             }
 
             Number = waveNum;
