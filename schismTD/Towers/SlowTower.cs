@@ -35,7 +35,7 @@ namespace schismTD
                         continue;
 
                     float d = creep.getDistance(this);
-                    if (d < Range)
+                    if (d < EffectedRange)
                     {
                         if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting() && !creep.hasEffect("slow"))
                         {

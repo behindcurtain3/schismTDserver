@@ -67,20 +67,9 @@ namespace schismTD
                         mStopWatch.Reset();
                         mStopWatch.Start();
                     }
-                    RefreshDebugView();
+                    //RefreshDebugView();
                 }
             }, 40);
-
-            // Debug Example:
-            // Sometimes, it can be very usefull to have a graphical representation
-            // of the state of your game.
-            // An easy way to accomplish this is to setup a timer to update the
-            // debug view every 250th second (4 times a second).
-            //AddTimer(delegate
-            //{
-                // This will cause the GenerateDebugImage() method to be called
-                // so you can draw a grapical version of the game state.
-            //}, 250);
         }
 
         // This method is called when the last player leaves the room, and it's closed down.
@@ -136,8 +125,8 @@ namespace schismTD
         {
             // we'll just draw 400 by 400 pixels image with the current time, but you can
             // use this to visualize just about anything.
-            var image = new Bitmap(800, 600);
-            using (var g = Graphics.FromImage(image))
+            Bitmap image = new Bitmap(800, 600);
+            using (Graphics g = Graphics.FromImage(image))
             {
                 // fill the background
                 g.FillRectangle(Brushes.Tan, 0, 0, image.Width, image.Height);
@@ -275,6 +264,8 @@ namespace schismTD
                 {
                     g.DrawString("T", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 6, c.Position.Y + 3);
                     g.DrawString(c.Tower.EffectedDamage.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
+                    g.DrawString(c.Tower.EffectedRange.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y);
+                    g.DrawString(c.Tower.EffectedFireRate.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X + Settings.BOARD_CELL_WIDTH - 15, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
                 }
             }
 

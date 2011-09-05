@@ -49,6 +49,8 @@
     <Compile Include="Creeps\RegenCreep.cs" />
     <Compile Include="Creeps\SwarmCreep.cs" />
     <Compile Include="Effects\DamageBoostEffect.cs" />
+    <Compile Include="Effects\FireRateBoostEffect.cs" />
+    <Compile Include="Effects\RangeBoostEffect.cs" />
     <Compile Include="Pathfinding\ANode.cs" />
     <Compile Include="Pathfinding\AStar.cs" />
     <Compile Include="Logic\Board.cs" />
@@ -72,7 +74,9 @@
     <Compile Include="Projectiles\SpellProjectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Towers\DamageBoostTower.cs" />
+    <Compile Include="Towers\FireRateBoostTower.cs" />
     <Compile Include="Towers\PulseTower.cs" />
+    <Compile Include="Towers\RangeBoostTower.cs" />
     <Compile Include="Towers\RapidFireTower.cs" />
     <Compile Include="Config\Result.cs" />
     <Compile Include="Config\Settings.cs" />

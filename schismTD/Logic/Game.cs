@@ -153,24 +153,36 @@ namespace schismTD
                 White.QueuedWaves.Enqueue(w);
             }
 
-            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            lock (Black.OnDeckWaves)
+            {
+                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            }
             Black.NextWave = Black.OnDeckWaves[0];
 
-            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            lock (White.OnDeckWaves)
+            {
+                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            }
             White.NextWave = White.OnDeckWaves[0];
 
-            foreach (Wave w in Black.OnDeckWaves)
+            lock (Black.OnDeckWaves)
             {
-                w.queueClient();
+                foreach (Wave w in Black.OnDeckWaves)
+                {
+                    w.queueClient();
+                }
             }
 
-            foreach (Wave w in White.OnDeckWaves)
+            lock (White.OnDeckWaves)
             {
-                w.queueClient();
+                foreach (Wave w in White.OnDeckWaves)
+                {
+                    w.queueClient();
+                }
             }
             //TODO: Listen for client wave selections
 
@@ -1018,6 +1030,36 @@ namespace schismTD
 
                         lock (c.Tower)
                             c.Tower = new DamageBoostTower(this, p, c.Player.Opponent, c.Position);
+
+                        addTower(p, c);
+                    }
+                    break;
+                case Tower.DAMAGE_BOOST:
+                    // Range boost
+                    if (choice == 1)
+                    {
+                        if (p.Mana < Costs.RANGE_BOOST)
+                            return;
+
+                        removeTower(p, c);
+                        p.Mana -= Costs.RANGE_BOOST;
+
+                        lock (c.Tower)
+                            c.Tower = new RangeBoostTower(this, p, c.Player.Opponent, c.Position);
+
+                        addTower(p, c);
+                    }
+                    // Fire rate boost
+                    else if (choice == 2)
+                    {
+                        if (p.Mana < Costs.RATE_BOOST)
+                            return;
+
+                        removeTower(p, c);
+                        p.Mana -= Costs.RATE_BOOST;
+
+                        lock (c.Tower)
+                            c.Tower = new FireRateBoostTower(this, p, c.Player.Opponent, c.Position);
 
                         addTower(p, c);
                     }

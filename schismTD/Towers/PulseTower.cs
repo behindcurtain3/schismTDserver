@@ -27,7 +27,7 @@ namespace schismTD
                     if (!creep.Active)
                         continue;
 
-                    if (creep.getDistance(this) <= Range && !fired)
+                    if (creep.getDistance(this) <= EffectedRange && !fired)
                     {
                         lock (mGame.Projectiles)
                         {

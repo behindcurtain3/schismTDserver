@@ -16,6 +16,8 @@ namespace schismTD
         public const String SPELL = "spell";
         public const String SEED = "seed";
         public const String DAMAGE_BOOST = "damageboost";
+        public const String RANGE_BOOST = "rangeboost";
+        public const String RATE_BOOST = "rateboost";
 
         protected long mFireRatePostion;
         protected Game mGame;
@@ -113,6 +115,12 @@ namespace schismTD
         }
         private float mRange = Settings.DEFAULT_RANGE;
 
+        public float EffectedRange
+        {
+            get;
+            set;
+        }
+
         public Boolean Enabled
         {
             get
@@ -155,7 +163,7 @@ namespace schismTD
 
             FireRate = Settings.DEFAULT_FIRE_RATE * 3;
             Range = Settings.DEFAULT_RANGE * 2;
-            Damage = 15;
+            Damage = 20;
 
             mFireRatePostion = mFireRate;
         }
@@ -174,7 +182,7 @@ namespace schismTD
                         continue;
 
                     float d = creep.getDistance(this);
-                    if (d < Range)
+                    if (d < EffectedRange)
                     {
                         if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting())
                         {
@@ -208,6 +216,7 @@ namespace schismTD
                 // Reset our values
                 EffectedFireRate = FireRate;
                 EffectedDamage = Damage;
+                EffectedRange = Range;
 
                 // Apply effects
                 applyEffects(dt);
