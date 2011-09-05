@@ -182,6 +182,8 @@ namespace schismTD
             mCtx.AddMessageHandler(Messages.GAME_TOWER_PLACE, placeTower);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_UPGRADE, upgradeTower);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_SELL, sellTower);
+            mCtx.AddMessageHandler(Messages.GAME_WAVE_NEXT, setNextWave);
+
             mIsGameSetup = true;
         }
 
@@ -226,6 +228,24 @@ namespace schismTD
                 mWinner = Black;
                 mLoser = White;
             }
+
+            // Update player objects
+            Black.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+
+            if(!Black.PlayerObject.Contains(Properties.MaxDamageDealt))
+                Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            else
+                if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
+                    Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            Black.PlayerObject.Save();
+
+            White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+            if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
+                White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+            else
+                if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
+                    White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+            White.PlayerObject.Save();
 
             if(gameResult != Result.DRAW)
             {
@@ -316,35 +336,51 @@ namespace schismTD
                         {
                             Black.ActiveWave = Black.NextWave;
                             Black.ActiveWave.activateClient();
-                            Black.OnDeckWaves.Remove(Black.NextWave);
+
+                            lock(Black.OnDeckWaves)
+                                Black.OnDeckWaves.Remove(Black.NextWave);
 
                             if (Black.QueuedWaves.Count > 0)
                             {
-                                Wave qWave = Black.QueuedWaves.Dequeue();
-                                Black.OnDeckWaves.Add(qWave);
+                                Wave qWave;
+                                lock(Black.QueuedWaves)
+                                    qWave = Black.QueuedWaves.Dequeue();
+                                lock(Black.OnDeckWaves)
+                                    Black.OnDeckWaves.Add(qWave);
+
                                 qWave.queueClient();
                             }
 
                             if (Black.OnDeckWaves.Count > 0)
-                                Black.NextWave = Black.OnDeckWaves[0];
+                                lock(Black.NextWave)
+                                    Black.NextWave = Black.OnDeckWaves[0];
                             else
-                                Black.NextWave = null;
+                                lock(Black.NextWave)
+                                    Black.NextWave = null;
 
                             White.ActiveWave = White.NextWave;
                             White.ActiveWave.activateClient();
-                            White.OnDeckWaves.Remove(White.NextWave);
+
+                            lock(White.OnDeckWaves)
+                                White.OnDeckWaves.Remove(White.NextWave);
 
                             if (White.QueuedWaves.Count > 0)
                             {
-                                Wave qWave = White.QueuedWaves.Dequeue();
-                                White.OnDeckWaves.Add(qWave);
+                                Wave qWave;
+                                lock(White.QueuedWaves)
+                                    qWave = White.QueuedWaves.Dequeue();
+
+                                lock(White.OnDeckWaves)
+                                    White.OnDeckWaves.Add(qWave);
                                 qWave.queueClient();
                             }
 
                             if (White.OnDeckWaves.Count > 0)
-                                White.NextWave = White.OnDeckWaves[0];
+                                lock(White.NextWave)
+                                    White.NextWave = White.OnDeckWaves[0];
                             else
-                                White.NextWave = null;
+                                lock(White.NextWave)
+                                    White.NextWave = null;
                         }
                     }
 
@@ -898,7 +934,7 @@ namespace schismTD
             {
                 // Tier 2 towers
                 case Tower.BASIC: // Upgrading from tier 1
-                    if (choice == 2)
+                    if (choice == 1)
                     {
                         if (p.Mana < Costs.RAPID_FIRE)
                             return;
@@ -912,7 +948,7 @@ namespace schismTD
 
                         addTower(p, c);
                     }
-                    else if(choice == 1)
+                    else if(choice == 2)
                     {
                         if (p.Mana < Costs.SLOW)
                             return;
@@ -927,7 +963,7 @@ namespace schismTD
                         addTower(p, c);
                     }
                     break;
-                case Tower.SLOW:
+                case Tower.RAPID_FIRE:
                     // Sniper
                     if (choice == 1)
                     {
@@ -956,7 +992,7 @@ namespace schismTD
                         addTower(p, c);
                     }
                     break;
-                case Tower.RAPID_FIRE:
+                case Tower.SLOW:
                     // Spell
                     if (choice == 1)
                     {
@@ -987,6 +1023,32 @@ namespace schismTD
                     }
                     break;
             }            
+        }
+
+        public void setNextWave(Player p, Message m)
+        {
+            if (!mIsGameSetup || p.OnDeckWaves.Count <= 0 || p.NextWave == null)
+                return;
+
+            String id = m.GetString(0);
+            Console.WriteLine("Setting next wave to: " + id);
+
+            Wave result;
+            lock (p.OnDeckWaves)
+            {
+                result = p.OnDeckWaves.Find(delegate(Wave w)
+                {
+                    return w.ID == id;
+                });
+            }
+
+            if (result != null)
+            {
+                lock (p.NextWave)
+                {
+                    p.NextWave = result;
+                }
+            }
         }
 
         public void removeTower(Player p, Cell c, Boolean update = false)

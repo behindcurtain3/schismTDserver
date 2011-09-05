@@ -18,16 +18,9 @@ namespace schismTD
 
         public String Name
         {
-            get
-            {
-                return mName;
-            }
-            set
-            {
-                mName = value;
-            }
+            get;
+            set;
         }
-        private String mName;
 
         public Player Opponent
         {

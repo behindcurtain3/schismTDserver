@@ -109,6 +109,8 @@ namespace schismTD
 
             // Possibly add a countdown or both players click a ready button before calling this?
             mCtx.Broadcast(Messages.MATCH_STARTED, p1.Id, p2.Id);
+            p1.Send(Messages.MATCH_SET_ID, p1.Id);
+            p2.Send(Messages.MATCH_SET_ID, p2.Id);
         }
 
         public void finish()

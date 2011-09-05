@@ -41,6 +41,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\Properties.cs" />
     <Compile Include="Creeps\ArmorCreep.cs" />
     <Compile Include="Creeps\ChigenCreep.cs" />
     <Compile Include="Creeps\MagicCreep.cs" />

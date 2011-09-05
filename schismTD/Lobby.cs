@@ -57,7 +57,7 @@ namespace schismTD
                 lock (idsSentTo)
                     idsSentTo.Remove(player);
 
-            player.Name = player.JoinData["name"];
+            //player.Name = player.JoinData["name"];
 
             base.UserJoined(player);
         }

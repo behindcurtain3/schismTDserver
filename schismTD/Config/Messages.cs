@@ -18,6 +18,7 @@ namespace schismTD
         public const String MATCH_READY = "mr"; // Called when 2 players have joined
         public const String MATCH_STARTED = "ms";
         public const String MATCH_FINISHED = "mf";
+        public const String MATCH_SET_ID = "msi";
 
         public const String GAME_COUNTDOWN = "gc";  // Countdown status at start of each game
         public const String GAME_ACTIVATE = "ga";    // Activates tower building
@@ -29,6 +30,7 @@ namespace schismTD
 
         public const String GAME_WAVE_QUEUE = "gwq";
         public const String GAME_WAVE_ACTIVATE = "gwa";
+        public const String GAME_WAVE_NEXT = "gwn";
 
         public const String GAME_TOWER_PLACE = "gtp";
         public const String GAME_TOWER_REMOVE = "gtr";
