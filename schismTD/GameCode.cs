@@ -74,7 +74,7 @@ namespace schismTD
             AddTimer(delegate
             {
                 RefreshDebugView();
-            }, 500);
+            }, 100);
         }
 
         // This method is called when the last player leaves the room, and it's closed down.

@@ -237,7 +237,10 @@ namespace schismTD
             else
                 if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
                     Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-            Black.PlayerObject.Save();
+            Black.PlayerObject.Save(true, delegate
+            {
+                Console.WriteLine(Black.ConnectUserId + " has been saved.");
+            });
 
             White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
             if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
@@ -245,7 +248,10 @@ namespace schismTD
             else
                 if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
                     White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-            White.PlayerObject.Save();
+            White.PlayerObject.Save(true, delegate
+            {
+                Console.WriteLine(White.ConnectUserId + " has been saved.");
+            });
 
             if(gameResult != Result.DRAW)
             {

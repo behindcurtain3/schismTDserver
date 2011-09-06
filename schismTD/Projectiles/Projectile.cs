@@ -66,6 +66,12 @@ namespace schismTD
             set;
         }
 
+        public Boolean Ready
+        {
+            get;
+            set;
+        }
+
         public Projectile(Game game, Vector2 position, Creep target, int damage = Settings.DEFAULT_DAMAGE)
         {
             mGame = game;
@@ -82,12 +88,13 @@ namespace schismTD
 
             Type = "Basic";
 
-            updateClients();
+            Ready = false;
         }
 
         public virtual void updateClients()
         {
-            mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, mVelocity, mTarget.ID);
+            mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Type, Position.X, Position.Y, mVelocity, mTarget.ID);
+            Ready = true;
         }
 
         public virtual void onHit()
@@ -99,6 +106,9 @@ namespace schismTD
 
         public virtual void update(long dt)
         {
+            if (!Ready)
+                updateClients();
+
             if (Target != null)
             {
                 move(dt);                

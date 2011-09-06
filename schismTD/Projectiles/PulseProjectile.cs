@@ -29,11 +29,13 @@ namespace schismTD
             Velocity = 5 * Settings.BOARD_CELL_WIDTH;
 
             Type = "Pulse";
+            Ready = false;
         }
 
         public override void updateClients()
         {
-            //mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Position.X, Position.Y, Velocity);
+            mGame.Context.Broadcast(Messages.GAME_PROJECTILE_ADD, ID, Type, Position.X, Position.Y, mRange, "blank");
+            Ready = true;
         }
 
         public override void onHit()
@@ -42,6 +44,9 @@ namespace schismTD
 
         public override void update(long dt)
         {
+            if (!Ready)
+                updateClients();
+
             // The pulse projectile spreads outward from its source, expanding the radius each update
             mRadius += (dt * 0.001f) * Velocity;
 

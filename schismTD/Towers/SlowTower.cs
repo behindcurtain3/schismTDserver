@@ -9,7 +9,7 @@ namespace schismTD
     {
         public SlowTower(Game g, Player p, Player opponent, Vector2 pos) : base(g, p, opponent, pos)
         {
-            FireRate = Settings.DEFAULT_FIRE_RATE * 3;
+            FireRate = Settings.DEFAULT_FIRE_RATE * 2;
             Range = Settings.DEFAULT_RANGE * 3;
             Damage = 0;
             SellValue = (int)(Costs.SLOW * 0.75);

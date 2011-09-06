@@ -9,7 +9,7 @@ namespace schismTD
         public PulseTower(Game g, Player p, Player opponent, Vector2 pos)
             : base(g, p, opponent, pos)
         {
-            FireRate = Settings.DEFAULT_FIRE_RATE * 4;
+            FireRate = Settings.DEFAULT_FIRE_RATE * 3;
             Range = Settings.DEFAULT_RANGE * 1.25f;
             Damage = Settings.DEFAULT_DAMAGE * 15;
             SellValue = (int)(Costs.PULSE * Costs.RESELL_VALUE);
