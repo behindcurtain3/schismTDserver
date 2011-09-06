@@ -45,29 +45,15 @@ namespace schismTD
 
         public Player Black
         {
-            get
-            {
-                return mBlack;
-            }
-            set
-            {
-                mBlack = value;
-            }
+            get;
+            set;
         }
-        private Player mBlack;
 
         public Player White
         {
-            get
-            {
-                return mWhite;
-            }
-            set
-            {
-                mWhite = value;
-            }
+            get;
+            set;
         }
-        private Player mWhite;
 
         public Boolean Started
         {
@@ -105,11 +91,20 @@ namespace schismTD
         private Player mWinner;
         private Player mLoser;
 
+        public Boolean Ready
+        {
+            get;
+            set;
+        }
+
         public Game(GameCode gc, Player p1, Player p2)
         {
             mCtx = gc;
             Black = p1;
             White = p2;
+
+            Black.Opponent = White;
+            White.Opponent = Black;
 
             Board = new Board(Black, White);
 
@@ -133,10 +128,20 @@ namespace schismTD
 
             mCountdownPosition = mCountdownLength;
             mWaveTimerPosition = 0;
+
+            Ready = false;
         }
 
         public void setup()
         {
+            mIsGameSetup = true;
+
+            Console.WriteLine("Running setup...");
+            Console.WriteLine("Black: " + Black.ConnectUserId + " --- " + Black.Id);
+            Console.WriteLine("White: " + White.ConnectUserId + " --- " + White.Id);
+            Black.Send(Messages.GAME_INFO, "black", Black.Id, White.Id);
+            White.Send(Messages.GAME_INFO, "white", White.Id, Black.Id);
+
             // Reset both players
             Black.reset(this);
             White.reset(this);
@@ -146,70 +151,52 @@ namespace schismTD
             {
                 Wave w = new Wave(mCtx, this, Black, White);
                 w.setup(i + 1);
-                Black.QueuedWaves.Enqueue(w);
+                lock(Black.QueuedWaves)
+                    Black.QueuedWaves.Enqueue(w);
 
                 w = new Wave(mCtx, this, White, Black);
                 w.setup(i + 1);
-                White.QueuedWaves.Enqueue(w);
+
+                lock(White.QueuedWaves)
+                    White.QueuedWaves.Enqueue(w);
             }
 
-            lock (Black.OnDeckWaves)
+            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+
+            foreach (Wave w in Black.OnDeckWaves)
             {
-                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-                Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                w.queueClient();
             }
             Black.NextWave = Black.OnDeckWaves[0];
 
-            lock (White.OnDeckWaves)
+            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+
+            foreach (Wave w in White.OnDeckWaves)
             {
-                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-                White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                w.queueClient();
             }
             White.NextWave = White.OnDeckWaves[0];
-
-            lock (Black.OnDeckWaves)
-            {
-                foreach (Wave w in Black.OnDeckWaves)
-                {
-                    w.queueClient();
-                }
-            }
-
-            lock (White.OnDeckWaves)
-            {
-                foreach (Wave w in White.OnDeckWaves)
-                {
-                    w.queueClient();
-                }
-            }
-            //TODO: Listen for client wave selections
 
             // synch the paths
             sendUpdatedPath(Black, Board.BlackPath);
             sendUpdatedPath(White, Board.WhitePath);
 
-            mCtx.Broadcast(Messages.GAME_ACTIVATE);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_PLACE, placeTower);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_UPGRADE, upgradeTower);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_SELL, sellTower);
             mCtx.AddMessageHandler(Messages.GAME_WAVE_NEXT, setNextWave);
-
-            mIsGameSetup = true;
+            mCtx.Broadcast(Messages.GAME_ACTIVATE);
         }
 
         public void start()
         {
-            if (!mIsGameSetup)
-                setup();
-
             mIsStarted = true;
             mTotalTimeElapsed = 0;
             mWaveTimerPosition = mWaveTimerLength + 1;
-
-            // Finally send the message to start the game
-            mCtx.Broadcast(Messages.GAME_START);
         }
 
         public void finish()
@@ -261,7 +248,7 @@ namespace schismTD
 
             if(gameResult != Result.DRAW)
             {
-                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id);
+                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
             }
 
             mIsFinished = true;
@@ -269,6 +256,15 @@ namespace schismTD
 
         public void update(long dt)
         {
+            if (!Ready)
+            {
+                if (Black != null && White != null)
+                {
+                    Ready = true;
+                }
+                return;
+            }
+
             if (!Started)
             {
                 mCountdownPosition -= dt;
@@ -326,18 +322,33 @@ namespace schismTD
 
                     // Spawn new creeps
                     mWaveTimerPosition += dt;
-                    if (mWaveTimerPosition <= mWaveTimerLength && !mWaitingToFinish)
+
+                    lock (Black.ActiveWaves)
                     {
-                        lock (Black.ActiveWave)
+                        foreach (Wave w in Black.ActiveWaves)
+                            w.update(dt);
+
+                        Black.ActiveWaves.RemoveAll(delegate(Wave w)
                         {
-                            Black.ActiveWave.update(dt);
-                        }
-                        lock (White.ActiveWave)
-                        {
-                            White.ActiveWave.update(dt);
-                        }
+                            return w.Finished;
+                        });
                     }
-                    else
+                    lock (White.ActiveWaves)
+                    {
+                        foreach (Wave w in White.ActiveWaves)
+                            w.update(dt);
+
+                        White.ActiveWaves.RemoveAll(delegate(Wave w)
+                        {
+                            return w.Finished;
+                        });
+                    }
+
+                    // send next wave if:
+                    // 1. wave timer is ready
+                    // 2. player has finished a wave
+                    // AND not waiting to finish
+                    if ((mWaveTimerPosition >= mWaveTimerLength || (Black.ActiveWaves.Count == 0 && Black.Creeps.Count == 0) || (White.ActiveWaves.Count == 0 && White.Creeps.Count == 0)) && !mWaitingToFinish)
                     {
                         mWaveTimerPosition = 0;
 
@@ -346,8 +357,11 @@ namespace schismTD
                             mWaitingToFinish = true;
                         else
                         {
-                            Black.ActiveWave = Black.NextWave;
-                            Black.ActiveWave.activateClient();
+                            if (Black.NextWave != null)
+                            {
+                                Black.ActiveWaves.Add(Black.NextWave);
+                                Black.NextWave.activateClient();
+                            }
 
                             lock(Black.OnDeckWaves)
                                 Black.OnDeckWaves.Remove(Black.NextWave);
@@ -370,8 +384,11 @@ namespace schismTD
                                 lock(Black.NextWave)
                                     Black.NextWave = null;
 
-                            White.ActiveWave = White.NextWave;
-                            White.ActiveWave.activateClient();
+                            if (White.NextWave != null)
+                            {
+                                White.ActiveWaves.Add(White.NextWave);
+                                White.NextWave.activateClient();
+                            }
 
                             lock(White.OnDeckWaves)
                                 White.OnDeckWaves.Remove(White.NextWave);
@@ -1089,7 +1106,12 @@ namespace schismTD
                 lock (p.NextWave)
                 {
                     p.NextWave = result;
+                    Console.WriteLine("Next wave set!");
                 }
+            }
+            else
+            {
+                Console.WriteLine("Could not find the wave requested.");
             }
         }
 

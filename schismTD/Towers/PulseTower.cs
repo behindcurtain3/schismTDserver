@@ -31,7 +31,7 @@ namespace schismTD
                     {
                         lock (mGame.Projectiles)
                         {
-                            mGame.Projectiles.Add(new PulseProjectile(mGame, new Vector2(Center), Opponent, EffectedDamage, Range));
+                            mGame.Projectiles.Add(new PulseProjectile(mGame, new Vector2(Center), Opponent, EffectedDamage, EffectedRange));
                         }
                         fired = true;
                     }

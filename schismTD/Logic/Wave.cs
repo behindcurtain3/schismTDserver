@@ -76,6 +76,20 @@ namespace schismTD
             set;
         }
 
+        public Boolean Finished
+        {
+            get
+            {
+                return (SpawnQueue.Count == 0 && Started);
+            }
+        }
+
+        public Boolean Started
+        {
+            get;
+            set;
+        }
+
         public String ID
         {
             get;
@@ -96,6 +110,7 @@ namespace schismTD
 
             Points = 24;
 
+            Started = false;
             SpawnQueue = new Queue<Creep>();
             SpawnTimers = new Dictionary<Creep, long>();
             CreepTypes = new List<String>();
@@ -166,6 +181,9 @@ namespace schismTD
 
         public void update(long dt)
         {
+            if (!Started)
+                Started = true;
+
             mWaveTimeElapsed += dt;
 
             if (mWaveTimeElapsed <= mWaveTimeWindow && SpawnQueue.Count > 0)

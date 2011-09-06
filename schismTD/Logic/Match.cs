@@ -5,7 +5,7 @@ using System.Text;
 
 namespace schismTD
 {
-    
+    /*
     public class Match
     {
         private GameCode mCtx;
@@ -175,4 +175,5 @@ namespace schismTD
         }
 
     }
+     */
 }

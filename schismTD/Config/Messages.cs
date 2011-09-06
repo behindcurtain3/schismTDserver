@@ -20,9 +20,10 @@ namespace schismTD
         public const String MATCH_FINISHED = "mf";
         public const String MATCH_SET_ID = "msi";
 
+        public const String GAME_JOINED = "gj";
+        public const String GAME_INFO = "gi";
         public const String GAME_COUNTDOWN = "gc";  // Countdown status at start of each game
         public const String GAME_ACTIVATE = "ga";    // Activates tower building
-        public const String GAME_START = "gs";          // The game actually starts
         public const String GAME_FINISHED = "gf";      // The game is finished
         public const String GAME_TIME = "gt";
 

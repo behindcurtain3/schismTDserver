@@ -11,7 +11,7 @@ namespace schismTD
     [RoomType("schismTD")]
     public class GameCode : Game<Player>
     {
-        public Match mMatch;
+        public Game mGame;
 
         // Debug
         private Boolean mShowNeighbors = false;
@@ -30,14 +30,6 @@ namespace schismTD
         {
             this.PreloadPlayerObjects = true;
 
-            if (mMatch == null)
-            {
-                mMatch = new Match(this);
-
-                mStopWatch.Reset();
-                mStopWatch.Start();
-            }
-
 
             // anything you write to the Console will show up in the 
             // output window of the development server
@@ -46,30 +38,43 @@ namespace schismTD
             // This is how you setup a timer
             AddTimer(delegate
             {
-                if (mMatch != null)
+                if (mGame != null)
                 {
                     lock (mStopWatch)
                     {
                         mStopWatch.Stop(); // Hammertime!
                     }
-                    if (mMatch.ReadyForRestart)
+
+                    mGame.update(mStopWatch.ElapsedMilliseconds);
+                    mStopWatch.Reset();
+                    mStopWatch.Start();
+                }
+                else
+                {
+                    if (PlayerCount >= 2)
                     {
-                        // For now just create a new match & add players
-                        mMatch = new Match(this);
+                        Player p1 = null;
+                        Player p2 = null;
+                        int count = 0;
                         foreach (Player p in Players)
                         {
-                            mMatch.addPlayer(p);
+                            if (count == 0)
+                                p1 = p;
+                            else if (count == 1)
+                                p2 = p;
+
+                            count++;
                         }
+
+                        mGame = new Game(this, p1, p2);
                     }
-                    else
-                    {
-                        mMatch.update(mStopWatch.ElapsedMilliseconds);
-                        mStopWatch.Reset();
-                        mStopWatch.Start();
-                    }
-                    //RefreshDebugView();
                 }
             }, 40);
+
+            AddTimer(delegate
+            {
+                RefreshDebugView();
+            }, 500);
         }
 
         // This method is called when the last player leaves the room, and it's closed down.
@@ -81,27 +86,21 @@ namespace schismTD
         // This method is called whenever a player joins the game
         public override void UserJoined(Player player)
         {
+            Console.WriteLine(player.ConnectUserId + " has joined the game.");
+
             // this is how you send a player a message
-            player.Send(Messages.CHAT, "Welcome to schismTD!");
-
-            // this is how you broadcast a message to all players connected to the game
-            Broadcast(Messages.PLAYER_JOINED, player.Id, "");
-
-            if (mMatch != null)
-            {
-                mMatch.addPlayer(player);
-            }
+            player.Send(Messages.GAME_JOINED);
         }
 
         // This method is called when a player leaves the game
         public override void UserLeft(Player player)
         {
-            if (mMatch != null)
-            {
-                mMatch.removePlayer(player);
-            }
+            Console.WriteLine(player.ConnectUserId + " has left the game.");
 
-            Broadcast(Messages.PLAYER_LEFT, player.Id);
+            if (mGame != null)
+            {
+                mGame.finish();
+            }
         }
 
         // This method is called when a player sends a message into the server code
@@ -109,13 +108,8 @@ namespace schismTD
         {
             switch (message.Type)
             {
-                // This is how you would set a players name when they send in their name in a 
-                // "MyNameIs" message
                 case Messages.CHAT:
                     Broadcast(Messages.CHAT, player.ConnectUserId + " says: " + message.GetString(0));
-                    break;
-                case "MyNameIs":
-                    player.Name = message.GetString(0);
                     break;
             }
         }
@@ -125,8 +119,9 @@ namespace schismTD
         {
             // we'll just draw 400 by 400 pixels image with the current time, but you can
             // use this to visualize just about anything.
-            Bitmap image = new Bitmap(800, 600);
-            using (Graphics g = Graphics.FromImage(image))
+            var image = new Bitmap(800, 600);
+
+            using (var g = Graphics.FromImage(image))
             {
                 // fill the background
                 g.FillRectangle(Brushes.Tan, 0, 0, image.Width, image.Height);
@@ -134,98 +129,95 @@ namespace schismTD
                 // draw the current time
                 g.DrawString(DateTime.Now.ToString(), new Font("Verdana", 10F), Brushes.Black, 10, 10);
 
-                if (mMatch != null)
+                if (mGame != null && mGame.Started)
                 {
-                    if (mMatch.Game != null)
+                    Brush off = Brushes.DarkGray;
+                    Brush on = Brushes.White;
+                    Brush current = on;
+
+                    // Draw White Cells
+                    foreach (Cell c in mGame.Board.WhiteCells)
                     {
-                        Brush off = Brushes.DarkGray;
-                        Brush on = Brushes.White;
-                        Brush current = on;
-
-                        // Draw White Cells
-                        foreach (Cell c in mMatch.Game.Board.WhiteCells)
-                        {
-                            if (c.Coords.Y % 2 == 0)
-                                if (c.Coords.X % 2 == 0)
-                                    current = off;
-                                else
-                                    current = on;
+                        if (c.Coords.Y % 2 == 0)
+                            if (c.Coords.X % 2 == 0)
+                                current = off;
                             else
-                                if (c.Coords.X % 2 == 0)
-                                    current = on;
-                                else
-                                    current = off;
-
-                            drawCell(g, current, c);
-
-                        }
-
-                        on = Brushes.Black;
-                        // Draw Black Cells
-                        foreach (Cell c in mMatch.Game.Board.BlackCells)
-                        {
-                            if (c.Coords.Y % 2 == 0)
-                                if (c.Coords.X % 2 == 0)
-                                    current = off;
-                                else
-                                    current = on;
+                                current = on;
+                        else
+                            if (c.Coords.X % 2 == 0)
+                                current = on;
                             else
-                                if (c.Coords.X % 2 == 0)
-                                    current = on;
-                                else
-                                    current = off;
+                                current = off;
 
-                            drawCell(g, current, c);
-                        }
+                        drawCell(g, current, c);
 
-                        // Draw paths
-                        if (mShowPaths)
+                    }
+
+                    on = Brushes.Black;
+                    // Draw Black Cells
+                    foreach (Cell c in mGame.Board.BlackCells)
+                    {
+                        if (c.Coords.Y % 2 == 0)
+                            if (c.Coords.X % 2 == 0)
+                                current = off;
+                            else
+                                current = on;
+                        else
+                            if (c.Coords.X % 2 == 0)
+                                current = on;
+                            else
+                                current = off;
+
+                        drawCell(g, current, c);
+                    }
+
+                    // Draw paths
+                    if (mShowPaths)
+                    {
+                        lock (mGame.Board.BlackPath)
                         {
-                            lock (mMatch.Game.Board.BlackPath)
+                            foreach (Cell p in mGame.Board.BlackPath)
                             {
-                                foreach (Cell p in mMatch.Game.Board.BlackPath)
-                                {
-                                    g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
-                                }
-                            }
-
-                            lock (mMatch.Game.Board.WhitePath)
-                            {
-                                foreach (Cell p in mMatch.Game.Board.WhitePath)
-                                {
-                                    g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
-                                }
-                            }
-                        }
-
-                        // Draw creeps!
-                        if (mShowCreeps)
-                        {
-                            lock (mMatch.Game.Black.Creeps)
-                            {
-                                foreach (Creep c in mMatch.Game.Black.Creeps)
-                                {
-                                    g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
-                                }
-                            }
-                            lock (mMatch.Game.White.Creeps)
-                            {
-                                foreach (Creep c in mMatch.Game.White.Creeps)
-                                {
-                                    g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
-                                }
+                                g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
                             }
                         }
 
-                        if (mShowProjectiles)
+                        lock (mGame.Board.WhitePath)
                         {
-                            lock (mMatch.Game.Projectiles)
+                            foreach (Cell p in mGame.Board.WhitePath)
                             {
-                                foreach (Projectile p in mMatch.Game.Projectiles)
-                                {
-                                    p.draw(g);
-                                    //g.FillEllipse(Brushes.DarkTurquoise, p.Position.X, p.Position.Y, 5, 5);
-                                }
+                                g.FillRectangle(Brushes.SandyBrown, p.Position.X + 2, p.Position.Y + 2, Settings.BOARD_CELL_WIDTH - 4, Settings.BOARD_CELL_HEIGHT - 4);
+                            }
+                        }
+                    }
+
+                    // Draw creeps!
+                    if (mShowCreeps)
+                    {
+                        lock (mGame.Black.Creeps)
+                        {
+                            foreach (Creep c in mGame.Black.Creeps)
+                            {
+                                g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                            }
+                        }
+                        lock (mGame.White.Creeps)
+                        {
+                            foreach (Creep c in mGame.White.Creeps)
+                            {
+                                g.FillEllipse(Brushes.RoyalBlue, c.Position.X, c.Position.Y, c.Width, c.Height);
+                            }
+                        }
+                    }
+
+                    if (mShowProjectiles)
+                    {
+                        lock (mGame.Projectiles)
+                        {
+                            foreach (Projectile p in mGame.Projectiles)
+                            {
+                                p.draw(g);
+                                //g.FillEllipse(Brushes.DarkTurquoise, p.Position.X, p.Position.Y, 5, 5);
                             }
                         }
                     }
@@ -263,22 +255,22 @@ namespace schismTD
                 if (c.Tower != null)
                 {
                     g.DrawString("T", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 6, c.Position.Y + 3);
-                    g.DrawString(c.Tower.EffectedDamage.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
-                    g.DrawString(c.Tower.EffectedRange.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y);
-                    g.DrawString(c.Tower.EffectedFireRate.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X + Settings.BOARD_CELL_WIDTH - 15, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
+                    //g.DrawString(c.Tower.EffectedDamage.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
+                    //g.DrawString(c.Tower.EffectedRange.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X, c.Position.Y);
+                    //g.DrawString(c.Tower.EffectedFireRate.ToString(), new Font("Verdana", 8F), Brushes.Blue, c.Position.X + Settings.BOARD_CELL_WIDTH - 15, c.Position.Y + Settings.BOARD_CELL_HEIGHT - 12);
                 }
             }
 
             // Draw Labels
             if (mShowLabels)
             {
-                if (c == mMatch.Game.Board.WhiteSpawn)
+                if (c == mGame.Board.WhiteSpawn)
                     g.DrawString("W", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 1, c.Position.Y + 3);
 
-                if (c == mMatch.Game.Board.BlackSpawn)
+                if (c == mGame.Board.BlackSpawn)
                     g.DrawString("B", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 3, c.Position.Y + 3);
 
-                if (mMatch.Game.Board.WhiteBase.Contains(c) || mMatch.Game.Board.BlackBase.Contains(c))
+                if (mGame.Board.WhiteBase.Contains(c) || mGame.Board.BlackBase.Contains(c))
                     g.DrawString("X", new Font("Verdana", 12F), Brushes.Blue, c.Position.X + 4, c.Position.Y + 3);
             }
 

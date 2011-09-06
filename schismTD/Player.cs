@@ -93,7 +93,7 @@ namespace schismTD
         }
         private List<Creep> mCreeps = new List<Creep>();
 
-        public Wave ActiveWave
+        public List<Wave> ActiveWaves
         {
             get;
             set;
@@ -139,7 +139,7 @@ namespace schismTD
 
             OnDeckWaves = new List<Wave>();
             QueuedWaves = new Queue<Wave>();
-            ActiveWave = null;
+            ActiveWaves = new List<Wave>();
             NextWave = null;
         }
 
