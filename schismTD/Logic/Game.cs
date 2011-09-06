@@ -189,6 +189,7 @@ namespace schismTD
             mCtx.AddMessageHandler(Messages.GAME_TOWER_UPGRADE, upgradeTower);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_SELL, sellTower);
             mCtx.AddMessageHandler(Messages.GAME_WAVE_NEXT, setNextWave);
+            mCtx.AddMessageHandler(Messages.GAME_FIRE_AT, setFireAt);
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
         }
 
@@ -1086,7 +1087,7 @@ namespace schismTD
 
         public void setNextWave(Player p, Message m)
         {
-            if (!mIsGameSetup || p.OnDeckWaves.Count <= 0 || p.NextWave == null)
+            if (!mIsGameSetup || p.OnDeckWaves.Count <= 0 || p.NextWave == null || Finished)
                 return;
 
             String id = m.GetString(0);
@@ -1112,6 +1113,35 @@ namespace schismTD
             else
             {
                 Console.WriteLine("Could not find the wave requested.");
+            }
+        }
+
+        public void setFireAt(Player p, Message m)
+        {
+            if (!Started || Finished)
+                return;
+
+            String id = m.GetString(0);
+
+            Creep result;
+            lock (p.Opponent.Creeps)
+            {
+                result = p.Opponent.Creeps.Find(delegate(Creep c)
+                {
+                    return c.ID == id;
+                });
+            }
+
+            if (result != null)
+            {
+                lock (p.Towers)
+                {
+                    foreach (Tower t in p.Towers)
+                    {
+                        if (t.Type == Tower.SNIPER)
+                            t.StaticTarget = result;
+                    }
+                }
             }
         }
 

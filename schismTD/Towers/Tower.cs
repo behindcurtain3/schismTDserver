@@ -72,16 +72,9 @@ namespace schismTD
 
         public int EffectedFireRate
         {
-            get
-            {
-                return mEffectedFireRate;
-            }
-            set
-            {
-                mEffectedFireRate = value;
-            }
+            get;
+            set;
         }
-        private int mEffectedFireRate;
 
         public int Damage
         {
@@ -123,30 +116,21 @@ namespace schismTD
 
         public Boolean Enabled
         {
-            get
-            {
-                return mEnabled;
-            }
-            set
-            {
-                mEnabled = value;
-            }
+            get;
+            set;
         }
-        private Boolean mEnabled = true;
 
         public int Cost
         {
-            get
-            {
-                return mCost;
-            }
-            set
-            {
-                mCost = value;
-            }
+            get;
+            set;
         }
-        private int mCost;
 
+        public Creep StaticTarget
+        {
+            get;
+            set;
+        }
 
         public String Type = Tower.BASIC;
 
@@ -166,46 +150,61 @@ namespace schismTD
             Damage = 20;
 
             mFireRatePostion = mFireRate;
+
+            StaticTarget = null;
+            Enabled = true;
         }
 
         public virtual Boolean fire()
         {
             // Fire the tower
-            lock (mOpponent.Creeps)
+            int leastPathLength = 999;
+            Creep targetCreep = null;
+
+            if (StaticTarget != null)
             {
-                int leastPathLength = 999;
-                Creep targetCreep = null;
+                if (StaticTarget.Alive)
+                    targetCreep = StaticTarget;
+                else
+                    StaticTarget = null;
+            }
 
-                foreach (Creep creep in mOpponent.Creeps)
+            if (targetCreep == null)
+            {
+                lock (mOpponent.Creeps)
                 {
-                    if (!creep.Active)
-                        continue;
-
-                    float d = creep.getDistance(this);
-                    if (d < EffectedRange)
+                    foreach (Creep creep in mOpponent.Creeps)
                     {
-                        if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting())
+                        if (!creep.Active)
+                            continue;
+
+                        float d = creep.getDistance(this);
+                        if (d < EffectedRange)
                         {
-                            leastPathLength = creep.CurrentPath.Count;
-                            targetCreep = creep;
+                            if (creep.CurrentPath.Count < leastPathLength && !creep.isDeathWaiting())
+                            {
+                                leastPathLength = creep.CurrentPath.Count;
+                                targetCreep = creep;
+                            }
                         }
                     }
                 }
-
-                if (targetCreep != null)
-                {
-                    lock (mGame.Projectiles)
-                    {
-                        if(this is SpellTower)
-                            mGame.Projectiles.Add(new SpellProjectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
-                        else if(this is SniperTower)
-                            mGame.Projectiles.Add(new SniperProjectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
-                        else
-                            mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
-                    }
-                    return true;
-                }
             }
+
+            if (targetCreep != null)
+            {
+                lock (mGame.Projectiles)
+                {
+                    if(this is SpellTower)
+                        mGame.Projectiles.Add(new SpellProjectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
+                    else if(this is SniperTower)
+                        mGame.Projectiles.Add(new SniperProjectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
+                    else
+                        mGame.Projectiles.Add(new Projectile(mGame, new Vector2(Center), targetCreep, EffectedDamage));
+                }
+                return true;
+            }
+
             return false;
         }
 

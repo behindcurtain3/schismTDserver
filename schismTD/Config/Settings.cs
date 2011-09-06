@@ -27,7 +27,7 @@ namespace schismTD
         public const int DEFAULT_GAME_COUNTDOWN = 10;
         public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
-        public const int DEFAULT_MANA = 100;
+        public const int DEFAULT_MANA = 10000;
 
         // Cell index to spawn creeps on
         public const int DEFAULT_BLACK_SPAWN = 032;
