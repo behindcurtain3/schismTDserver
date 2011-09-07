@@ -76,6 +76,12 @@ namespace schismTD
             set;
         }
 
+        public int Position
+        {
+            get;
+            set;
+        }
+
         public Boolean Finished
         {
             get
@@ -294,11 +300,31 @@ namespace schismTD
 
         }
 
-        public void queueClient()
+        public void queueClient(Boolean selfOnly = false)
         {
             Message msg = Message.Create(Messages.GAME_WAVE_QUEUE);
             msg.Add(mPlayer.Id);
             msg.Add(ID);
+            msg.Add(Position);
+
+            foreach (String str in CreepTypes)
+            {
+                msg.Add(str);
+            }
+
+            if (selfOnly)
+                mPlayer.Send(msg);
+            else
+                mCtx.Broadcast(msg);
+        }
+
+        public void activateClient()
+        {
+            Message msg = Message.Create(Messages.GAME_WAVE_ACTIVATE);
+            msg.Add(mPlayer.Id);
+            msg.Add(ID);
+            msg.Add(Position);
+            msg.Add((float)mWaveTimeWindow);
 
             foreach (String str in CreepTypes)
             {
@@ -306,11 +332,6 @@ namespace schismTD
             }
 
             mCtx.Broadcast(msg);
-        }
-
-        public void activateClient()
-        {
-            mCtx.Broadcast(Messages.GAME_WAVE_ACTIVATE, mPlayer.Id, ID, (float)mWaveTimeWindow);
         }
 
         public void fillWithRandom()

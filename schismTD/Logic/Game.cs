@@ -151,12 +151,13 @@ namespace schismTD
             {
                 Wave w = new Wave(mCtx, this, Black, White);
                 w.setup(i + 1);
+                w.Position = i;
                 lock(Black.QueuedWaves)
                     Black.QueuedWaves.Enqueue(w);
 
                 w = new Wave(mCtx, this, White, Black);
                 w.setup(i + 1);
-
+                w.Position = i;
                 lock(White.QueuedWaves)
                     White.QueuedWaves.Enqueue(w);
             }
@@ -169,7 +170,6 @@ namespace schismTD
             {
                 w.queueClient();
             }
-            Black.NextWave = Black.OnDeckWaves[0];
 
             White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
             White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
@@ -179,7 +179,6 @@ namespace schismTD
             {
                 w.queueClient();
             }
-            White.NextWave = White.OnDeckWaves[0];
 
             // synch the paths
             sendUpdatedPath(Black, Board.BlackPath);
@@ -341,10 +340,95 @@ namespace schismTD
                         mWaveTimerPosition = 0;
 
                         // Update the waves
-                        if (Black.NextWave == null && White.NextWave == null)
+                        if (Black.OnDeckWaves.Count == 0 && White.OnDeckWaves.Count == 0)
                             mWaitingToFinish = true;
                         else
                         {
+                            // Remove wave from OnDeckWaves w/ position = 0 & add to activewaves
+                            // Decrement position on remaining OnDeckWaves
+                            // Decrement position on remaining QueuedWaves
+                            // Remove lowest position QueuedWave and add to OnDeckWaves
+                            Wave nextWave = Black.OnDeckWaves.Find(delegate(Wave w)
+                            {
+                                return w.Position == 0;
+                            });
+
+                            if (nextWave != null)
+                            {
+                                lock (Black.ActiveWaves)
+                                {
+                                    Black.ActiveWaves.Add(nextWave);
+                                    nextWave.activateClient();
+                                }
+                                lock (Black.OnDeckWaves)
+                                {
+                                    Black.OnDeckWaves.Remove(nextWave);
+
+                                    foreach (Wave w in Black.OnDeckWaves)
+                                        w.Position--;
+                                }
+
+                                if (Black.QueuedWaves.Count > 0)
+                                {
+                                    lock (Black.QueuedWaves)
+                                    {
+                                        foreach (Wave w in Black.QueuedWaves)
+                                            w.Position--;
+    
+                                        lock(Black.OnDeckWaves)
+                                            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                                    }
+                                }
+
+                                lock (Black.OnDeckWaves)
+                                {
+                                    foreach (Wave w in Black.OnDeckWaves)
+                                        w.queueClient();
+                                }
+                            }
+
+                            // WHITE WAVES
+                            nextWave = White.OnDeckWaves.Find(delegate(Wave w)
+                            {
+                                return w.Position == 0;
+                            });
+
+                            if (nextWave != null)
+                            {
+                                lock (White.ActiveWaves)
+                                {
+                                    White.ActiveWaves.Add(nextWave);
+                                    nextWave.activateClient();
+                                }
+                                lock (White.OnDeckWaves)
+                                {
+                                    White.OnDeckWaves.Remove(nextWave);
+
+                                    foreach (Wave w in White.OnDeckWaves)
+                                        w.Position--;
+                                }
+
+                                if (White.QueuedWaves.Count > 0)
+                                {
+                                    lock (White.QueuedWaves)
+                                    {
+                                        foreach (Wave w in White.QueuedWaves)
+                                            w.Position--;
+
+                                        lock (White.OnDeckWaves)
+                                            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                                    }
+                                }
+
+                                lock (White.OnDeckWaves)
+                                {
+                                    foreach (Wave w in White.OnDeckWaves)
+                                        w.queueClient();
+                                }
+                            }
+
+
+                            /*
                             if (Black.NextWave != null)
                             {
                                 Black.ActiveWaves.Add(Black.NextWave);
@@ -362,7 +446,12 @@ namespace schismTD
                                 lock(Black.OnDeckWaves)
                                     Black.OnDeckWaves.Add(qWave);
 
-                                qWave.queueClient();
+                                int count = 0;
+                                foreach (Wave w in Black.OnDeckWaves)
+                                {
+                                    w.queueClient(count);
+                                    count++;
+                                }
                             }
 
                             if (Black.OnDeckWaves.Count > 0)
@@ -371,7 +460,7 @@ namespace schismTD
                             else
                                 lock(Black.NextWave)
                                     Black.NextWave = null;
-
+                            
                             if (White.NextWave != null)
                             {
                                 White.ActiveWaves.Add(White.NextWave);
@@ -398,6 +487,7 @@ namespace schismTD
                             else
                                 lock(White.NextWave)
                                     White.NextWave = null;
+                            */
                         }
                     }
 
@@ -1064,28 +1154,36 @@ namespace schismTD
 
         public void setNextWave(Player p, Message m)
         {
-            if (!mIsGameSetup || p.OnDeckWaves.Count <= 0 || p.NextWave == null || Finished)
+            if (!mIsGameSetup || p.OnDeckWaves.Count <= 0 || Finished)
                 return;
 
             String id = m.GetString(0);
             Console.WriteLine("Setting next wave to: " + id);
 
             Wave result;
+            Wave zero;
             lock (p.OnDeckWaves)
             {
                 result = p.OnDeckWaves.Find(delegate(Wave w)
                 {
                     return w.ID == id;
                 });
+
+                zero = p.OnDeckWaves.Find(delegate(Wave w)
+                {
+                    return w.Position == 0;
+                });
             }
 
-            if (result != null)
+            if (result != null && zero != null)
             {
-                lock (p.NextWave)
-                {
-                    p.NextWave = result;
-                    Console.WriteLine("Next wave set!");
-                }
+                int pos = result.Position;
+                result.Position = zero.Position;
+                zero.Position = pos;
+
+                result.queueClient(true);
+                zero.queueClient(true);
+                Console.WriteLine("Next wave set!");
             }
             else
             {

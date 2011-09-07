@@ -99,12 +99,6 @@ namespace schismTD
             set;
         }
 
-        public Wave NextWave
-        {
-            get;
-            set;
-        }
-
         public List<Wave> OnDeckWaves
         {
             get;
@@ -140,7 +134,6 @@ namespace schismTD
             OnDeckWaves = new List<Wave>();
             QueuedWaves = new Queue<Wave>();
             ActiveWaves = new List<Wave>();
-            NextWave = null;
         }
 
     }

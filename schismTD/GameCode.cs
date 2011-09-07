@@ -74,11 +74,12 @@ namespace schismTD
                     }
                 }
             }, 40);
-
+            /*
             AddTimer(delegate
             {
                 RefreshDebugView();
             }, 100);
+             */
         }
 
         // This method is called when the last player leaves the room, and it's closed down.
