@@ -197,6 +197,7 @@ namespace schismTD
             mIsStarted = true;
             mTotalTimeElapsed = 0;
             mWaveTimerPosition = mWaveTimerLength + 1;
+            mCtx.Broadcast(Messages.GAME_START);
         }
 
         public void finish()

@@ -24,6 +24,7 @@ namespace schismTD
         public const String GAME_INFO = "gi";
         public const String GAME_COUNTDOWN = "gc";  // Countdown status at start of each game
         public const String GAME_ACTIVATE = "ga";    // Activates tower building
+        public const String GAME_START = "gs";
         public const String GAME_FINISHED = "gf";      // The game is finished
         public const String GAME_TIME = "gt";
 
