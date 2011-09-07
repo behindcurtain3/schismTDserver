@@ -11,7 +11,9 @@ namespace schismTD
     [RoomType("schismTD")]
     public class GameCode : Game<Player>
     {
-        public Game mGame;
+        private Game mGame;
+
+        private Bitmap mDebugImage;
 
         // Debug
         private Boolean mShowNeighbors = false;
@@ -29,6 +31,8 @@ namespace schismTD
         public override void GameStarted()
         {
             this.PreloadPlayerObjects = true;
+
+            mDebugImage = new Bitmap(800, 600);
 
 
             // anything you write to the Console will show up in the 
@@ -99,7 +103,17 @@ namespace schismTD
 
             if (mGame != null)
             {
-                mGame.finish();
+                if (mGame.Black == player || mGame.White == player)
+                {
+                    if (!mGame.Finished && mGame.Started)
+                    {
+                        mGame.finishEarly(player);
+                    }
+                    else
+                    {
+                        mGame.finish();
+                    }
+                }
             }
         }
 
@@ -119,12 +133,12 @@ namespace schismTD
         {
             // we'll just draw 400 by 400 pixels image with the current time, but you can
             // use this to visualize just about anything.
-            var image = new Bitmap(800, 600);
+            //var image = new Bitmap(800, 600);
 
-            using (var g = Graphics.FromImage(image))
+            using (var g = Graphics.FromImage(mDebugImage))
             {
                 // fill the background
-                g.FillRectangle(Brushes.Tan, 0, 0, image.Width, image.Height);
+                g.FillRectangle(Brushes.Tan, 0, 0, mDebugImage.Width, mDebugImage.Height);
 
                 // draw the current time
                 g.DrawString(DateTime.Now.ToString(), new Font("Verdana", 10F), Brushes.Black, 10, 10);
@@ -223,7 +237,7 @@ namespace schismTD
                     }
                 }
             }
-            return image;
+            return mDebugImage;
         }
 
         public void drawCell(Graphics g, Brush b, Cell c)

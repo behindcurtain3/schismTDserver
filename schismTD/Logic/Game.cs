@@ -212,7 +212,6 @@ namespace schismTD
             {
                 // Draw
                 gameResult = Result.DRAW;
-                mCtx.Broadcast(Messages.GAME_FINISHED, -1);
             }
             else if (Black.Life < White.Life)
             {
@@ -229,33 +228,15 @@ namespace schismTD
                 mLoser = White;
             }
 
-            // Update player objects
-            Black.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+            updatePlayerObjects();
 
-            if(!Black.PlayerObject.Contains(Properties.MaxDamageDealt))
-                Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-            else
-                if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
-                    Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-            Black.PlayerObject.Save(true, delegate
-            {
-                Console.WriteLine(Black.ConnectUserId + " has been saved.");
-            });
-
-            White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
-            if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
-                White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-            else
-                if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
-                    White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-            White.PlayerObject.Save(true, delegate
-            {
-                Console.WriteLine(White.ConnectUserId + " has been saved.");
-            });
-
-            if(gameResult != Result.DRAW)
+            if (gameResult != Result.DRAW)
             {
                 mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
+            }
+            else
+            {
+                mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
             }
 
             mIsFinished = true;
@@ -938,16 +919,6 @@ namespace schismTD
             
         }
 
-        /*
-         * onBoardChanged is called whenever a tower is placed or sold thus changing the layout of the board.
-         * This method will check all the paths for the creeps and ensure they are updated/valid. It returns false
-         * if the new state of the board is invalid.
-         */
-        public Boolean onBoardChanged(Player p, Message m)
-        {
-            return false;
-        }
-
         public void upgradeTower(Player p, Message m)
         {
             if (Finished || !mIsGameSetup)
@@ -1191,5 +1162,50 @@ namespace schismTD
             return findCellByPoint(new PointF(p.X, p.Y));
         }
 
+
+        public void finishEarly(Player player)
+        {
+            if(player == Black)
+            {
+                mWinner = White;
+                mLoser = Black;
+            }
+            else
+            {
+                mWinner = Black;
+                mLoser = White;
+            }
+
+            updatePlayerObjects();
+
+            mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
+        }
+
+        public void updatePlayerObjects()
+        {
+            // Update player objects
+            Black.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+
+            if (!Black.PlayerObject.Contains(Properties.MaxDamageDealt))
+                Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            else
+                if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
+                    Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            Black.PlayerObject.Save(true, delegate
+            {
+                Console.WriteLine(Black.ConnectUserId + " has been saved.");
+            });
+
+            White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+            if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
+                White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+            else
+                if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
+                    White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+            White.PlayerObject.Save(true, delegate
+            {
+                Console.WriteLine(White.ConnectUserId + " has been saved.");
+            });
+        }
     }
 }
