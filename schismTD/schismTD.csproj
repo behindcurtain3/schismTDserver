@@ -69,6 +69,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="Projectiles\Projectile.cs" />
     <Compile Include="Projectiles\PulseProjectile.cs" />
+    <Compile Include="Projectiles\RapidFireProjectile.cs" />
     <Compile Include="Projectiles\SlowProjectile.cs" />
     <Compile Include="Projectiles\SniperProjectile.cs" />
     <Compile Include="Projectiles\SpellProjectile.cs" />

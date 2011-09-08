@@ -334,6 +334,11 @@ namespace schismTD
             mCtx.Broadcast(msg);
         }
 
+        public void removeClient()
+        {
+            mCtx.Broadcast(Messages.GAME_WAVE_REMOVE, mPlayer.Id, ID);
+        }
+
         public void fillWithRandom()
         {
             lock (SpawnQueue)

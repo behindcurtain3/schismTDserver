@@ -114,7 +114,9 @@ namespace schismTD
                 if (c.Index == Settings.DEFAULT_BLACK_SPAWN)
                     continue;
 
-                Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                Boolean owner = mBoard.BlackBase.Contains(c) ? false : true;
+
+                Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, owner);
                 White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
             foreach (Cell c in mBoard.WhiteCells)
@@ -122,7 +124,9 @@ namespace schismTD
                 if (c.Index == Settings.DEFAULT_WHITE_SPAWN)
                     continue;
 
-                White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, true);
+                Boolean owner = mBoard.WhiteBase.Contains(c) ? false : true;
+
+                White.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, owner);
                 Black.Send(Messages.GAME_CELL_ADD, c.Index, c.Position.X, c.Position.Y, Settings.BOARD_CELL_WIDTH, Settings.BOARD_CELL_HEIGHT, false);
             }
 
@@ -318,6 +322,8 @@ namespace schismTD
 
                         Black.ActiveWaves.RemoveAll(delegate(Wave w)
                         {
+                            if (w.Finished)
+                                w.removeClient();
                             return w.Finished;
                         });
                     }
@@ -328,6 +334,8 @@ namespace schismTD
 
                         White.ActiveWaves.RemoveAll(delegate(Wave w)
                         {
+                            if (w.Finished)
+                                w.removeClient();
                             return w.Finished;
                         });
                     }
