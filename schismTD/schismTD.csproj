@@ -51,6 +51,7 @@
     <Compile Include="Effects\DamageBoostEffect.cs" />
     <Compile Include="Effects\FireRateBoostEffect.cs" />
     <Compile Include="Effects\RangeBoostEffect.cs" />
+    <Compile Include="GameStats.cs" />
     <Compile Include="Pathfinding\ANode.cs" />
     <Compile Include="Pathfinding\AStar.cs" />
     <Compile Include="Logic\Board.cs" />

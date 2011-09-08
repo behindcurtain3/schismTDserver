@@ -20,6 +20,12 @@ namespace schismTD
         }
         private GameCode mCtx;
 
+        public GameStats Stats
+        {
+            get;
+            set;
+        }
+
         // Seconds to countdown at start of game (IE: dead period)
         private const long mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
         private long mCountdownPosition;
@@ -100,6 +106,7 @@ namespace schismTD
         public Game(GameCode gc, Player p1, Player p2)
         {
             mCtx = gc;
+            Stats = new GameStats();
             Black = p1;
             White = p2;
 
@@ -242,6 +249,8 @@ namespace schismTD
             {
                 mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
             }
+
+            updateStats();
 
             mIsFinished = true;
         }
@@ -1248,6 +1257,38 @@ namespace schismTD
                 p.Towers.Add(c.Tower);
 
             mCtx.Broadcast(Messages.GAME_TOWER_PLACE, c.Index, c.Tower.Type);
+
+            // update stats
+            switch (c.Tower.Type)
+            {
+                case Tower.BASIC:
+                    Stats.Basic++;
+                    break;
+                case Tower.RAPID_FIRE:
+                    Stats.RapidFire++;
+                    break;
+                case Tower.SNIPER:
+                    Stats.Sniper++;
+                    break;
+                case Tower.PULSE:
+                    Stats.Pulse++;
+                    break;
+                case Tower.SLOW:
+                    Stats.Slow++;
+                    break;
+                case Tower.SPELL:
+                    Stats.Spell++;
+                    break;
+                case Tower.DAMAGE_BOOST:
+                    Stats.DamageBoost++;
+                    break;
+                case Tower.RANGE_BOOST:
+                    Stats.RangeBoost++;
+                    break;
+                case Tower.RATE_BOOST:
+                    Stats.FireRateBoost++;
+                    break;
+            }
         }
 
         public Cell findCellByPoint(PointF p)
@@ -1313,6 +1354,34 @@ namespace schismTD
             {
                 Console.WriteLine(White.ConnectUserId + " has been saved.");
             });
+        }
+
+        public void updateStats()
+        {
+            mCtx.PlayerIO.BigDB.Load("Stats", "0.2", onStatLoad, onStatLoadError);
+        }
+
+        public void onStatLoad(DatabaseObject result)
+        {
+            if (result != null)
+            {
+                result.Set("games_played", result.GetUInt("games_played") + 1);
+                result.Set("towers_basic", result.GetUInt("towers_basic") + Stats.Basic);
+                result.Set("towers_rapidfire", result.GetUInt("towers_rapidfire") + Stats.RapidFire);
+                result.Set("towers_sniper", result.GetUInt("towers_sniper") + Stats.Sniper);
+                result.Set("towers_pulse", result.GetUInt("towers_pulse") + Stats.Pulse);
+                result.Set("towers_slow", result.GetUInt("towers_slow") + Stats.Slow);
+                result.Set("towers_spell", result.GetUInt("towers_spell") + Stats.Spell);
+                result.Set("towers_damageboost", result.GetUInt("towers_damageboost") + Stats.DamageBoost);
+                result.Set("towers_rangeboost", result.GetUInt("towers_rangeboost") + Stats.RangeBoost);
+                result.Set("towers_firerateboost", result.GetUInt("towers_firerateboost") + Stats.FireRateBoost);
+                result.Save(true);
+            }
+        }
+
+        public void onStatLoadError(PlayerIOError error)
+        {
+            Console.WriteLine(error.Message);
         }
     }
 }
