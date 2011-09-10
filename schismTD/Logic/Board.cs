@@ -302,7 +302,7 @@ namespace schismTD
 
         private void addNeighborToCell(Cell c, Cell neighbor)
         {
-            if (neighbor != null)
+            if (neighbor != null && c != null)
             {
                 if (neighbor.Player == c.Player && neighbor.Passable)
                 {

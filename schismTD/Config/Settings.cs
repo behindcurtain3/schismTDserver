@@ -24,7 +24,7 @@ namespace schismTD
         public const int DEFAULT_MATCH_COOLDOWN = 10;
 
         // Game
-        public const int DEFAULT_GAME_COUNTDOWN = 10;
+        public const int DEFAULT_GAME_COUNTDOWN = 12;
         public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
         public const int DEFAULT_MANA = 100;
