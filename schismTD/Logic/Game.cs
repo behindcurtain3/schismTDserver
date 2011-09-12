@@ -1014,12 +1014,31 @@ namespace schismTD
                 {
                     Cell crIn = findCellByPoint(cr.Center);
 
-                    cr.CurrentPath = AStar.getPath(crIn, targetBase);
+                    // else, check to see if we should use the updated main path
+                    if (newPath.Contains(crIn))
+                    {
+                        // Reapply the main path, removing any cells the creeper has already passed
+                        cr.CurrentPath = new Path(newPath);
 
-                    if (cr.CurrentPath.Count == 0)
-                        cr.CurrentPath.Push(crIn);
+                        while (cr.CurrentPath.Peek() != crIn)
+                        {
+                            cr.CurrentPath.Pop();
+                        }
+                        // Pop off the one they are in, only if they aren't going to the last square
+                        if (cr.CurrentPath.Count > 1)
+                            cr.CurrentPath.Pop();
 
-                    cr.MovingTo = cr.CurrentPath.Peek();
+                        cr.MovingTo = cr.CurrentPath.Peek();
+                    }
+                    else
+                    {
+                        cr.CurrentPath = AStar.getPath(crIn, targetBase);
+
+                        if (cr.CurrentPath.Count == 0)
+                            cr.CurrentPath.Push(crIn);
+
+                        cr.MovingTo = cr.CurrentPath.Peek();
+                    }
                 }
             }
 
@@ -1339,10 +1358,13 @@ namespace schismTD
             else
                 if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
                     Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-            Black.PlayerObject.Save(true, delegate
+            lock (Black.PlayerObject)
             {
-                Console.WriteLine(Black.ConnectUserId + " has been saved.");
-            });
+                Black.PlayerObject.Save(true, delegate
+                {
+                    Console.WriteLine(Black.ConnectUserId + " has been saved.");
+                });
+            }
 
             White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
             if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
@@ -1350,10 +1372,13 @@ namespace schismTD
             else
                 if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
                     White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-            White.PlayerObject.Save(true, delegate
+            lock (White.PlayerObject)
             {
-                Console.WriteLine(White.ConnectUserId + " has been saved.");
-            });
+                White.PlayerObject.Save(true, delegate
+                {
+                    Console.WriteLine(White.ConnectUserId + " has been saved.");
+                });
+            }
         }
 
         public void updateStats()
