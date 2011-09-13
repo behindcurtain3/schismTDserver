@@ -26,6 +26,12 @@ namespace schismTD
             set;
         }
 
+        public int CurrentWaveNum
+        {
+            get;
+            set;
+        }
+
         // Seconds to countdown at start of game (IE: dead period)
         private const long mCountdownLength = Settings.DEFAULT_GAME_COUNTDOWN * 1000; // in milliseconds
         private long mCountdownPosition;
@@ -110,6 +116,8 @@ namespace schismTD
             Black = p1;
             White = p2;
 
+            CurrentWaveNum = 0;
+
             Black.Opponent = White;
             White.Opponent = Black;
 
@@ -162,13 +170,13 @@ namespace schismTD
             {
                 Wave w = new Wave(mCtx, this, Black, White);
                 w.setup(i + 1);
-                w.Position = i;
+
                 lock(Black.QueuedWaves)
                     Black.QueuedWaves.Enqueue(w);
 
                 w = new Wave(mCtx, this, White, Black);
                 w.setup(i + 1);
-                w.Position = i;
+
                 lock(White.QueuedWaves)
                     White.QueuedWaves.Enqueue(w);
             }
@@ -362,6 +370,7 @@ namespace schismTD
                             mWaitingToFinish = true;
                         else
                         {
+                            CurrentWaveNum++;
                             // Remove wave from OnDeckWaves w/ position = 0 & add to activewaves
                             // Decrement position on remaining OnDeckWaves
                             // Decrement position on remaining QueuedWaves
@@ -376,6 +385,7 @@ namespace schismTD
                                 lock (Black.ActiveWaves)
                                 {
                                     Black.ActiveWaves.Add(nextWave);
+                                    nextWave.Number = CurrentWaveNum;
                                     nextWave.activateClient();
                                 }
                                 lock (Black.OnDeckWaves)
@@ -416,6 +426,7 @@ namespace schismTD
                                 lock (White.ActiveWaves)
                                 {
                                     White.ActiveWaves.Add(nextWave);
+                                    nextWave.Number = CurrentWaveNum;
                                     nextWave.activateClient();
                                 }
                                 lock (White.OnDeckWaves)
@@ -746,7 +757,7 @@ namespace schismTD
                         // Now Recheck each existing creep's path, if any are invalid return an error
                         foreach (Creep cr in opponent.Creeps)
                         {
-                            if (cr.Player == p)
+                            if (cr.Player == p || !creepsInTheseCells.ContainsKey(cr))
                                 continue;
 
                             Cell crIn = creepsInTheseCells[cr];
@@ -785,7 +796,8 @@ namespace schismTD
                             // If we recalced a path apply it
                             if (tmpPaths.ContainsKey(cr))
                             {
-                                cr.CurrentPath = tmpPaths[cr];
+                                lock(cr.CurrentPath)
+                                    cr.CurrentPath = tmpPaths[cr];
                                 cr.MovingTo = cr.CurrentPath.Peek();
                             }
                             else
@@ -793,16 +805,19 @@ namespace schismTD
                                 // else, check to see if we should use the updated main path
                                 if (newPath.Contains(creepsInTheseCells[cr]))
                                 {
-                                    // Reapply the main path, removing any cells the creeper has already passed
-                                    cr.CurrentPath = new Path(newPath);
-
-                                    while (cr.CurrentPath.Peek() != creepsInTheseCells[cr])
+                                    lock (cr.CurrentPath)
                                     {
-                                        cr.CurrentPath.Pop();
+                                        // Reapply the main path, removing any cells the creeper has already passed
+                                        cr.CurrentPath = new Path(newPath);
+
+                                        while (cr.CurrentPath.Peek() != creepsInTheseCells[cr])
+                                        {
+                                            cr.CurrentPath.Pop();
+                                        }
+                                        // Pop off the one they are in, only if they aren't going to the last square
+                                        if (cr.CurrentPath.Count > 1)
+                                            cr.CurrentPath.Pop();
                                     }
-                                    // Pop off the one they are in, only if they aren't going to the last square
-                                    if(cr.CurrentPath.Count > 1)
-                                        cr.CurrentPath.Pop();
 
                                     cr.MovingTo = cr.CurrentPath.Peek();
                                 }
@@ -1020,22 +1035,28 @@ namespace schismTD
                         // Reapply the main path, removing any cells the creeper has already passed
                         cr.CurrentPath = new Path(newPath);
 
-                        while (cr.CurrentPath.Peek() != crIn)
+                        lock (cr.CurrentPath)
                         {
-                            cr.CurrentPath.Pop();
+                            while (cr.CurrentPath.Peek() != crIn)
+                            {
+                                cr.CurrentPath.Pop();
+                            }
+                            // Pop off the one they are in, only if they aren't going to the last square
+                            if (cr.CurrentPath.Count > 1)
+                                cr.CurrentPath.Pop();
                         }
-                        // Pop off the one they are in, only if they aren't going to the last square
-                        if (cr.CurrentPath.Count > 1)
-                            cr.CurrentPath.Pop();
 
                         cr.MovingTo = cr.CurrentPath.Peek();
                     }
                     else
                     {
-                        cr.CurrentPath = AStar.getPath(crIn, targetBase);
+                        lock (cr.CurrentPath)
+                        {
+                            cr.CurrentPath = AStar.getPath(crIn, targetBase);
 
-                        if (cr.CurrentPath.Count == 0)
-                            cr.CurrentPath.Push(crIn);
+                            if (cr.CurrentPath.Count == 0)
+                                cr.CurrentPath.Push(crIn);
+                        }   
 
                         cr.MovingTo = cr.CurrentPath.Peek();
                     }

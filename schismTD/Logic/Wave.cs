@@ -72,9 +72,16 @@ namespace schismTD
 
         public int Number
         {
-            get;
-            set;
+            get { return mNumber; }
+            set
+            {
+                mNumber = value;
+                HealthModifier = (float)Math.Pow((double)Settings.WAVE_HEALTH_MOD, Number - 1);
+                ArmorModifier = (float)Math.Pow((double)Settings.WAVE_ARMOR_MOD, Number - 1);
+                WorthModifier = (float)Math.Pow((double)Settings.WAVE_WORTH_MOD, Number - 1);
+            }
         }
+        private int mNumber;
 
         public int Position
         {
@@ -143,10 +150,14 @@ namespace schismTD
                     fillWithQuick();
                     break;
                 case 4:
+                    fillWithRegen();
+                    break;
                 case 9:
                     fillWithArmor();
                     break;
-                case 1:
+                case 5:
+                    fillWithMagic();
+                    break;
                 case 10:
                     fillWithSwarm();
                     break;
@@ -178,11 +189,30 @@ namespace schismTD
             }
 
             Number = waveNum;
-            double expWave = waveNum - 1;
+            Position = waveNum - 1;
+        }
 
-            HealthModifier = (float)Math.Pow((double)Settings.WAVE_HEALTH_MOD, expWave);
-            ArmorModifier = (float)Math.Pow((double)Settings.WAVE_ARMOR_MOD, expWave);
-            WorthModifier = (float)Math.Pow((double)Settings.WAVE_WORTH_MOD, expWave);
+        public void debug()
+        {
+            Console.WriteLine("Wave: " + Number);
+            Console.WriteLine("HM: " + HealthModifier);
+            Console.WriteLine("AM: " + ArmorModifier);
+            Console.WriteLine("WM: " + WorthModifier);
+
+            Creep cr = new ArmorCreep(mPlayer, mOpponent, StartingPosition, mGame.Board.BlackPath);
+            //debugCreep(cr);
+            cr = new ChigenCreep(mPlayer, mOpponent, StartingPosition, mGame.Board.BlackPath);
+            debugCreep(cr);
+
+        }
+
+        public void debugCreep(Creep cr)
+        {
+            Console.WriteLine("--- CREEP --- (" + Number + ")");
+            Console.WriteLine("Type: " + cr.Type);
+            Console.WriteLine("Life: " + cr.Life);
+            Console.WriteLine("Armor: " + cr.Armor);
+            Console.WriteLine("Worth: " + cr.Worth);
         }
 
         public void update(long dt)
@@ -374,6 +404,32 @@ namespace schismTD
                 while (Points > 0)
                 {
                     addCreep(new QuickCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                }
+            }
+        }
+
+        public void fillWithRegen()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(new RegenCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                }
+            }
+        }
+
+        public void fillWithMagic()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                while (Points > 0)
+                {
+                    addCreep(new MagicCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
                 }
             }
         }

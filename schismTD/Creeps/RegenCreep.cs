@@ -7,9 +7,9 @@ namespace schismTD
 {
     public class RegenCreep : Creep
     {
-        public const int DEFAULT_POINTS = 1;
+        public const int DEFAULT_POINTS = 2;
         public const int DEFAULT_SPEED = 40;
-        public const int DEFAULT_LIFE = Settings.CREEP_LIFE;
+        public const float DEFAULT_LIFE = Settings.CREEP_LIFE * 1.5f;
         public const int DEFAULT_DAMAGE = 1;
 
         private long mRegenTimer;
@@ -32,7 +32,7 @@ namespace schismTD
 
             Speed = DEFAULT_SPEED;
             Damage = DEFAULT_DAMAGE;
-            Life = DEFAULT_LIFE;
+            Life = (int)DEFAULT_LIFE;
             StartingLife = Life;
 
             Worth *= DEFAULT_POINTS;
