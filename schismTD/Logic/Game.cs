@@ -42,6 +42,8 @@ namespace schismTD
         private long mTotalTimeElapsed = 0;
         private Boolean mIsGameSetup = false;
 
+        private Dictionary<int, List<Creep>> creepsThatNeedPaths;
+
         public Board Board
         {
             get
@@ -202,6 +204,8 @@ namespace schismTD
             // synch the paths
             sendUpdatedPath(Black, Board.BlackPath);
             sendUpdatedPath(White, Board.WhitePath);
+
+            creepsThatNeedPaths = new Dictionary<int, List<Creep>>();
 
             mCtx.AddMessageHandler(Messages.GAME_TOWER_PLACE, placeTower);
             mCtx.AddMessageHandler(Messages.GAME_TOWER_UPGRADE, upgradeTower);
@@ -1012,11 +1016,11 @@ namespace schismTD
                         // else, check to see if we should use the updated main path
                         if (newPath.Contains(crIn))
                         {
-                            // Reapply the main path, removing any cells the creeper has already passed
-                            cr.CurrentPath = new Path(newPath);
-
                             lock (cr.CurrentPath)
                             {
+                                // Reapply the main path, removing any cells the creeper has already passed
+                                cr.CurrentPath = new Path(newPath);
+
                                 while (cr.CurrentPath.Peek() != crIn)
                                 {
                                     cr.CurrentPath.Pop();
@@ -1030,15 +1034,19 @@ namespace schismTD
                         }
                         else
                         {
-                            lock (cr.CurrentPath)
+                            lock (creepsThatNeedPaths)
                             {
-                                cr.CurrentPath = AStar.getPath(crIn, targetBase);
+                                if (creepsThatNeedPaths.ContainsKey(crIn.Index))
+                                    creepsThatNeedPaths[crIn.Index].Add(cr);
+                                else
+                                {
+                                    creepsThatNeedPaths.Add(crIn.Index, new List<Creep>());
+                                    creepsThatNeedPaths[crIn.Index].Add(cr);
 
-                                if (cr.CurrentPath.Count == 0)
-                                    cr.CurrentPath.Push(crIn);
+                                    // schedule a call back for each cell
+                                    mCtx.ScheduleCallback(pathCreeps, 25);
+                                }
                             }
-
-                            cr.MovingTo = cr.CurrentPath.Peek();
                         }
                     }
                 }
@@ -1046,6 +1054,41 @@ namespace schismTD
 
             sendUpdatedPath(p, newPath);
             
+        }
+
+        public void pathCreeps()
+        {
+            int index;
+            Cell start;
+            List<Creep> creeps;
+            lock (creepsThatNeedPaths)
+            {
+                index = creepsThatNeedPaths.Keys.First<int>();
+                start = Board.Cells[index];
+                
+                creeps = creepsThatNeedPaths[index];
+                creepsThatNeedPaths.Remove(index);
+            }
+
+            Console.WriteLine("Calculating for " + start.Index + " with " + creeps.Count +  " creeps.");
+            Path p;
+            if(start.Player == Black)
+                p = AStar.getPath(start, Board.BlackBase);
+            else
+                p = AStar.getPath(start, Board.WhiteBase);
+
+            foreach (Creep cr in creeps)
+            {
+                lock (cr.CurrentPath)
+                {
+                    cr.CurrentPath = new Path(p);
+                    if (cr.CurrentPath.Count == 0)
+                        cr.CurrentPath.Push(start);
+                }
+
+                cr.MovingTo = cr.CurrentPath.Peek();
+                cr.updateClientPath();
+            }
         }
 
         public void upgradeTower(Player p, Message m)

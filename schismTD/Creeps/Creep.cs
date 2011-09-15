@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
+using PlayerIO.GameLibrary;
 
 namespace schismTD
 {
@@ -234,7 +235,8 @@ namespace schismTD
                 if (d <= dd)
                 {
                     // Remove last cell
-                    CurrentPath.Pop();
+                    lock(CurrentPath)
+                        CurrentPath.Pop();
 
                     // Arrived
                     if (CurrentPath.Count == 0)
@@ -332,6 +334,21 @@ namespace schismTD
             {
                 Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
             }
+        }
+
+        public void updateClientPath()
+        {
+            Message msg = Message.Create(Messages.GAME_CREEP_PATH);
+            msg.Add(ID);
+
+            lock (CurrentPath)
+            {
+                foreach (Cell c in CurrentPath)
+                {
+                    msg.Add(c.Index);
+                }
+            }
+            Player.Game.Context.Broadcast(msg);
         }
     }
 }

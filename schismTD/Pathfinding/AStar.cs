@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Diagnostics;
 using System.Text;
 
 namespace schismTD
@@ -9,6 +10,7 @@ namespace schismTD
     {
         public static Path getPath(Cell start, List<Cell> targets)
         {
+            Stopwatch sw = Stopwatch.StartNew();
             Path empty = new Path();
 
             List<Cell> openList = new List<Cell>();
@@ -17,25 +19,25 @@ namespace schismTD
             Boolean foundTarget = false;
             Cell currentNode = start;
 
-            start.Parent = null;
+            Dictionary<Cell, Cell> parentCells = new Dictionary<Cell, Cell>();
+            parentCells.Add(start, null);
             openList.Add(start);
 
             while (!foundTarget)
             {
+                if (sw.ElapsedMilliseconds > 60)
+                {
+                    Console.WriteLine("Taking too long for: " + start.Index);
+                    Console.WriteLine("Openlist: " + openList.Count);
+                    Console.WriteLine("Closedlist: " + closedList.Count);
+                    return empty;
+                }
+
                 // If the openlist has no cells return an empty path
                 if (openList.Count == 0)
                     return empty;
 
-                float lowestFScore = 9999f;
-
-                foreach (Cell c in openList)
-                {
-                    if (c.F < lowestFScore)
-                    {
-                        lowestFScore = c.F;
-                        currentNode = c;
-                    }
-                }
+                currentNode = openList[0];
 
                 if (targets.Contains(currentNode))
                 {
@@ -44,10 +46,10 @@ namespace schismTD
 
                     foundTarget = true;
                     Cell pathNode = currentNode;
-                    while (pathNode.Parent != null)
+                    while(parentCells[pathNode] != null)
                     {
                         path.Push(pathNode);
-                        pathNode = (Cell)pathNode.Parent;
+                        pathNode = parentCells[pathNode];
                     }
                     return path;
                 }
@@ -55,17 +57,22 @@ namespace schismTD
                 openList.Remove(currentNode);
                 closedList.Add(currentNode);
 
-                foreach (KeyValuePair<Cell, Boolean> neighbor in currentNode.Neighbors)
+                lock (currentNode.Neighbors)
                 {
-                    if (neighbor.Value && neighbor.Key.Passable)
+                    foreach (KeyValuePair<Cell, Boolean> neighbor in currentNode.Neighbors)
                     {
-                        if (!closedList.Contains(neighbor.Key) && !openList.Contains(neighbor.Key))
+                        if (neighbor.Value && neighbor.Key.Passable)
                         {
-                            neighbor.Key.Parent = currentNode;
-                            neighbor.Key.G = neighbor.Key.Parent.G + getDistance(currentNode, neighbor.Key);
-                            neighbor.Key.H = getClosestTarget(targets, neighbor.Key.Center);
-                            neighbor.Key.F = neighbor.Key.G + neighbor.Key.H;
-                            openList.Add(neighbor.Key);
+                            if (!closedList.Contains(neighbor.Key) && !openList.Contains(neighbor.Key))
+                            {
+                                parentCells.Add(neighbor.Key, currentNode);
+                                neighbor.Key.G = parentCells[neighbor.Key].G + getDistance(currentNode, neighbor.Key);
+                                neighbor.Key.H = getClosestTarget(targets, neighbor.Key.Center);
+                                neighbor.Key.F = neighbor.Key.G + neighbor.Key.H;
+                                openList.Add(neighbor.Key);
+
+                                openList.Sort(delegate(Cell c1, Cell c2) { return c1.F.CompareTo(c2.F); });
+                            }
                         }
                     }
                 }
