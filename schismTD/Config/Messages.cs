@@ -34,6 +34,7 @@ namespace schismTD
         public const String GAME_WAVE_ACTIVATE = "gwa";
         public const String GAME_WAVE_NEXT = "gwn";
         public const String GAME_WAVE_REMOVE = "gwr";
+        public const String GAME_WAVE_POSITION = "gwp";
 
         public const String GAME_TOWER_PLACE = "gtp";
         public const String GAME_TOWER_REMOVE = "gtr";

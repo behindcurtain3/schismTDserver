@@ -111,6 +111,12 @@ namespace schismTD
             set;
         }
 
+        public int WavePosition
+        {
+            get;
+            set;
+        }
+
         public uint DamageDealt
         {
             get;
@@ -134,6 +140,7 @@ namespace schismTD
             OnDeckWaves = new List<Wave>();
             QueuedWaves = new Queue<Wave>();
             ActiveWaves = new List<Wave>();
+            WavePosition = 0;
         }
 
     }

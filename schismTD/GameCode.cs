@@ -135,6 +135,7 @@ namespace schismTD
             // we'll just draw 400 by 400 pixels image with the current time, but you can
             // use this to visualize just about anything.
             //var image = new Bitmap(800, 600);
+            mDebugImage = new Bitmap(800, 600);
 
             using (var g = Graphics.FromImage(mDebugImage))
             {
