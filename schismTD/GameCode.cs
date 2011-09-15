@@ -34,7 +34,6 @@ namespace schismTD
 
             mDebugImage = new Bitmap(800, 600);
 
-
             // anything you write to the Console will show up in the 
             // output window of the development server
             Console.WriteLine("Game is started: " + RoomId);

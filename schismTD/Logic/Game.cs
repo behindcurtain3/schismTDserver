@@ -1003,40 +1003,43 @@ namespace schismTD
 
             if (recalcCreeps)
             {
-                foreach(Creep cr in creepsToRePath)
+                lock (creepsToRePath)
                 {
-                    Cell crIn = findCellByPoint(cr.Center);
-
-                    // else, check to see if we should use the updated main path
-                    if (newPath.Contains(crIn))
+                    foreach (Creep cr in creepsToRePath)
                     {
-                        // Reapply the main path, removing any cells the creeper has already passed
-                        cr.CurrentPath = new Path(newPath);
+                        Cell crIn = findCellByPoint(cr.Center);
 
-                        lock (cr.CurrentPath)
+                        // else, check to see if we should use the updated main path
+                        if (newPath.Contains(crIn))
                         {
-                            while (cr.CurrentPath.Peek() != crIn)
+                            // Reapply the main path, removing any cells the creeper has already passed
+                            cr.CurrentPath = new Path(newPath);
+
+                            lock (cr.CurrentPath)
                             {
-                                cr.CurrentPath.Pop();
+                                while (cr.CurrentPath.Peek() != crIn)
+                                {
+                                    cr.CurrentPath.Pop();
+                                }
+                                // Pop off the one they are in, only if they aren't going to the last square
+                                if (cr.CurrentPath.Count > 1)
+                                    cr.CurrentPath.Pop();
                             }
-                            // Pop off the one they are in, only if they aren't going to the last square
-                            if (cr.CurrentPath.Count > 1)
-                                cr.CurrentPath.Pop();
+
+                            cr.MovingTo = cr.CurrentPath.Peek();
                         }
-
-                        cr.MovingTo = cr.CurrentPath.Peek();
-                    }
-                    else
-                    {
-                        lock (cr.CurrentPath)
+                        else
                         {
-                            cr.CurrentPath = AStar.getPath(crIn, targetBase);
+                            lock (cr.CurrentPath)
+                            {
+                                cr.CurrentPath = AStar.getPath(crIn, targetBase);
 
-                            if (cr.CurrentPath.Count == 0)
-                                cr.CurrentPath.Push(crIn);
-                        }   
+                                if (cr.CurrentPath.Count == 0)
+                                    cr.CurrentPath.Push(crIn);
+                            }
 
-                        cr.MovingTo = cr.CurrentPath.Peek();
+                            cr.MovingTo = cr.CurrentPath.Peek();
+                        }
                     }
                 }
             }
