@@ -239,5 +239,12 @@ namespace schismTD
         public virtual void onRemoved(Cell c)
         {
         }
+
+        public override void addEffect(Effect e)
+        {
+            Player.Game.Context.Broadcast(Messages.GAME_TOWER_EFFECT, ID, e.type, (int)e.Duration);
+
+            base.addEffect(e);
+        }
     }
 }

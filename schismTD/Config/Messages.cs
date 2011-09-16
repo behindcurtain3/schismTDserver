@@ -41,6 +41,7 @@ namespace schismTD
         public const String GAME_TOWER_INVALID = "gti";
         public const String GAME_TOWER_UPGRADE = "gtu";
         public const String GAME_TOWER_SELL = "gts";
+        public const String GAME_TOWER_EFFECT = "gte";
         
         public const String GAME_FIRE_AT = "gfa";
 

@@ -1309,7 +1309,7 @@ namespace schismTD
             lock (p.Towers)
                 p.Towers.Add(c.Tower);
 
-            mCtx.Broadcast(Messages.GAME_TOWER_PLACE, c.Index, c.Tower.Type);
+            mCtx.Broadcast(Messages.GAME_TOWER_PLACE, c.Index, c.Tower.Type, c.Tower.Range);
 
             // update stats
             switch (c.Tower.Type)
