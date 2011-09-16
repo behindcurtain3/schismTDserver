@@ -37,6 +37,10 @@ namespace schismTD
                 if (openList.Count == 0)
                     return empty;
 
+                // sort the open list
+                openList.Sort(delegate(Cell c1, Cell c2) { return c1.F.CompareTo(c2.F); });
+                
+                // grab the first cell w/ lowest f score
                 currentNode = openList[0];
 
                 if (targets.Contains(currentNode))
@@ -70,8 +74,6 @@ namespace schismTD
                                 neighbor.Key.H = getClosestTarget(targets, neighbor.Key.Center);
                                 neighbor.Key.F = neighbor.Key.G + neighbor.Key.H;
                                 openList.Add(neighbor.Key);
-
-                                openList.Sort(delegate(Cell c1, Cell c2) { return c1.F.CompareTo(c2.F); });
                             }
                         }
                     }
