@@ -9,7 +9,7 @@ namespace schismTD
         public const int DEFAULT_POINTS = 2;
         public const int DEFAULT_SPEED = 40;
         public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 2;
-        public const int DEFAULT_DAMAGE = 1;
+        public const int DEFAULT_DAMAGE = 2;
 
         private long mChiTimer;
         private long mChiPosition;

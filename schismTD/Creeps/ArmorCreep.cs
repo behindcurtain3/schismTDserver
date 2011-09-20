@@ -10,8 +10,8 @@ namespace schismTD
         public const int DEFAULT_POINTS = 3;
         public const int DEFAULT_SPEED = 20;
         public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 3;
-        public const int DEFAULT_DAMAGE = 1;
-        public const int DEFAULT_ARMOR = 5;
+        public const int DEFAULT_DAMAGE = 3;
+        public const int DEFAULT_ARMOR = 10;
 
         public ArmorCreep(Player player, Player opponent, Vector2 pos, Path p)
             : base(player, opponent, pos, p)

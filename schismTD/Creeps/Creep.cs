@@ -241,12 +241,27 @@ namespace schismTD
                     // Arrived
                     if (CurrentPath.Count == 0)
                     {
-                        // Remove creep
-                        Alive = false;
-                        // Deal damage
-                        Opponent.Life -= Damage;
+                        // Make sure we are at the base
+                        Cell imIn = Player.Game.findCellByPoint(Center);
 
-                        Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+                        if (Player.Game.Board.WhiteBase.Contains(imIn) || Player.Game.Board.BlackBase.Contains(imIn))
+                        {
+                            // Remove creep
+                            Alive = false;
+                            // Deal damage
+                            Opponent.Life -= Damage;
+
+                            Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+                        }
+                        else
+                        {
+                            lock (CurrentPath)
+                            {
+                                CurrentPath = (Player == Player.Game.Black) ? AStar.getPath(imIn, Player.Game.Board.WhiteBase) : AStar.getPath(imIn, Player.Game.Board.BlackBase);
+                            }
+                            MovingTo = CurrentPath.Peek();
+                            updateClientPath();
+                        }
                     }
                     else
                     {

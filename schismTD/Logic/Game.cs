@@ -784,6 +784,11 @@ namespace schismTD
                             }
                             else
                             {
+                                if (!creepsInTheseCells.ContainsKey(cr))
+                                {
+                                    creepsInTheseCells.Add(cr, findCellByPoint(cr.Center));
+                                }
+
                                 // else, check to see if we should use the updated main path
                                 if (newPath.Contains(creepsInTheseCells[cr]))
                                 {

@@ -142,6 +142,37 @@ namespace schismTD
         {
             switch (waveNum)
             {
+                case 1:
+                    john1();
+                    break;
+                case 2:
+                    john2();
+                    break;
+                case 3:
+                    john3();
+                    break;
+                case 4:
+                    john4();
+                    break;
+                case 5:
+                    john5();
+                    break;
+                case 6:
+                    john6();
+                    break;
+                case 7:
+                    john7();
+                    break;
+                case 8:
+                    john8();
+                    break;
+                case 9:
+                    john9();
+                    break;
+                case 10:
+                    john10();
+                    break;
+                /*
                 case 2:
                     fillWithChigen();
                     break;
@@ -150,13 +181,16 @@ namespace schismTD
                     fillWithQuick();
                     break;
                 case 4:
-                    fillWithRegen();
+                    wave4();
                     break;
                 case 9:
                     fillWithArmor();
                     break;
                 case 5:
-                    fillWithMagic();
+                    wave5();
+                    break;
+                case 6:
+                    wave6();
                     break;
                 case 10:
                     fillWithSwarm();
@@ -164,6 +198,7 @@ namespace schismTD
                 default:
                     fillWithRandom();
                     break;
+                 */
             }
 
             long interval = mWaveTimeWindow / SpawnQueue.Count;
@@ -508,6 +543,356 @@ namespace schismTD
                     return new SwarmCreep(mPlayer, mOpponent, v, path);
                 default:
                     return new SwarmCreep(mPlayer, mOpponent, v, path);
+            }
+        }
+
+        public ArmorCreep getArmorCreep()
+        {
+            return new ArmorCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath());
+        }
+
+        public ChigenCreep getChigenCreep()
+        {
+            return new ChigenCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath());
+        }
+
+        public MagicCreep getMagicCreep()
+        {
+            return new MagicCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath());
+        }
+
+        public QuickCreep getQuickCreep()
+        {
+            return new QuickCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath());
+        }
+
+        public RegenCreep getRegenCreep()
+        {
+            return new RegenCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath());
+        }
+
+        public SwarmCreep getSwarmCreep()
+        {
+            return new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath());
+        }
+
+        public void wave4()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                //24 points to spend
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+            }
+        }
+
+        public void wave5()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+                //24 points to spend
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+
+                while (Points < 24)
+                {
+                    addCreep(getQuickCreep());
+                }
+
+            }
+        }
+
+        public void wave6()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep()); // 5
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep()); // 10
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep()); // 15
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+            }
+        }
+
+        public void john1()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+            }
+        }
+
+        public void john2()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+            }
+        }
+
+        public void john3()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+            }
+        }
+
+        public void john4()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+
+            }
+        }
+
+        public void john5()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+            }
+        }
+
+        public void john6()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getMagicCreep());
+                addCreep(getMagicCreep());
+                addCreep(getRegenCreep());
+                addCreep(getMagicCreep());
+                addCreep(getMagicCreep());
+                addCreep(getRegenCreep());
+                addCreep(getMagicCreep());
+                addCreep(getMagicCreep());
+                addCreep(getRegenCreep());
+                addCreep(getMagicCreep());
+                addCreep(getMagicCreep());
+                addCreep(getRegenCreep());
+                addCreep(getMagicCreep());
+                addCreep(getMagicCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+            }
+        }
+
+        public void john7()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+            }
+        }
+
+        public void john8()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+            }
+        }
+
+        public void john9()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getRegenCreep());
+                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+            }
+        }
+
+        public void john10()
+        {
+            lock (SpawnQueue)
+            {
+                SpawnQueue.Clear();
+
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
             }
         }
     }
