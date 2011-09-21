@@ -15,7 +15,7 @@ namespace schismTD
             FireRate = 0;
             Range = 0;
             Damage = 0;
-            SellValue = (int)(Costs.DAMAGE_BOOST * Costs.RESELL_VALUE);
+            SellValue = 210;
 
             Type = Tower.DAMAGE_BOOST;
         }

@@ -19,7 +19,7 @@ namespace schismTD
             {
                 Tower t = (Tower)Entity;
 
-                t.EffectedRange += (t.Range * 0.33f);
+                t.EffectedRange += (t.Range * 0.5f);
             }
         }
     }
