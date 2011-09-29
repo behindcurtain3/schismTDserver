@@ -16,7 +16,6 @@ namespace schismTD
         private long mRegenPosition;
 
         private int mLifeRegen;
-        private int mLastCheckedLife;
         private int mInitialLife;
 
         public int Range
@@ -41,22 +40,19 @@ namespace schismTD
             mRegenPosition = 0;
 
             mLifeRegen = (int)(Life * 0.1f);
-            mLastCheckedLife = Life;
             mInitialLife = Life;
             Range = Settings.BOARD_CELL_WIDTH * 4;
         }
 
+        public override void onHit(string towerType, int damage)
+        {
+            mRegenPosition = 0;
+            base.onHit(towerType, damage);
+        }
+
         public override void update(long dt)
         {
-            if(mLastCheckedLife != Life)
-            {
-                mRegenPosition = 0;
-            }
-            else
-            {
-                mRegenPosition += dt;
-            }
-            mLastCheckedLife = Life;
+            mRegenPosition += dt;
 
             if (mRegenPosition >= mRegenTimer)
             {
@@ -71,7 +67,7 @@ namespace schismTD
 
                         if (cr.getDistance(Position) <= Range)
                         {
-                            int newLife = cr.Life + (int)(cr.StartingLife * 0.25f);
+                            int newLife = cr.Life + (int)(StartingLife * 0.25f);
 
                             if (newLife > cr.StartingLife)
                                 newLife = cr.StartingLife;

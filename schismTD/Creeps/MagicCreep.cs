@@ -17,7 +17,7 @@ namespace schismTD
         {
             Type = "Magic";
 
-            Speed = DEFAULT_SPEED;
+            Speed = 50;
             Damage = DEFAULT_DAMAGE;
             Life = DEFAULT_LIFE;
             StartingLife = Life;

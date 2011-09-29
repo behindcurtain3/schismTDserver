@@ -25,7 +25,7 @@ namespace schismTD
         {
             Type = "Chigen";
 
-            Speed = DEFAULT_SPEED;
+            Speed = 30;
             Damage = DEFAULT_DAMAGE;
             Life = DEFAULT_LIFE;
             StartingLife = Life;

@@ -123,6 +123,12 @@ namespace schismTD
             set;
         }
 
+        public float ChiBlastCost
+        {
+            get;
+            set;
+        }
+
         public void reset(Game game)
         {
             mGame = game;
@@ -141,6 +147,8 @@ namespace schismTD
             QueuedWaves = new Queue<Wave>();
             ActiveWaves = new List<Wave>();
             WavePosition = 0;
+
+            ChiBlastCost = Settings.CHI_BLAST_INITIAL;
         }
 
     }

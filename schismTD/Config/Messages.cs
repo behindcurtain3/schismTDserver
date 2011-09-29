@@ -56,6 +56,9 @@ namespace schismTD
         public const String GAME_PROJECTILE_REMOVE = "gpr";
         public const String GAME_PROJECTILE_UPDATE = "gpu";
 
+        public const String GAME_SPELL_CREEP = "gsc";
+		public const String GAME_SPELL_TOWER = "gst";
+
         // Lobby messages
         public const String LOBBY_LOGIN = "ll";
         public const String LOBBY_WAVE_LIST = "lwl";

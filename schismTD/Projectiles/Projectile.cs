@@ -25,11 +25,6 @@ namespace schismTD
             set
             {
                 mActive = value;
-
-                if (!mActive)
-                {
-                    mGame.Context.Broadcast(Messages.GAME_PROJECTILE_REMOVE, ID);
-                }
             }
         }
         private Boolean mActive = true;
@@ -122,6 +117,7 @@ namespace schismTD
             else
             {
                 Active = false;
+                mGame.Context.Broadcast(Messages.GAME_PROJECTILE_REMOVE, ID);
             }
         }
 

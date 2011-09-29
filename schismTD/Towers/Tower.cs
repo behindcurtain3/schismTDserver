@@ -19,7 +19,6 @@ namespace schismTD
         public const String RANGE_BOOST = "rangeboost";
         public const String RATE_BOOST = "rateboost";
 
-        protected long mFireRatePostion;
         protected Game mGame;
 
         public int SellValue
@@ -71,6 +70,12 @@ namespace schismTD
         private int mFireRate = Settings.DEFAULT_FIRE_RATE; // in milliseconds
 
         public int EffectedFireRate
+        {
+            get;
+            set;
+        }
+
+        public long FireRatePosition
         {
             get;
             set;
@@ -145,12 +150,12 @@ namespace schismTD
             Position = pos;
             Cost = Costs.BASIC;
 
-            FireRate = Settings.DEFAULT_FIRE_RATE * 3;
+            FireRate = 1800; // Settings.DEFAULT_FIRE_RATE * 3;
             Range = Settings.DEFAULT_RANGE * 2;
-            Damage = 20;
+            Damage = 30;
             SellValue = 7;
 
-            mFireRatePostion = mFireRate;
+            FireRatePosition = mFireRate;
 
             StaticTarget = null;
             Enabled = true;
@@ -223,12 +228,12 @@ namespace schismTD
                 // Apply effects
                 applyEffects(dt);
 
-                mFireRatePostion += dt;
+                FireRatePosition += dt;
 
-                if(mFireRatePostion > EffectedFireRate)
+                if (FireRatePosition > EffectedFireRate)
                 {
                     if(fire())
-                        mFireRatePostion = 0;
+                        FireRatePosition = 0;
                 }
             }
         }

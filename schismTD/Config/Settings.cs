@@ -47,9 +47,13 @@ namespace schismTD
         // Waves
         public const int WAVE_LENGTH = 35000; // Length of time between waves
         public const int WAVE_WINDOW = 30000; // Length of time a wave has to spawn its creeps
-        public const float WAVE_HEALTH_MOD = 1.58f;
+        public const float WAVE_HEALTH_MOD = 1.7f;//1.58f;
         public const float WAVE_ARMOR_MOD = 1.2f;
-        public const float WAVE_WORTH_MOD = 1.25f;
+        public const float WAVE_WORTH_MOD = 1.45f;//1.3f;
+        public const float CHI_BLAST_MOD = 1.1f;
+        public const int CHI_BLAST_INITIAL = 50;
+
+        //public const float[] WAVE_HEALTH_MODS = new float[] { 1f, 1.55f, 1.6f, 1.8f, 1.9f, 1.75f, 1.7f, 1.75f, 1.75f, 1.95f };
 
         // Effects
         public const int DEFAULT_SLOW_DURATION = 2500;

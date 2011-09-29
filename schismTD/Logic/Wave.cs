@@ -275,7 +275,7 @@ namespace schismTD
                     c.Worth = (int)(c.Worth * WorthModifier);
 
                     if (c is ChigenCreep)
-                        (c as ChigenCreep).ChiAdded *= Number;
+                        (c as ChigenCreep).ChiAdded *= Number * 2;
 
                     lock(mPlayer.Creeps)
                         mPlayer.Creeps.Add(c);
@@ -653,13 +653,14 @@ namespace schismTD
                 SpawnQueue.Clear();
 
                 addCreep(getArmorCreep());
-                addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
                 addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
-                addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
                 addCreep(getRegenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
@@ -673,20 +674,17 @@ namespace schismTD
             {
                 SpawnQueue.Clear();
 
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
                 addCreep(getChigenCreep());
                 addCreep(getRegenCreep());
                 addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
                 addCreep(getChigenCreep());
                 addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
             }
         }
 
@@ -697,23 +695,29 @@ namespace schismTD
                 SpawnQueue.Clear();
 
                 addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
             }
         }
 
@@ -724,14 +728,16 @@ namespace schismTD
                 SpawnQueue.Clear();
 
                 addCreep(getArmorCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
                 addCreep(getSwarmCreep());
                 addCreep(getRegenCreep());
-                addCreep(getArmorCreep());
+                addCreep(getSwarmCreep());
                 addCreep(getSwarmCreep());
                 addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
@@ -748,22 +754,21 @@ namespace schismTD
             {
                 SpawnQueue.Clear();
 
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getChigenCreep());
                 addCreep(getChigenCreep());
                 addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
                 addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
                 addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
             }
         }
 
@@ -773,21 +778,26 @@ namespace schismTD
             {
                 SpawnQueue.Clear();
 
-                addCreep(getMagicCreep());
-                addCreep(getMagicCreep());
-                addCreep(getRegenCreep());
-                addCreep(getMagicCreep());
-                addCreep(getMagicCreep());
-                addCreep(getRegenCreep());
-                addCreep(getMagicCreep());
-                addCreep(getMagicCreep());
-                addCreep(getRegenCreep());
-                addCreep(getMagicCreep());
-                addCreep(getMagicCreep());
-                addCreep(getRegenCreep());
-                addCreep(getMagicCreep());
-                addCreep(getMagicCreep());
-                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
@@ -801,21 +811,19 @@ namespace schismTD
             {
                 SpawnQueue.Clear();
 
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
+                addCreep(getArmorCreep());
                 addCreep(getArmorCreep());
                 addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
-                addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
                 addCreep(getRegenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
             }
         }
 
@@ -825,30 +833,17 @@ namespace schismTD
             {
                 SpawnQueue.Clear();
 
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
-                addCreep(getQuickCreep());
+                addCreep(getArmorCreep());
+                addCreep(getArmorCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
             }
         }
 
@@ -859,16 +854,18 @@ namespace schismTD
                 SpawnQueue.Clear();
 
                 addCreep(getArmorCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getRegenCreep());
                 addCreep(getArmorCreep());
+                addCreep(getChigenCreep());
+                addCreep(getChigenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getRegenCreep());
+                addCreep(getRegenCreep());
                 addCreep(getSwarmCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getSwarmCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
             }
@@ -880,17 +877,28 @@ namespace schismTD
             {
                 SpawnQueue.Clear();
 
-                addCreep(getArmorCreep());
-                addCreep(getArmorCreep());
-                addCreep(getArmorCreep());
-                addCreep(getChigenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getChigenCreep());
-                addCreep(getRegenCreep());
-                addCreep(getRegenCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
-                addCreep(getSwarmCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
+                addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
                 addCreep(getQuickCreep());
             }

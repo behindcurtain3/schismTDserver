@@ -40,70 +40,73 @@ namespace schismTD
         {
             if (towerCell == null)
                 return;
+            lock (towersEffected)
+            {
 
-            if (towerCell.Up.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Up.Tower))
+                if (towerCell.Up.Tower != null)
                 {
-                    towerCell.Up.Tower.addEffect(new DamageBoostEffect(towerCell.Up.Tower));
-                    towersEffected.Add(towerCell.Up.Tower);
+                    if (!towersEffected.Contains(towerCell.Up.Tower))
+                    {
+                        towerCell.Up.Tower.addEffect(new DamageBoostEffect(towerCell.Up.Tower));
+                        towersEffected.Add(towerCell.Up.Tower);
+                    }
                 }
-            }
-            if (towerCell.Left.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Left.Tower))
+                if (towerCell.Left.Tower != null)
                 {
-                    towerCell.Left.Tower.addEffect(new DamageBoostEffect(towerCell.Left.Tower));
-                    towersEffected.Add(towerCell.Left.Tower);
+                    if (!towersEffected.Contains(towerCell.Left.Tower))
+                    {
+                        towerCell.Left.Tower.addEffect(new DamageBoostEffect(towerCell.Left.Tower));
+                        towersEffected.Add(towerCell.Left.Tower);
+                    }
                 }
-            }
-            if (towerCell.Right.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Right.Tower))
+                if (towerCell.Right.Tower != null)
                 {
-                    towerCell.Right.Tower.addEffect(new DamageBoostEffect(towerCell.Right.Tower));
-                    towersEffected.Add(towerCell.Right.Tower);
+                    if (!towersEffected.Contains(towerCell.Right.Tower))
+                    {
+                        towerCell.Right.Tower.addEffect(new DamageBoostEffect(towerCell.Right.Tower));
+                        towersEffected.Add(towerCell.Right.Tower);
+                    }
                 }
-            }
-            if (towerCell.Down.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Down.Tower))
+                if (towerCell.Down.Tower != null)
                 {
-                    towerCell.Down.Tower.addEffect(new DamageBoostEffect(towerCell.Down.Tower));
-                    towersEffected.Add(towerCell.Down.Tower);
+                    if (!towersEffected.Contains(towerCell.Down.Tower))
+                    {
+                        towerCell.Down.Tower.addEffect(new DamageBoostEffect(towerCell.Down.Tower));
+                        towersEffected.Add(towerCell.Down.Tower);
+                    }
                 }
-            }
 
-            if (towerCell.Up.Left.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Up.Left.Tower))
+                if (towerCell.Up.Left.Tower != null)
                 {
-                    towerCell.Up.Left.Tower.addEffect(new DamageBoostEffect(towerCell.Up.Left.Tower));
-                    towersEffected.Add(towerCell.Up.Left.Tower);
+                    if (!towersEffected.Contains(towerCell.Up.Left.Tower))
+                    {
+                        towerCell.Up.Left.Tower.addEffect(new DamageBoostEffect(towerCell.Up.Left.Tower));
+                        towersEffected.Add(towerCell.Up.Left.Tower);
+                    }
                 }
-            }
-            if (towerCell.Up.Right.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Up.Right.Tower))
+                if (towerCell.Up.Right.Tower != null)
                 {
-                    towerCell.Up.Right.Tower.addEffect(new DamageBoostEffect(towerCell.Up.Right.Tower));
-                    towersEffected.Add(towerCell.Up.Right.Tower);
+                    if (!towersEffected.Contains(towerCell.Up.Right.Tower))
+                    {
+                        towerCell.Up.Right.Tower.addEffect(new DamageBoostEffect(towerCell.Up.Right.Tower));
+                        towersEffected.Add(towerCell.Up.Right.Tower);
+                    }
                 }
-            }
-            if (towerCell.Down.Left.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Down.Left.Tower))
+                if (towerCell.Down.Left.Tower != null)
                 {
-                    towerCell.Down.Left.Tower.addEffect(new DamageBoostEffect(towerCell.Down.Left.Tower));
-                    towersEffected.Add(towerCell.Down.Left.Tower);
+                    if (!towersEffected.Contains(towerCell.Down.Left.Tower))
+                    {
+                        towerCell.Down.Left.Tower.addEffect(new DamageBoostEffect(towerCell.Down.Left.Tower));
+                        towersEffected.Add(towerCell.Down.Left.Tower);
+                    }
                 }
-            }
-            if (towerCell.Down.Right.Tower != null)
-            {
-                if (!towersEffected.Contains(towerCell.Down.Right.Tower))
+                if (towerCell.Down.Right.Tower != null)
                 {
-                    towerCell.Down.Right.Tower.addEffect(new DamageBoostEffect(towerCell.Down.Right.Tower));
-                    towersEffected.Add(towerCell.Down.Right.Tower);
+                    if (!towersEffected.Contains(towerCell.Down.Right.Tower))
+                    {
+                        towerCell.Down.Right.Tower.addEffect(new DamageBoostEffect(towerCell.Down.Right.Tower));
+                        towersEffected.Add(towerCell.Down.Right.Tower);
+                    }
                 }
             }
         }

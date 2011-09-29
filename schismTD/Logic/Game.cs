@@ -212,6 +212,8 @@ namespace schismTD
             mCtx.AddMessageHandler(Messages.GAME_TOWER_SELL, sellTower);
             mCtx.AddMessageHandler(Messages.GAME_WAVE_NEXT, setNextWave);
             mCtx.AddMessageHandler(Messages.GAME_FIRE_AT, setFireAt);
+            mCtx.AddMessageHandler(Messages.GAME_SPELL_CREEP, spellCreep);
+            mCtx.AddMessageHandler(Messages.GAME_SPELL_TOWER, spellTower);
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
         }
 
@@ -1296,6 +1298,81 @@ namespace schismTD
             }
         }
 
+        public void spellCreep(Player p, Message m)
+        {
+            if (!Started || Finished)
+                return;
+
+            if (p.Mana < p.ChiBlastCost)
+                return;
+
+            String id = m.GetString(0);
+            Creep c = Black.Creeps.Find(delegate(Creep creep) { return creep.ID == id; });
+
+            if(c == null)
+                c = White.Creeps.Find(delegate(Creep creep) { return creep.ID == id; });
+
+            if (c != null)
+            {
+                // Heal
+                if (c.Player == p)
+                {
+                    int life = c.Life;
+                    life += 30;
+
+                    if (life > c.StartingLife)
+                        life = c.StartingLife;
+
+                    c.Life = life;
+
+                    p.Mana -= (int)Math.Round(p.ChiBlastCost);
+                    p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                }
+                // Damage
+                else
+                {
+                    int life = c.Life;
+                    life -= 30;
+
+                    if (life > c.StartingLife)
+                        life = c.StartingLife;
+
+                    c.Life = life;
+
+                    p.Mana -= (int)Math.Round(p.ChiBlastCost);
+                    p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                }
+                mCtx.Broadcast(Messages.GAME_SPELL_CREEP, c.ID);
+            }
+        }
+
+        public void spellTower(Player p, Message m)
+        {
+            if (!Started || Finished)
+                return;
+
+            if (p.Mana < p.ChiBlastCost)
+                return;
+
+            int index = m.GetInt(0);
+            Cell c = Board.Cells.Find(delegate(Cell cell) { return cell.Index == index; });
+
+            if (c != null)
+            {
+                if (c.Player == p)
+                    return;
+
+                if (c.Tower != null)
+                {
+                    c.Tower.addEffect(new StunEffect(c.Tower));
+                    mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Index);
+
+                    p.Mana -= (int)Math.Round(p.ChiBlastCost);
+                    p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                }
+            }
+        }
+
         public void removeTower(Player p, Cell c, Boolean update = false)
         {
             c.Tower.onRemoved(c);
@@ -1384,39 +1461,36 @@ namespace schismTD
 
             updatePlayerObjects();
 
+            mIsFinished = true;
             mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
         }
 
         public void updatePlayerObjects()
         {
             // Update player objects
-            Black.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
-
-            if (!Black.PlayerObject.Contains(Properties.MaxDamageDealt))
-                Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-            else
-                if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
-                    Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
             lock (Black.PlayerObject)
             {
-                Black.PlayerObject.Save(true, delegate
-                {
-                    Console.WriteLine(Black.ConnectUserId + " has been saved.");
-                });
+                Black.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+
+                if (!Black.PlayerObject.Contains(Properties.MaxDamageDealt))
+                    Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+                else
+                    if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
+                        Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+
+                Black.PlayerObject.Save();
             }
 
-            White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
-            if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
-                White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-            else
-                if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
-                    White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
             lock (White.PlayerObject)
             {
-                White.PlayerObject.Save(true, delegate
-                {
-                    Console.WriteLine(White.ConnectUserId + " has been saved.");
-                });
+                White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
+                if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
+                    White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+                else
+                    if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
+                        White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+
+                White.PlayerObject.Save();
             }
         }
 
