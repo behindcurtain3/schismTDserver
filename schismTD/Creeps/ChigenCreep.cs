@@ -10,6 +10,7 @@ namespace schismTD
         public const int DEFAULT_SPEED = 40;
         public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 2;
         public const int DEFAULT_DAMAGE = 2;
+        public const int DEFAULT_ARMOR = 3;
 
         private long mChiTimer;
         private long mChiPosition;
@@ -31,11 +32,24 @@ namespace schismTD
             StartingLife = Life;
 
             Worth *= DEFAULT_POINTS;
+            Armor = DEFAULT_ARMOR;
 
             mChiTimer = 3000;
             mChiPosition = 0;
 
             ChiAdded = 1;
+        }
+
+        public override void onHit(string towerType, int damage)
+        {
+            if (towerType != "Spell")
+            {
+                damage -= Armor;
+                if (damage <= 0)
+                    return;
+            }
+
+            base.onHit(towerType, damage);
         }
 
         public override void update(long dt)
