@@ -257,11 +257,11 @@ namespace schismTD
 
             if (gameResult != Result.DRAW)
             {
-                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
+                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
             }
             else
             {
-                mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
+                mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
             }
 
             updateStats();
@@ -1461,21 +1461,24 @@ namespace schismTD
 
         public void finishEarly(Player player)
         {
+            String msg;
             if(player == Black)
             {
                 mWinner = White;
                 mLoser = Black;
+                msg = "Black has left the game.";
             }
             else
             {
                 mWinner = Black;
                 mLoser = White;
+                msg = "White has left the game.";
             }
 
             updatePlayerObjects();
 
             mIsFinished = true;
-            mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt);
+            mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, msg);
         }
 
         public void updatePlayerObjects()
