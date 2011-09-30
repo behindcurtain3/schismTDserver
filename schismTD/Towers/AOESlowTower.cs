@@ -9,8 +9,8 @@ namespace schismTD
     {
          public AOESlowTower(Game g, Player p, Player opponent, Vector2 pos) : base(g, p, opponent, pos)
         {
-            FireRate = 0;
-            Range = Settings.DEFAULT_RANGE * 3;
+            FireRate = 75;
+            Range = Settings.DEFAULT_RANGE * 2;
             Damage = 0;
             SellValue = 210;
 

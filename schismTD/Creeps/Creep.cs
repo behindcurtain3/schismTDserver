@@ -92,7 +92,7 @@ namespace schismTD
                 else
                 {
                     if(Player.Game.Started)
-                        Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
+                        Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife, Center.X, Center.Y, CurrentPath.Count);
                 }
             }
         }
@@ -347,7 +347,7 @@ namespace schismTD
             }
             else
             {
-                Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife);
+                Player.Game.Context.Broadcast(Messages.GAME_CREEP_UPDATE_LIFE, ID, mLife, Center.X, Center.Y, CurrentPath.Count);
             }
         }
 

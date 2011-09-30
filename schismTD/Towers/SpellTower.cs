@@ -11,10 +11,17 @@ namespace schismTD
         {
             FireRate = 750;
             Range = Settings.DEFAULT_RANGE * 3;
-            Damage = 70;    // Settings.DEFAULT_DAMAGE * 15;
+            Damage = 70;
             SellValue = 75;
 
             Type = Tower.SPELL;
+        }
+
+        public override void onPlaced(Cell c)
+        {
+            Player.ChiBlastCost -= Player.ChiBlastCost * 0.1f;
+
+            base.onPlaced(c);
         }
 
     }
