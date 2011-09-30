@@ -264,7 +264,10 @@ namespace schismTD
                 mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
             }
 
-            updatePlayerObjects();
+            if (gameResult == Result.DRAW)
+                updatePlayerObjects(true);
+            else
+                updatePlayerObjects();
             updateStats();
         }
 
@@ -1504,76 +1507,155 @@ namespace schismTD
             mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, msg);
         }
 
-        public void updatePlayerObjects()
+        public void updatePlayerObjects(Boolean genericSave = false)
         {
+            if (mCtx.InDevelopmentServer)
+                return;
 
-            Black.GetPlayerObject(savePlayer);
-            White.GetPlayerObject(savePlayer);
-            /*
-            // Update player objects
-            lock (Black.PlayerObject)
+            if (genericSave)
             {
-                Black.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
-
-                if (!Black.PlayerObject.Contains(Properties.MaxDamageDealt))
-                    Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-                else
-                    if (Black.DamageDealt > Black.PlayerObject.GetUInt(Properties.MaxDamageDealt))
-                        Black.PlayerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
-
-                Black.PlayerObject.Save();
+                Black.GetPlayerObject(saveBlackPlayer);
+                White.GetPlayerObject(saveWhitePlayer);
             }
-
-            lock (White.PlayerObject)
+            else
             {
-                White.PlayerObject.Set(Properties.LastPlayed, DateTime.Now);
-                if (!White.PlayerObject.Contains(Properties.MaxDamageDealt))
-                    White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-                else
-                    if (White.DamageDealt > White.PlayerObject.GetUInt(Properties.MaxDamageDealt))
-                        White.PlayerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
-
-                White.PlayerObject.Save();
+                mWinner.GetPlayerObject(saveWinner);
+                mLoser.GetPlayerObject(saveLoser);
             }
-             */
         }
 
-        public void savePlayer(DatabaseObject playerObject)
+        public void saveBlackPlayer(DatabaseObject playerObject)
         {
             playerObject.Set(Properties.LastPlayed, DateTime.Now);
-            //if(!playerObject.Contains(Properties.MaxDamageDealt))
-            //    playerObject.Set(Properties.MaxDamageDealt, 
 
-            Console.WriteLine(playerObject.Key + " player object loaded for save.");
+            // Damage dealt
+            if (!playerObject.Contains(Properties.MaxDamageDealt))
+                playerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            else
+                if (Black.DamageDealt > playerObject.GetUInt(Properties.MaxDamageDealt))
+                    playerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+
+            playerObject.Save();
+
+            Console.WriteLine(playerObject.Key + " player object has been saved.");
+        }
+
+        public void saveWhitePlayer(DatabaseObject playerObject)
+        {
+            playerObject.Set(Properties.LastPlayed, DateTime.Now);
+
+            // Damage dealt
+            if (!playerObject.Contains(Properties.MaxDamageDealt))
+                playerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            else
+                if (White.DamageDealt > playerObject.GetUInt(Properties.MaxDamageDealt))
+                    playerObject.Set(Properties.MaxDamageDealt, White.DamageDealt);
+
+            playerObject.Save();
+
+            Console.WriteLine(playerObject.Key + " player object has been saved.");
+        }
+
+        public void saveWinner(DatabaseObject playerObject)
+        {
+            playerObject.Set(Properties.LastPlayed, DateTime.Now);
+
+            // Damage dealt
+            if (!playerObject.Contains(Properties.MaxDamageDealt))
+                playerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            else
+                if (mWinner.DamageDealt > playerObject.GetUInt(Properties.MaxDamageDealt))
+                    playerObject.Set(Properties.MaxDamageDealt, mWinner.DamageDealt);
+
+            playerObject.Save();
+
+            Console.WriteLine(playerObject.Key + " player object has been saved.");
+        }
+
+        public void saveLoser(DatabaseObject playerObject)
+        {
+            playerObject.Set(Properties.LastPlayed, DateTime.Now);
+
+            // Damage dealt
+            if (!playerObject.Contains(Properties.MaxDamageDealt))
+                playerObject.Set(Properties.MaxDamageDealt, Black.DamageDealt);
+            else
+                if (mLoser.DamageDealt > playerObject.GetUInt(Properties.MaxDamageDealt))
+                    playerObject.Set(Properties.MaxDamageDealt, mLoser.DamageDealt);
+
+            playerObject.Save();
+
+            Console.WriteLine(playerObject.Key + " player object has been saved.");
         }
 
         public void updateStats()
         {
-            if(!mCtx.InDevelopmentServer)
-                mCtx.PlayerIO.BigDB.Load("Stats", "0.2", onStatLoad, onStatLoadError);
+            if(!mCtx.InDevelopmentServer) 
+                mCtx.PlayerIO.BigDB.LoadOrCreate("Stats", "0.3", onStatLoad, onStatLoadError);
         }
 
         public void onStatLoad(DatabaseObject result)
         {
             if (result != null)
             {
-                result.Set("games_played", result.GetUInt("games_played") + 1);
-                result.Set("towers_basic", result.GetUInt("towers_basic") + Stats.Basic);
-                result.Set("towers_rapidfire", result.GetUInt("towers_rapidfire") + Stats.RapidFire);
-                result.Set("towers_sniper", result.GetUInt("towers_sniper") + Stats.Sniper);
-                result.Set("towers_pulse", result.GetUInt("towers_pulse") + Stats.Pulse);
-                result.Set("towers_slow", result.GetUInt("towers_slow") + Stats.Slow);
-                result.Set("towers_spell", result.GetUInt("towers_spell") + Stats.Spell);
-                result.Set("towers_damageboost", result.GetUInt("towers_damageboost") + Stats.DamageBoost);
-                result.Set("towers_rangeboost", result.GetUInt("towers_rangeboost") + Stats.RangeBoost);
-                result.Set("towers_firerateboost", result.GetUInt("towers_firerateboost") + Stats.FireRateBoost);
+                if(result.Contains("games_played"))
+                    result.Set("games_played", result.GetUInt("games_played") + 1);
+                else
+                    result.Set("games_played", 1);
+
+                if (result.Contains("towers_basic"))
+                    result.Set("towers_basic", result.GetUInt("towers_basic") + Stats.Basic);
+                else
+                    result.Set("towers_basic", Stats.Basic);
+
+                if (result.Contains("towers_rapidfire"))
+                    result.Set("towers_rapidfire", result.GetUInt("towers_rapidfire") + Stats.RapidFire);
+                else
+                    result.Set("towers_rapidfire", Stats.RapidFire);
+
+                if(result.Contains("towers_sniper"))
+                    result.Set("towers_sniper", result.GetUInt("towers_sniper") + Stats.Sniper);
+                else
+                    result.Set("towers_sniper", Stats.Sniper);
+
+                if(result.Contains("towers_pulse"))
+                    result.Set("towers_pulse", result.GetUInt("towers_pulse") + Stats.Pulse);
+                else
+                    result.Set("towers_pulse", Stats.Pulse);
+
+                if(result.Contains("towers_slow"))
+                    result.Set("towers_slow", result.GetUInt("towers_slow") + Stats.Slow);
+                else
+                    result.Set("towers_slow", Stats.Slow);
+
+                if(result.Contains("towers_spell"))
+                    result.Set("towers_spell", result.GetUInt("towers_spell") + Stats.Spell);
+                else
+                    result.Set("towers_spell", Stats.Spell);
+
+                if(result.Contains("towers_damageboost"))
+                    result.Set("towers_damageboost", result.GetUInt("towers_damageboost") + Stats.DamageBoost);
+                else
+                    result.Set("towers_damageboost", Stats.DamageBoost);
+
+                if(result.Contains("towers_rangeboost"))
+                    result.Set("towers_rangeboost", result.GetUInt("towers_rangeboost") + Stats.RangeBoost);
+                else
+                    result.Set("towers_rangeboost", Stats.RangeBoost);
+
+                if(result.Contains("towers_firerateboost"))
+                    result.Set("towers_firerateboost", result.GetUInt("towers_firerateboost") + Stats.FireRateBoost);
+                else
+                    result.Set("towers_firerateboost", Stats.FireRateBoost);
+
                 result.Save(true);
+                Console.WriteLine("Server stats saved.");
             }
         }
 
         public void onStatLoadError(PlayerIOError error)
         {
-            Console.WriteLine(error.Message);
+            mCtx.PlayerIO.ErrorLog.WriteError("Unable to save server stats. " + error.Message);
         }
     }
 }
