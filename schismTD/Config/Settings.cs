@@ -55,7 +55,7 @@ namespace schismTD
         public const float CHI_BLAST_MOD = 1.1f;
         public const int CHI_BLAST_INITIAL = 50;
         public const float CHI_BLAST_RANGE = DEFAULT_RANGE * 4;
-        public const float CHI_BLAST_PERCENT = 0.5f;
+        public const float CHI_BLAST_PERCENT = 0.4f;
         public const int CHI_BLAST_DURATION = 3000;
 
         //public const float[] WAVE_HEALTH_MODS = new float[] { 1f, 1.55f, 1.6f, 1.8f, 1.9f, 1.75f, 1.7f, 1.75f, 1.75f, 1.95f };

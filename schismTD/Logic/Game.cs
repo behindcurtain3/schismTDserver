@@ -1334,7 +1334,7 @@ namespace schismTD
                             {
                                 int life = cr.Life;
                                 
-                                life += cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses / 100);
+                                life += cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100);
 
                                 if (life > cr.StartingLife)
                                     life = cr.StartingLife;
@@ -1345,7 +1345,7 @@ namespace schismTD
                             // damage
                             else
                             {
-                                cr.Life -= cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses / 100);
+                                cr.Life -= cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100);
                             }
                         }
                     }
@@ -1382,6 +1382,7 @@ namespace schismTD
 
                     p.Mana -= (int)Math.Round(p.ChiBlastCost);
                     p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                    p.ChiBlastUses++;
                 }
             }
         }
