@@ -1323,6 +1323,20 @@ namespace schismTD
 
                 lock (targets)
                 {
+                    Boolean isMagicCreepPresent = false;
+                    List<Creep> magicCreeps = targets.FindAll(delegate(Creep creep) { return creep.Type == "Magic"; });
+
+                    foreach(Creep cr in magicCreeps)
+                    {
+                        if (cr.getDistance(position) <= Settings.CHI_BLAST_RANGE)
+                        {
+                            isMagicCreepPresent = true;
+                            break;
+                        }
+                    }
+
+                    float percent =  Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100;
+
                     foreach (Creep cr in targets)
                     {
                         float d = cr.getDistance(position);
@@ -1334,7 +1348,7 @@ namespace schismTD
                             {
                                 int life = cr.Life;
                                 
-                                life += cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100);
+                                life += (int)(cr.StartingLife * percent);
 
                                 if (life > cr.StartingLife)
                                     life = cr.StartingLife;
@@ -1345,7 +1359,10 @@ namespace schismTD
                             // damage
                             else
                             {
-                                cr.Life -= cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100);
+                                if(isMagicCreepPresent)
+                                    cr.Life -= (int)(cr.StartingLife * (percent - 0.2f));
+                                else
+                                    cr.Life -= (int)(cr.StartingLife * percent);
                             }
                         }
                     }

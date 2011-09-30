@@ -50,8 +50,8 @@ namespace schismTD
 
         public override void onHit(string towerType, int damage)
         {
-            if (towerType == "Spell")
-                damage = (int)(damage * 0.5);
+            //if (towerType == "Spell")
+            //    damage = (int)(damage * 0.5);
 
             base.onHit(towerType, damage);
         }
