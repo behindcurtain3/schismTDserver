@@ -968,6 +968,9 @@ namespace schismTD
             if (c.Tower == null)
                 return;
 
+            if (c.Tower.hasEffect("stun"))
+                return;
+
             // Update the players mana
             p.Mana += c.Tower.SellValue;
 
@@ -1109,6 +1112,9 @@ namespace schismTD
                 return;
 
             if (c.Tower == null)
+                return;
+
+            if (c.Tower.hasEffect("stun"))
                 return;
 
             int choice = m.GetInt(2);
