@@ -230,6 +230,8 @@ namespace schismTD
             if (Finished)
                 return;
 
+            mIsFinished = true;
+
             int gameResult;
 
             // Score the game
@@ -253,8 +255,6 @@ namespace schismTD
                 mLoser = White;
             }
 
-            updatePlayerObjects();
-
             if (gameResult != Result.DRAW)
             {
                 mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
@@ -264,9 +264,8 @@ namespace schismTD
                 mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
             }
 
+            updatePlayerObjects();
             updateStats();
-
-            mIsFinished = true;
         }
 
         public void update(long dt)
@@ -1507,6 +1506,10 @@ namespace schismTD
 
         public void updatePlayerObjects()
         {
+
+            Black.GetPlayerObject(savePlayer);
+            White.GetPlayerObject(savePlayer);
+            /*
             // Update player objects
             lock (Black.PlayerObject)
             {
@@ -1532,11 +1535,22 @@ namespace schismTD
 
                 White.PlayerObject.Save();
             }
+             */
+        }
+
+        public void savePlayer(DatabaseObject playerObject)
+        {
+            playerObject.Set(Properties.LastPlayed, DateTime.Now);
+            //if(!playerObject.Contains(Properties.MaxDamageDealt))
+            //    playerObject.Set(Properties.MaxDamageDealt, 
+
+            Console.WriteLine(playerObject.Key + " player object loaded for save.");
         }
 
         public void updateStats()
         {
-            mCtx.PlayerIO.BigDB.Load("Stats", "0.2", onStatLoad, onStatLoadError);
+            if(!mCtx.InDevelopmentServer)
+                mCtx.PlayerIO.BigDB.Load("Stats", "0.2", onStatLoad, onStatLoadError);
         }
 
         public void onStatLoad(DatabaseObject result)

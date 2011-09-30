@@ -30,7 +30,7 @@ namespace schismTD
         // This method is called when an instance of your the game is created
         public override void GameStarted()
         {
-            this.PreloadPlayerObjects = true;
+            //this.PreloadPlayerObjects = true;
 
             mDebugImage = new Bitmap(800, 600);
 
