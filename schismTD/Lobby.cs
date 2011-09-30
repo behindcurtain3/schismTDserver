@@ -26,7 +26,10 @@ namespace schismTD
                         continue;
 
                     playersAdded++;
-                    p.Send(Messages.MATCH_ID, gameId.ToString());
+                    if (playersAdded == 1)
+                        p.Send(Messages.MATCH_CREATE, gameId.ToString());
+                    else
+                        p.Send(Messages.MATCH_ID, gameId.ToString());
 
                     lock (idsSentTo)
                         idsSentTo.Add(p);
