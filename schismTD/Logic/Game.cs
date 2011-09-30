@@ -1136,15 +1136,15 @@ namespace schismTD
                     }
                     else if(choice == 2)
                     {
-                        if (p.Mana < Costs.SLOW)
+                        if (p.Mana < Costs.SPELL)
                             return;
 
                         // Remove the old tower
                         removeTower(p, c);
 
-                        p.Mana -= Costs.SLOW;
+                        p.Mana -= Costs.SPELL;
                         lock (c.Tower)
-                            c.Tower = new SlowTower(this, p, c.Player.Opponent, c.Position);
+                            c.Tower = new SpellTower(this, p, c.Player.Opponent, c.Position);
 
                         addTower(p, c);
                     }
@@ -1178,18 +1178,18 @@ namespace schismTD
                         addTower(p, c);
                     }
                     break;
-                case Tower.SLOW:
+                case Tower.SPELL:
                     // Spell
                     if (choice == 1)
                     {
-                        if (p.Mana < Costs.SPELL)
+                        if (p.Mana < Costs.SLOW)
                             return;
 
                         removeTower(p, c);
-                        p.Mana -= Costs.SPELL;
+                        p.Mana -= Costs.SLOW;
 
                         lock (c.Tower)
-                            c.Tower = new SpellTower(this, p, c.Player.Opponent, c.Position);
+                            c.Tower = new AOESlowTower(this, p, c.Player.Opponent, c.Position);
 
                         addTower(p, c);
                     }
@@ -1306,43 +1306,54 @@ namespace schismTD
             if (p.Mana < p.ChiBlastCost)
                 return;
 
-            String id = m.GetString(0);
-            Creep c = Black.Creeps.Find(delegate(Creep creep) { return creep.ID == id; });
+            if (m.Count != 2)
+                return;
 
-            if(c == null)
-                c = White.Creeps.Find(delegate(Creep creep) { return creep.ID == id; });
+            PointF position = new PointF(m.GetInt(0), m.GetInt(1));
+
+            Cell c = findCellByPoint(position);
 
             if (c != null)
             {
-                // Heal
+                List<Creep> targets;
                 if (c.Player == p)
-                {
-                    int life = c.Life;
-                    life += 30;
-
-                    if (life > c.StartingLife)
-                        life = c.StartingLife;
-
-                    c.Life = life;
-
-                    p.Mana -= (int)Math.Round(p.ChiBlastCost);
-                    p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
-                }
-                // Damage
+                    targets = p.Opponent.Creeps;
                 else
+                    targets = p.Creeps;
+
+                lock (targets)
                 {
-                    int life = c.Life;
-                    life -= 30;
+                    foreach (Creep cr in targets)
+                    {
+                        float d = cr.getDistance(position);
 
-                    if (life > c.StartingLife)
-                        life = c.StartingLife;
+                        if (d <= Settings.CHI_BLAST_RANGE)
+                        {
+                            // heal
+                            if (cr.Player == p)
+                            {
+                                int life = cr.Life;
+                                
+                                life += cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses / 100);
 
-                    c.Life = life;
+                                if (life > cr.StartingLife)
+                                    life = cr.StartingLife;
 
-                    p.Mana -= (int)Math.Round(p.ChiBlastCost);
-                    p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                                cr.Life = life;
+                            }
+
+                            // damage
+                            else
+                            {
+                                cr.Life -= cr.StartingLife * (int)(Settings.CHI_BLAST_PERCENT + p.ChiBlastUses / 100);
+                            }
+                        }
+                    }
                 }
-                mCtx.Broadcast(Messages.GAME_SPELL_CREEP, c.ID);
+                p.Mana -= (int)Math.Round(p.ChiBlastCost);
+                p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                p.ChiBlastUses++;
+                mCtx.Broadcast(Messages.GAME_SPELL_CREEP, position.X, position.Y);
             }
         }
 
@@ -1355,7 +1366,9 @@ namespace schismTD
                 return;
 
             int index = m.GetInt(0);
-            Cell c = Board.Cells.Find(delegate(Cell cell) { return cell.Index == index; });
+            Cell c;
+            lock(Board.Cells)
+                c = Board.Cells.Find(delegate(Cell cell) { return cell.Index == index; });
 
             if (c != null)
             {
@@ -1364,7 +1377,7 @@ namespace schismTD
 
                 if (c.Tower != null)
                 {
-                    c.Tower.addEffect(new StunEffect(c.Tower));
+                    c.Tower.addEffect(new StunEffect(c.Tower, Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 100)));
                     mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Index);
 
                     p.Mana -= (int)Math.Round(p.ChiBlastCost);

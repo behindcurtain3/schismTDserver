@@ -129,6 +129,12 @@ namespace schismTD
             set;
         }
 
+        public float ChiBlastUses
+        {
+            get;
+            set;
+        }
+
         public void reset(Game game)
         {
             mGame = game;
@@ -149,6 +155,7 @@ namespace schismTD
             WavePosition = 0;
 
             ChiBlastCost = Settings.CHI_BLAST_INITIAL;
+            ChiBlastUses = 0;
         }
 
     }

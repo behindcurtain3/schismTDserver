@@ -76,6 +76,7 @@
     <Compile Include="Projectiles\SniperProjectile.cs" />
     <Compile Include="Projectiles\SpellProjectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Towers\AOESlowTower.cs" />
     <Compile Include="Towers\DamageBoostTower.cs" />
     <Compile Include="Towers\FireRateBoostTower.cs" />
     <Compile Include="Towers\PulseTower.cs" />

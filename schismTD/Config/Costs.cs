@@ -10,10 +10,10 @@ namespace schismTD
     {
         public const int BASIC = 10;
         public const int RAPID_FIRE = 90;
-        public const int SLOW = 90;
+        public const int SLOW = 180;
         public const int SNIPER = 180;
         public const int PULSE = 180;
-        public const int SPELL = 180;
+        public const int SPELL = 90;
         public const int SEED = 180;
         public const int DAMAGE_BOOST = 180;
         public const int RANGE_BOOST = 10;
