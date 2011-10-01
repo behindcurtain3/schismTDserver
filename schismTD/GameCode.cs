@@ -27,6 +27,9 @@ namespace schismTD
 
         private Stopwatch mStopWatch = new Stopwatch();
 
+        private Player p1 = null;
+        private Player p2 = null;
+
         // This method is called when an instance of your the game is created
         public override void GameStarted()
         {
@@ -43,33 +46,16 @@ namespace schismTD
             {
                 if (mGame != null)
                 {
-                    lock (mStopWatch)
+                    if (mGame.Init)
                     {
-                        mStopWatch.Stop(); // Hammertime!
-                    }
-
-                    mGame.update(mStopWatch.ElapsedMilliseconds);
-                    mStopWatch.Reset();
-                    mStopWatch.Start();
-                }
-                else
-                {
-                    if (PlayerCount >= 2)
-                    {
-                        Player p1 = null;
-                        Player p2 = null;
-                        int count = 0;
-                        foreach (Player p in Players)
+                        lock (mStopWatch)
                         {
-                            if (count == 0)
-                                p1 = p;
-                            else if (count == 1)
-                                p2 = p;
-
-                            count++;
+                            mStopWatch.Stop(); // Hammertime!
                         }
 
-                        mGame = new Game(this, p1, p2);
+                        mGame.update(mStopWatch.ElapsedMilliseconds);
+                        mStopWatch.Reset();
+                        mStopWatch.Start();
                     }
                 }
             }, 40);
@@ -94,6 +80,17 @@ namespace schismTD
 
             // this is how you send a player a message
             player.Send(Messages.GAME_JOINED);
+
+            if (p1 == null)
+                p1 = player;
+            else if (p2 == null)
+                p2 = player;
+
+            if (p1 != null && p2 != null)
+            {
+                Broadcast(Messages.CHAT, "Init game");
+                mGame = new Game(this, p1, p2);
+            }
         }
 
         // This method is called when a player leaves the game

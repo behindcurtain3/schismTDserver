@@ -111,8 +111,15 @@ namespace schismTD
             set;
         }
 
+        public Boolean Init
+        {
+            get;
+            set;
+        }
+
         public Game(GameCode gc, Player p1, Player p2)
         {
+            Init = false;
             mCtx = gc;
             Stats = new GameStats();
             Black = p1;
@@ -151,15 +158,18 @@ namespace schismTD
             mWaveTimerPosition = 0;
 
             Ready = false;
+            Init = true;
+            mCtx.Broadcast(Messages.CHAT, "Init complete");
         }
 
         public void setup()
         {
             mIsGameSetup = true;
 
-            Console.WriteLine("Running setup...");
-            Console.WriteLine("Black: " + Black.ConnectUserId + " --- " + Black.Id);
-            Console.WriteLine("White: " + White.ConnectUserId + " --- " + White.Id);
+            mCtx.Broadcast(Messages.CHAT, "Setting up game");
+            //Console.WriteLine("Running setup...");
+            //Console.WriteLine("Black: " + Black.ConnectUserId + " --- " + Black.Id);
+            //Console.WriteLine("White: " + White.ConnectUserId + " --- " + White.Id);
             Black.Send(Messages.GAME_INFO, "black", Black.Id, White.Id);
             White.Send(Messages.GAME_INFO, "white", White.Id, Black.Id);
 
@@ -183,22 +193,34 @@ namespace schismTD
                     White.QueuedWaves.Enqueue(w);
             }
 
-            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-            Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
-
-            foreach (Wave w in Black.OnDeckWaves)
+            lock (Black.OnDeckWaves)
             {
-                w.queueClient();
+                lock (Black.QueuedWaves)
+                {
+                    Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                    Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                    Black.OnDeckWaves.Add(Black.QueuedWaves.Dequeue());
+                }
+
+                foreach (Wave w in Black.OnDeckWaves)
+                {
+                    w.queueClient();
+                }
             }
 
-            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-            White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
-
-            foreach (Wave w in White.OnDeckWaves)
+            lock (White.OnDeckWaves)
             {
-                w.queueClient();
+                lock (White.QueuedWaves)
+                {
+                    White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                    White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                    White.OnDeckWaves.Add(White.QueuedWaves.Dequeue());
+                }
+
+                foreach (Wave w in White.OnDeckWaves)
+                {
+                    w.queueClient();
+                }
             }
 
             // synch the paths
@@ -215,6 +237,7 @@ namespace schismTD
             mCtx.AddMessageHandler(Messages.GAME_SPELL_CREEP, spellCreep);
             mCtx.AddMessageHandler(Messages.GAME_SPELL_TOWER, spellTower);
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
+            mCtx.Broadcast(Messages.CHAT, "Setup complete");
         }
 
         public void start()
@@ -223,6 +246,7 @@ namespace schismTD
             mTotalTimeElapsed = 0;
             mWaveTimerPosition = mWaveTimerLength + 1;
             mCtx.Broadcast(Messages.GAME_START);
+            mCtx.Broadcast(Messages.CHAT, "Game is starting!");
         }
 
         public void finish()
@@ -1599,52 +1623,52 @@ namespace schismTD
             if (result != null)
             {
                 if(result.Contains("games_played"))
-                    result.Set("games_played", result.GetUInt("games_played") + 1);
+                    result.Set("games_played", result.GetInt("games_played") + 1);
                 else
                     result.Set("games_played", 1);
 
                 if (result.Contains("towers_basic"))
-                    result.Set("towers_basic", result.GetUInt("towers_basic") + Stats.Basic);
+                    result.Set("towers_basic", result.GetInt("towers_basic") + Stats.Basic);
                 else
                     result.Set("towers_basic", Stats.Basic);
 
                 if (result.Contains("towers_rapidfire"))
-                    result.Set("towers_rapidfire", result.GetUInt("towers_rapidfire") + Stats.RapidFire);
+                    result.Set("towers_rapidfire", result.GetInt("towers_rapidfire") + Stats.RapidFire);
                 else
                     result.Set("towers_rapidfire", Stats.RapidFire);
 
                 if(result.Contains("towers_sniper"))
-                    result.Set("towers_sniper", result.GetUInt("towers_sniper") + Stats.Sniper);
+                    result.Set("towers_sniper", result.GetInt("towers_sniper") + Stats.Sniper);
                 else
                     result.Set("towers_sniper", Stats.Sniper);
 
                 if(result.Contains("towers_pulse"))
-                    result.Set("towers_pulse", result.GetUInt("towers_pulse") + Stats.Pulse);
+                    result.Set("towers_pulse", result.GetInt("towers_pulse") + Stats.Pulse);
                 else
                     result.Set("towers_pulse", Stats.Pulse);
 
                 if(result.Contains("towers_slow"))
-                    result.Set("towers_slow", result.GetUInt("towers_slow") + Stats.Slow);
+                    result.Set("towers_slow", result.GetInt("towers_slow") + Stats.Slow);
                 else
                     result.Set("towers_slow", Stats.Slow);
 
                 if(result.Contains("towers_spell"))
-                    result.Set("towers_spell", result.GetUInt("towers_spell") + Stats.Spell);
+                    result.Set("towers_spell", result.GetInt("towers_spell") + Stats.Spell);
                 else
                     result.Set("towers_spell", Stats.Spell);
 
                 if(result.Contains("towers_damageboost"))
-                    result.Set("towers_damageboost", result.GetUInt("towers_damageboost") + Stats.DamageBoost);
+                    result.Set("towers_damageboost", result.GetInt("towers_damageboost") + Stats.DamageBoost);
                 else
                     result.Set("towers_damageboost", Stats.DamageBoost);
 
                 if(result.Contains("towers_rangeboost"))
-                    result.Set("towers_rangeboost", result.GetUInt("towers_rangeboost") + Stats.RangeBoost);
+                    result.Set("towers_rangeboost", result.GetInt("towers_rangeboost") + Stats.RangeBoost);
                 else
                     result.Set("towers_rangeboost", Stats.RangeBoost);
 
                 if(result.Contains("towers_firerateboost"))
-                    result.Set("towers_firerateboost", result.GetUInt("towers_firerateboost") + Stats.FireRateBoost);
+                    result.Set("towers_firerateboost", result.GetInt("towers_firerateboost") + Stats.FireRateBoost);
                 else
                     result.Set("towers_firerateboost", Stats.FireRateBoost);
 

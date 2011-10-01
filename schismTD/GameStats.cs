@@ -7,55 +7,55 @@ namespace schismTD
 {
     public class GameStats
     {
-        public uint Basic
+        public int Basic
         {
             get;
             set;
         }
 
-        public uint RapidFire
+        public int RapidFire
         {
             get;
             set;
         }
 
-        public uint Sniper
+        public int Sniper
         {
             get;
             set;
         }
 
-        public uint Pulse
+        public int Pulse
         {
             get;
             set;
         }
 
-        public uint Slow
+        public int Slow
         {
             get;
             set;
         }
 
-        public uint Spell
+        public int Spell
         {
             get;
             set;
         }
 
-        public uint DamageBoost
+        public int DamageBoost
         {
             get;
             set;
         }
 
-        public uint RangeBoost
+        public int RangeBoost
         {
             get;
             set;
         }
 
-        public uint FireRateBoost
+        public int FireRateBoost
         {
             get;
             set;
