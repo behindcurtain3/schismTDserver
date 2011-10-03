@@ -25,7 +25,7 @@ namespace schismTD
 
             while (!foundTarget)
             {
-                if (sw.ElapsedMilliseconds > 60)
+                if (sw.ElapsedMilliseconds > 80)
                 {
                     Console.WriteLine("Taking too long for: " + start.Index);
                     Console.WriteLine("Openlist: " + openList.Count);

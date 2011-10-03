@@ -85,8 +85,7 @@ namespace schismTD
                 {
                     HealthModifier = HealthModifier * HEALTH_MODS[i - 1];
                 }
-                Console.WriteLine("Wave #" + mNumber + " with HM of: " + HealthModifier);
-                //HealthModifier = (float)Math.Pow((double)Settings.WAVE_HEALTH_MOD, Number - 1);
+
                 ArmorModifier = (float)Math.Pow((double)Settings.WAVE_ARMOR_MOD, Number - 1);
                 WorthModifier = (float)Math.Pow((double)Settings.WAVE_WORTH_MOD, Number - 1);
             }
@@ -220,11 +219,6 @@ namespace schismTD
             Console.WriteLine("AM: " + ArmorModifier);
             Console.WriteLine("WM: " + WorthModifier);
 
-            Creep cr = new ArmorCreep(mPlayer, mOpponent, StartingPosition, mGame.Board.BlackPath);
-            //debugCreep(cr);
-            cr = new ChigenCreep(mPlayer, mOpponent, StartingPosition, mGame.Board.BlackPath);
-            debugCreep(cr);
-
         }
 
         public void debugCreep(Creep cr)
@@ -258,7 +252,6 @@ namespace schismTD
                         c.Life = (int)Math.Round(HealthModifier * 0.33);
                     else
                         c.Life = (int)Math.Round(HealthModifier * c.Points);
-                    Console.WriteLine("I am a " + c.Type + " creep with " + c.Life + " health.");
 
                     c.StartingLife = c.Life;
 
@@ -266,7 +259,7 @@ namespace schismTD
                     c.Worth = (int)(c.Worth * WorthModifier);
 
                     if (c is ChigenCreep)
-                        (c as ChigenCreep).ChiAdded *= Number * 2;
+                        (c as ChigenCreep).ChiAdded *= (int)Math.Ceiling(Number / 2f);
 
                     lock(mPlayer.Creeps)
                         mPlayer.Creeps.Add(c);
