@@ -34,6 +34,7 @@ namespace schismTD
             Life = (int)DEFAULT_LIFE;
             StartingLife = Life;
 
+            Points = DEFAULT_POINTS;
             Worth *= DEFAULT_POINTS;
 
             mRegenTimer = 1000;
@@ -62,7 +63,7 @@ namespace schismTD
                 {
                     foreach (Creep cr in Player.Creeps)
                     {
-                        if (cr == this)
+                        if (cr == this || cr.Type == "Regen")
                             continue;
 
                         if (cr.getDistance(Position) <= Range)

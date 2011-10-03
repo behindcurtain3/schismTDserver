@@ -162,6 +162,12 @@ namespace schismTD
         }
         private int mWorth;
 
+        public int Points
+        {
+            get;
+            set;
+        }
+
         public String Type
         {
             get;
@@ -183,7 +189,8 @@ namespace schismTD
             CurrentPath = new Path(p);
             Worth = 5;
             Armor = 0;
-            
+            Points = 1;
+
             Height = Settings.BOARD_CELL_HEIGHT;
             Width = Settings.BOARD_CELL_WIDTH;
 

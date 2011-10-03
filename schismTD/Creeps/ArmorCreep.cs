@@ -23,6 +23,7 @@ namespace schismTD
             Life = DEFAULT_LIFE;
             StartingLife = Life;
 
+            Points = DEFAULT_POINTS;
             Worth *= DEFAULT_POINTS;
 
             Armor = DEFAULT_ARMOR;

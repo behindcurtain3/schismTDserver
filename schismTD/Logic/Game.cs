@@ -1211,7 +1211,7 @@ namespace schismTD
                     }
                     break;
                 case Tower.SPELL:
-                    // Spell
+                    // AOE Slow
                     if (choice == 1)
                     {
                         if (p.Mana < Costs.SLOW)
@@ -1392,7 +1392,7 @@ namespace schismTD
                             else
                             {
                                 if(isMagicCreepPresent)
-                                    cr.Life -= (int)(cr.StartingLife * (percent - 0.2f));
+                                    cr.Life -= (int)(cr.StartingLife * (percent - 0.4f));
                                 else
                                     cr.Life -= (int)(cr.StartingLife * percent);
                             }

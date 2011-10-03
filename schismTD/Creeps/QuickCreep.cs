@@ -21,6 +21,7 @@ namespace schismTD
             Damage = DEFAULT_DAMAGE;
             Life = DEFAULT_LIFE;
             StartingLife = Life;
+            Points = DEFAULT_POINTS;
         }
     }
 }
