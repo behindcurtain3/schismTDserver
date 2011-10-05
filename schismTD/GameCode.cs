@@ -33,7 +33,7 @@ namespace schismTD
         // This method is called when an instance of your the game is created
         public override void GameStarted()
         {
-            //this.PreloadPlayerObjects = true;
+            PreloadPlayerObjects = true;
 
             mDebugImage = new Bitmap(800, 600);
 
@@ -77,6 +77,8 @@ namespace schismTD
         public override void UserJoined(Player player)
         {
             Console.WriteLine(player.ConnectUserId + " has joined the game.");
+            if (player.JoinData.ContainsKey("guest"))
+                Console.WriteLine(player.JoinData["guest"]);
 
             // this is how you send a player a message
             player.Send(Messages.GAME_JOINED);

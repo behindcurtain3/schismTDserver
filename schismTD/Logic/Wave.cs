@@ -149,41 +149,78 @@ namespace schismTD
 
         public void setup(int waveNum)
         {
-            switch (waveNum)
+            if (mPlayer.PlayerObject.Contains("Waves"))
             {
-                case 1:
-                    john1();
-                    break;
-                case 2:
-                    john2();
-                    break;
-                case 3:
-                    john3();
-                    break;
-                case 4:
-                    john4();
-                    break;
-                case 5:
-                    john5();
-                    break;
-                case 6:
-                    john6();
-                    break;
-                case 7:
-                    john7();
-                    break;
-                case 8:
-                    john8();
-                    break;
-                case 9:
-                    john9();
-                    break;
-                case 10:
-                    john10();
-                    break;
-                default:
-                    fillWithRandom();
-                    break;
+                lock (SpawnQueue)
+                {
+                    SpawnQueue.Clear();
+
+                    DatabaseArray wave = (DatabaseArray)mPlayer.PlayerObject.GetArray("Waves")[waveNum - 1];
+
+                    for (int i = 0; i < wave.Count; i++)
+                    {
+                        switch ((String)wave[i])
+                        {
+                            case "Armor":
+                                addCreep(new ArmorCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                                break;
+                            case "Chigen":
+                                addCreep(new ChigenCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                                break;
+                            case "Magic":
+                                addCreep(new MagicCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                                break;
+                            case "Quick":
+                                addCreep(new QuickCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                                break;
+                            case "Regen":
+                                addCreep(new RegenCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                                break;
+                            case "Swarm":
+                                addCreep(new SwarmCreep(mPlayer, mOpponent, StartingPosition, getCurrentPath()));
+                                break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                switch (waveNum)
+                {
+                    case 1:
+                        john1();
+                        break;
+                    case 2:
+                        john2();
+                        break;
+                    case 3:
+                        john3();
+                        break;
+                    case 4:
+                        john4();
+                        break;
+                    case 5:
+                        john5();
+                        break;
+                    case 6:
+                        john6();
+                        break;
+                    case 7:
+                        john7();
+                        break;
+                    case 8:
+                        john8();
+                        break;
+                    case 9:
+                        john9();
+                        break;
+                    case 10:
+                        john10();
+                        break;
+                    default:
+                        fillWithRandom();
+                        break;
+                }
             }
 
             long interval = mWaveTimeWindow / SpawnQueue.Count;

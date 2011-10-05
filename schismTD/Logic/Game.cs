@@ -41,6 +41,7 @@ namespace schismTD
 
         private long mTotalTimeElapsed = 0;
         private Boolean mIsGameSetup = false;
+        private Boolean mIsUpdating = false;
 
         private Dictionary<int, List<Creep>> creepsThatNeedPaths;
 
@@ -297,12 +298,18 @@ namespace schismTD
 
         public void update(long dt)
         {
+            if (mIsUpdating)
+                return;
+
+            mIsUpdating = true;
+
             if (!Ready)
             {
                 if (Black != null && White != null)
                 {
                     Ready = true;
                 }
+                mIsUpdating = false;
                 return;
             }
 
@@ -343,21 +350,17 @@ namespace schismTD
                         if (Black.Creeps.Count == 0 && White.Creeps.Count == 0)
                         {
                             finish();
+                            mIsUpdating = false;
                             return;
                         }
                     }
 
                     // Check if anyone has died
-                    if (Black.Life <= 0)
+                    if (Black.Life <= 0 || White.Life <= 0)
                     {
                         // White wins
                         finish();
-                        return;
-                    }
-                    if (White.Life <= 0)
-                    {
-                        // Black wins
-                        finish();
+                        mIsUpdating = false;
                         return;
                     }
 
@@ -601,6 +604,7 @@ namespace schismTD
                     }
                 }
             }
+            mIsUpdating = false;
         }
 
         private void invalidTower(Player p, Cell c, int x, int y)

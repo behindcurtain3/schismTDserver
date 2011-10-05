@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\Properties.cs" />
+    <Compile Include="Config\WaveBuilderMessages.cs" />
     <Compile Include="Creeps\ArmorCreep.cs" />
     <Compile Include="Creeps\ChigenCreep.cs" />
     <Compile Include="Creeps\MagicCreep.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Towers\Tower.cs" />
     <Compile Include="Vector2.cs" />
     <Compile Include="Logic\Wave.cs" />
+    <Compile Include="WaveBuilderRoom.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Todo.txt" />
