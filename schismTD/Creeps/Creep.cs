@@ -87,7 +87,7 @@ namespace schismTD
                 {
                     Alive = false;
                     Opponent.Mana += Worth; // Increase the opponents mana
-                    Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+                    Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID, "Death");
                 }
                 else
                 {
@@ -258,7 +258,7 @@ namespace schismTD
                             // Deal damage
                             Opponent.Life -= Damage;
 
-                            Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+                            Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID, "Attacked");
                         }
                         else
                         {
@@ -350,7 +350,7 @@ namespace schismTD
             {
                 Alive = false;
                 Opponent.Mana += Worth; // Increase the opponents mana
-                Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID);
+                Player.Game.Context.Broadcast(Messages.GAME_CREEP_REMOVE, ID, "Death");
             }
             else
             {
