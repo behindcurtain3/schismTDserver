@@ -282,8 +282,9 @@ namespace schismTD
                 {
                     Creep c;
                     lock(SpawnQueue)
-                        c = SpawnQueue.Dequeue();         
+                        c = SpawnQueue.Dequeue();
 
+                    c.Wave = Number;
                     c.CurrentPath = new Path(getCurrentPath());
                     if (c is SwarmCreep)
                         c.Life = (int)Math.Round(HealthModifier * 0.33);
@@ -293,7 +294,10 @@ namespace schismTD
                     c.StartingLife = c.Life;
 
                     c.Armor = (int)(c.Armor * ArmorModifier);
-                    c.Worth = (int)(c.Worth * WorthModifier);
+                    c.Worth = (3 * ((-10 / (Number + 1)) + 6)) * c.Points;//; BASE * ((-10 / (X + 1)) + 6)(int)(c.Worth * WorthModifier);
+
+                    if (c is SwarmCreep)
+                        c.Worth /= 3;
 
                     if (c is ChigenCreep)
                         (c as ChigenCreep).ChiAdded *= (int)Math.Ceiling(Number / 2f);

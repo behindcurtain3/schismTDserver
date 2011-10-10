@@ -54,6 +54,7 @@
     <Compile Include="Effects\RangeBoostEffect.cs" />
     <Compile Include="Effects\StunEffect.cs" />
     <Compile Include="GameStats.cs" />
+    <Compile Include="Logic\EloRating.cs" />
     <Compile Include="Pathfinding\ANode.cs" />
     <Compile Include="Pathfinding\AStar.cs" />
     <Compile Include="Logic\Board.cs" />

@@ -24,7 +24,7 @@ namespace schismTD
         public const int DEFAULT_MATCH_COOLDOWN = 10;
 
         // Game
-        public const int DEFAULT_GAME_COUNTDOWN = 15;
+        public const int DEFAULT_GAME_COUNTDOWN = 22;
         public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
         public const int DEFAULT_MANA = 100;
@@ -49,13 +49,13 @@ namespace schismTD
         public const int WAVE_WINDOW = 30000; // Length of time a wave has to spawn its creeps
         public const float WAVE_HEALTH_MOD = 1.7f;//1.58f;
         public const float WAVE_ARMOR_MOD = 1.2f;
-        public const float WAVE_WORTH_MOD = 1.45f;//1.3f;
+        public const float WAVE_WORTH_MOD = 1.35f;//1.3f; BASE * ((-10 / (X + 1)) + 6)
 
         // Chi blast
         public const float CHI_BLAST_MOD = 1.1f;
         public const int CHI_BLAST_INITIAL = 50;
         public const float CHI_BLAST_RANGE = DEFAULT_RANGE * 4;
-        public const float CHI_BLAST_PERCENT = 0.4f;
+        public const float CHI_BLAST_PERCENT = 0.8f;
         public const int CHI_BLAST_DURATION = 3000;
 
         // Effects

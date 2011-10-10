@@ -180,6 +180,12 @@ namespace schismTD
             set;
         }
 
+        public int Wave
+        {
+            get;
+            set;
+        }
+
         private long mActivationTime;
 
         public Creep(Player player, Player opponent, Vector2 pos, Path p)

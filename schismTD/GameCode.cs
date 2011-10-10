@@ -78,7 +78,16 @@ namespace schismTD
         {
             Console.WriteLine(player.ConnectUserId + " has joined the game.");
             if (player.JoinData.ContainsKey("guest"))
-                Console.WriteLine(player.JoinData["guest"]);
+            {
+                Boolean guest;
+                Boolean.TryParse(player.JoinData["guest"], out guest);
+                player.isGuest = guest;
+            }
+
+            if (player.JoinData.ContainsKey("name"))
+                player.Name = player.JoinData["name"];
+            else
+                player.Name = "Guest";
 
             // this is how you send a player a message
             player.Send(Messages.GAME_JOINED);
@@ -102,16 +111,9 @@ namespace schismTD
 
             if (mGame != null)
             {
-                if (mGame.Black == player || mGame.White == player)
-                {
-                    if (!mGame.Finished && mGame.Started)
-                    {
-                        mGame.finishEarly(player);
-                    }
-                    else
-                    {
-                        mGame.finish();
-                    }
+                if ((mGame.Black == player || mGame.White == player) && !mGame.Finished)
+                { 
+                    mGame.finishEarly(player);
                 }
             }
         }

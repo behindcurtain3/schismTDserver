@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using schismTD.Logic;
 using PlayerIO.GameLibrary;
 
 namespace schismTD
@@ -161,6 +162,9 @@ namespace schismTD
             Ready = false;
             Init = true;
             mCtx.Broadcast(Messages.CHAT, "Init complete");
+            Black.Send(Messages.GAME_INFO, "black", Black.Id, White.Id);
+            White.Send(Messages.GAME_INFO, "white", White.Id, Black.Id);
+            mCtx.Broadcast(Messages.GAME_USER_INFO, Black.Name, White.Name);
         }
 
         public void setup()
@@ -168,11 +172,6 @@ namespace schismTD
             mIsGameSetup = true;
 
             mCtx.Broadcast(Messages.CHAT, "Setting up game");
-            //Console.WriteLine("Running setup...");
-            //Console.WriteLine("Black: " + Black.ConnectUserId + " --- " + Black.Id);
-            //Console.WriteLine("White: " + White.ConnectUserId + " --- " + White.Id);
-            Black.Send(Messages.GAME_INFO, "black", Black.Id, White.Id);
-            White.Send(Messages.GAME_INFO, "white", White.Id, Black.Id);
 
             // Reset both players
             Black.reset(this);
@@ -280,19 +279,19 @@ namespace schismTD
                 mLoser = White;
             }
 
-            if (gameResult != Result.DRAW)
-            {
-                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
-            }
-            else
-            {
-                mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, "");
-            }
-
             if (gameResult == Result.DRAW)
                 updatePlayerObjects(true);
             else
                 updatePlayerObjects();
+
+            if (gameResult != Result.DRAW)
+            {
+                mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), "");
+            }
+            else
+            {
+                mCtx.Broadcast(Messages.GAME_FINISHED, -1, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), "");
+            }
             updateStats();
         }
 
@@ -313,14 +312,14 @@ namespace schismTD
                 return;
             }
 
-            if (!Started)
+            if (!Started && !Finished)
             {
                 mCountdownPosition -= dt;
 
                 // Run setup() after counting down for one second
                 if (!mIsGameSetup)
                 {
-                    if (mCountdownPosition < Settings.DEFAULT_GAME_COUNTDOWN * 1000 - 1000)
+                    if (mCountdownPosition < Settings.DEFAULT_GAME_COUNTDOWN * 1000 - 7000)
                     {
                         setup();
                     }
@@ -1321,6 +1320,7 @@ namespace schismTD
                 });
             }
 
+            String oldId = "";
             if (result != null)
             {
                 lock (p.Towers)
@@ -1328,10 +1328,16 @@ namespace schismTD
                     foreach (Tower t in p.Towers)
                     {
                         if (t.Type == Tower.SNIPER)
+                        {
+                            if(t.StaticTarget != null)
+                                oldId = t.StaticTarget.ID;
                             t.StaticTarget = result;
+                        }
                     }
                 }
             }
+            if (oldId != "")
+                mCtx.Broadcast(Messages.GAME_FIRE_REMOVE, oldId);
         }
 
         public void spellCreep(Player p, Message m)
@@ -1371,11 +1377,16 @@ namespace schismTD
                         }
                     }
 
-                    float percent =  Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100;
-
+                    //float percent =  Settings.CHI_BLAST_PERCENT + p.ChiBlastUses * 2 / 100;
+                    float percent;
                     foreach (Creep cr in targets)
                     {
                         float d = cr.getDistance(position);
+
+                        if(cr is SwarmCreep)
+                            percent = (cr.StartingLife * 3) * (Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100));
+                        else
+                            percent = (cr.StartingLife / cr.Points) * (Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100));
 
                         if (d <= Settings.CHI_BLAST_RANGE)
                         {
@@ -1384,7 +1395,7 @@ namespace schismTD
                             {
                                 int life = cr.Life;
                                 
-                                life += (int)(cr.StartingLife * percent);
+                                life += (int)percent;
 
                                 if (life > cr.StartingLife)
                                     life = cr.StartingLife;
@@ -1396,9 +1407,9 @@ namespace schismTD
                             else
                             {
                                 if(isMagicCreepPresent)
-                                    cr.Life -= (int)(cr.StartingLife * (percent - 0.4f));
+                                    cr.Life -= (int)(percent - (percent * 0.4f));
                                 else
-                                    cr.Life -= (int)(cr.StartingLife * percent);
+                                    cr.Life -= (int)percent;
                             }
                         }
                     }
@@ -1528,15 +1539,28 @@ namespace schismTD
                 mLoser = White;
                 msg = "White has left the game.";
             }
+            mLoser.Life = 0;
 
             updatePlayerObjects();
 
             mIsFinished = true;
-            mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, msg);
+            mCtx.Broadcast(Messages.GAME_FINISHED, mWinner.Id, Black.Life, White.Life, Black.DamageDealt, White.DamageDealt, Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), msg);
         }
 
         public void updatePlayerObjects(Boolean genericSave = false)
         {
+            // Update ratings
+            if (!Black.PlayerObject.Contains("rating"))
+                Black.PlayerObject.Set("rating", (double)1500);
+            if (!White.PlayerObject.Contains("rating"))
+                White.PlayerObject.Set("rating", (double)1500);
+
+            EloRating ratings = new EloRating(Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), Black.Life, White.Life);
+            if (Black.ConnectUserId != "simpleAdmin")
+                Black.PlayerObject.Set("rating", ratings.FinalResult1);
+            if (White.ConnectUserId != "simpleAdmin")
+                White.PlayerObject.Set("rating", ratings.FinalResult2);
+
             if (mCtx.InDevelopmentServer)
                 return;
 

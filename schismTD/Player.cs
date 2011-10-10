@@ -22,6 +22,12 @@ namespace schismTD
             set;
         }
 
+        public Boolean isGuest
+        {
+            get;
+            set;
+        }
+
         public Player Opponent
         {
             get

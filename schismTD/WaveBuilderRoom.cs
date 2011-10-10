@@ -17,6 +17,22 @@ namespace schismTD
             base.GameStarted();
         }
 
+        public override bool AllowUserJoin(Player player)
+        {
+            if (player.ConnectUserId == "simpleAdmin")
+            {
+                Console.WriteLine("Hello admin, welcome back.");
+
+                if (player.IPAddress.ToString() != "72.220.227.32")
+                {
+                    player.Send(WaveBuilderMessages.INVALID_WAVE, "Sorry, you are not allowed to edit these waves.\nPlease use your own account.");
+                    return false;
+                }
+            }
+
+            return base.AllowUserJoin(player);
+        }
+
         public override void UserJoined(Player player)
         {
             base.UserJoined(player);

@@ -23,6 +23,7 @@ namespace schismTD
 
         public const String GAME_JOINED = "gj";
         public const String GAME_INFO = "gi";
+        public const String GAME_USER_INFO = "gui";
         public const String GAME_COUNTDOWN = "gc";  // Countdown status at start of each game
         public const String GAME_ACTIVATE = "ga";    // Activates tower building
         public const String GAME_START = "gs";
@@ -45,6 +46,7 @@ namespace schismTD
         public const String GAME_TOWER_EFFECT = "gte";
         
         public const String GAME_FIRE_AT = "gfa";
+        public const String GAME_FIRE_REMOVE = "gfr";
 
         public const String GAME_CREEP_ADD = "gcra";
         public const String GAME_CREEP_REMOVE = "gcrr";
