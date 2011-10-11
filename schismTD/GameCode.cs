@@ -89,6 +89,16 @@ namespace schismTD
             else
                 player.Name = "Guest";
 
+            if (player.JoinData.ContainsKey("id"))
+                player.KongId = player.JoinData["id"];
+            else
+                player.KongId = "";
+
+            if (player.JoinData.ContainsKey("auth_token"))
+                player.KongAuthToken = player.JoinData["auth_token"];
+            else
+                player.KongAuthToken = "";
+
             // this is how you send a player a message
             player.Send(Messages.GAME_JOINED);
 

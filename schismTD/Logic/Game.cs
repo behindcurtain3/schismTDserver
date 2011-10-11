@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using schismTD.Logic;
+using System.Net;
 using PlayerIO.GameLibrary;
 
 namespace schismTD
@@ -169,6 +170,9 @@ namespace schismTD
 
         public void setup()
         {
+            if (Finished)
+                return;
+
             mIsGameSetup = true;
 
             mCtx.Broadcast(Messages.CHAT, "Setting up game");
@@ -242,6 +246,9 @@ namespace schismTD
 
         public void start()
         {
+            if (Finished)
+                return;
+
             mIsStarted = true;
             mTotalTimeElapsed = 0;
             mWaveTimerPosition = mWaveTimerLength + 1;
@@ -1561,6 +1568,35 @@ namespace schismTD
             if (White.ConnectUserId != "simpleAdmin")
                 White.PlayerObject.Set("rating", ratings.FinalResult2);
 
+            if (Black.KongId != "" && Black.KongAuthToken != "")
+            {
+                Dictionary<String, String> postValues = new Dictionary<string, string>();
+                postValues.Add("user_id", Black.KongId);
+                postValues.Add("game_auth_token", Black.KongAuthToken);
+                postValues.Add("api_key", "9c4bf131-a74c-4112-8403-10a6b43b3c1f");
+                postValues.Add("Rating", Black.PlayerObject["rating"].ToString());
+                postValues.Add("MaxDamageDealt", Black.DamageDealt.ToString());
+                if (mWinner == Black)
+                    postValues.Add("MatchesWon", "1");
+                mCtx.PlayerIO.Web.Post("http://www.kongregate.com/api/submit_statistics.json", postValues, onBlackKongStatsResponse);
+            }
+
+            if (White.KongId != "" && White.KongAuthToken != "")
+            {
+                Dictionary<String, String> postValues = new Dictionary<string, string>();
+                postValues.Add("user_id", White.KongId);
+                postValues.Add("game_auth_token", White.KongAuthToken);
+                postValues.Add("api_key", "9c4bf131-a74c-4112-8403-10a6b43b3c1f");
+                postValues.Add("Rating", White.PlayerObject["rating"].ToString());
+                postValues.Add("MaxDamageDealt", White.DamageDealt.ToString());
+                if (mWinner == White)
+                    postValues.Add("MatchesWon", "1");
+                mCtx.PlayerIO.Web.Post("http://www.kongregate.com/api/submit_statistics.json", postValues, onBlackKongStatsResponse);
+            }
+
+            
+
+
             if (mCtx.InDevelopmentServer)
                 return;
 
@@ -1606,6 +1642,11 @@ namespace schismTD
             playerObject.Save();
 
             Console.WriteLine(playerObject.Key + " player object has been saved.");
+        }
+
+        public void onBlackKongStatsResponse(HttpResponse response)
+        {
+            Console.WriteLine(response.Text);
         }
 
         public void saveWinner(DatabaseObject playerObject)

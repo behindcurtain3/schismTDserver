@@ -28,6 +28,18 @@ namespace schismTD
             set;
         }
 
+        public String KongId
+        {
+            get;
+            set;
+        }
+
+        public String KongAuthToken
+        {
+            get;
+            set;
+        }
+
         public Player Opponent
         {
             get
