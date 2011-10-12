@@ -20,7 +20,7 @@ namespace schismTD
                 Tower t = (Tower)Entity;
 
                 // Add half the current base fire rate to the effected fire rate
-                t.EffectedDamage += (int)(t.Damage * 0.5f);
+                t.EffectedDamage += (int)(t.Damage * 1f);
             }
         }
     }

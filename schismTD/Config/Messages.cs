@@ -29,6 +29,7 @@ namespace schismTD
         public const String GAME_START = "gs";
         public const String GAME_FINISHED = "gf";      // The game is finished
         public const String GAME_TIME = "gt";
+        public const String GAME_SET_SPAWN = "gss";
 
         public const String GAME_CELL_ADD = "gca";
 

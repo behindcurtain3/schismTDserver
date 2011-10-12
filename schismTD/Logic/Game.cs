@@ -241,6 +241,10 @@ namespace schismTD
             mCtx.AddMessageHandler(Messages.GAME_SPELL_CREEP, spellCreep);
             mCtx.AddMessageHandler(Messages.GAME_SPELL_TOWER, spellTower);
             mCtx.Broadcast(Messages.GAME_ACTIVATE);
+
+            Black.Send(Messages.GAME_SET_SPAWN, Board.BlackSpawn.Center.X, Board.BlackSpawn.Center.Y + Settings.BOARD_CELL_HEIGHT * 1.5);
+            White.Send(Messages.GAME_SET_SPAWN, Board.WhiteSpawn.Center.X, Board.WhiteSpawn.Center.Y - Settings.BOARD_CELL_HEIGHT * 1.5);
+
             mCtx.Broadcast(Messages.CHAT, "Setup complete");
         }
 
@@ -1391,9 +1395,12 @@ namespace schismTD
                         float d = cr.getDistance(position);
 
                         if(cr is SwarmCreep)
-                            percent = (cr.StartingLife * 3) * (Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100));
+                            percent = (cr.StartingLife * 3) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 7) / 100)));// - (cr.Wave * 10 / 100));
                         else
-                            percent = (cr.StartingLife / cr.Points) * (Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100));
+                            percent = (cr.StartingLife / cr.Points) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 7) / 100)));// - (cr.Wave * 5 / 100));
+
+                        if (percent <= 0)
+                            percent = 0;
 
                         if (d <= Settings.CHI_BLAST_RANGE)
                         {
@@ -1414,15 +1421,18 @@ namespace schismTD
                             else
                             {
                                 if(isMagicCreepPresent)
-                                    cr.Life -= (int)(percent - (percent * 0.4f));
+                                    cr.Life -= (int)(percent - (percent * 0.5f));
                                 else
                                     cr.Life -= (int)percent;
                             }
                         }
                     }
                 }
+                
                 p.Mana -= (int)Math.Round(p.ChiBlastCost);
                 p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
+                if (p.ChiBlastCost < 50)
+                    p.ChiBlastCost = 50;
                 p.ChiBlastUses++;
                 mCtx.Broadcast(Messages.GAME_SPELL_CREEP, position.X, position.Y);
             }
@@ -1448,7 +1458,7 @@ namespace schismTD
 
                 if (c.Tower != null)
                 {
-                    c.Tower.addEffect(new StunEffect(c.Tower, Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 100)));
+                    c.Tower.addEffect(new StunEffect(c.Tower, Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 500)));
                     mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Index);
 
                     p.Mana -= (int)Math.Round(p.ChiBlastCost);
@@ -1567,7 +1577,7 @@ namespace schismTD
                 Black.PlayerObject.Set("rating", ratings.FinalResult1);
             if (White.ConnectUserId != "simpleAdmin")
                 White.PlayerObject.Set("rating", ratings.FinalResult2);
-
+            /*
             if (Black.KongId != "" && Black.KongAuthToken != "")
             {
                 Dictionary<String, String> postValues = new Dictionary<string, string>();
@@ -1593,9 +1603,7 @@ namespace schismTD
                     postValues.Add("MatchesWon", "1");
                 mCtx.PlayerIO.Web.Post("http://www.kongregate.com/api/submit_statistics.json", postValues, onBlackKongStatsResponse);
             }
-
-            
-
+            */
 
             if (mCtx.InDevelopmentServer)
                 return;

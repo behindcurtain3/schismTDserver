@@ -232,12 +232,12 @@ namespace schismTD
             {
                 useableInterval = interval;
 
-                if (previousType == "Swarm")
+                if (previousType == "Quick")
                 {
-                    swarmCounter++;
+                    //swarmCounter++;
 
-                    if (swarmCounter % 3 != 0)
-                        useableInterval /= 2;
+                    //if (swarmCounter % 3 != 0)
+                    useableInterval /= 2;
                 }
 
                 SpawnTimers.Add(creep, useableInterval);

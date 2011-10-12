@@ -19,7 +19,7 @@ namespace schismTD
             {
                 Tower t = (Tower)Entity;
 
-                t.EffectedFireRate -= (int)(t.EffectedFireRate * 0.33f);
+                t.EffectedFireRate -= (int)(t.EffectedFireRate * 0.5f);
 
                 if (t.EffectedFireRate <= 0)
                     t.EffectedFireRate = 1;
