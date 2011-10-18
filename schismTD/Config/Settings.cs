@@ -27,7 +27,7 @@ namespace schismTD
         public const int DEFAULT_GAME_COUNTDOWN = 22;
         public const int DEFAULT_NUM_WAVES = 10;
         public const int DEFAULT_LIFE = 20;
-        public const int DEFAULT_MANA = 100;
+        public const int DEFAULT_MANA = 120;
 
         // Cell index to spawn creeps on
         public const int DEFAULT_BLACK_SPAWN = 032;
@@ -56,7 +56,7 @@ namespace schismTD
         public const int CHI_BLAST_INITIAL = 50;
         public const float CHI_BLAST_RANGE = DEFAULT_RANGE * 2;
         public const float CHI_BLAST_PERCENT = 0.45f;
-        public const int CHI_BLAST_DURATION = 3000;
+        public const int CHI_BLAST_DURATION = 2500;
 
         // Effects
         public const int DEFAULT_SLOW_DURATION = 2500;

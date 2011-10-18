@@ -143,9 +143,16 @@ namespace schismTD
 
         public float ChiBlastCost
         {
-            get;
-            set;
+            get { return mChiBlastCost; }
+            set
+            {
+                if (value >= 50)
+                    mChiBlastCost = value;
+                else
+                    mChiBlastCost = 50;
+            }
         }
+        private float mChiBlastCost;
 
         public float ChiBlastUses
         {

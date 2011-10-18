@@ -227,16 +227,12 @@ namespace schismTD
             long useableInterval;
 
             String previousType = "";
-            int swarmCounter = 0;
             foreach (Creep creep in SpawnQueue)
             {
                 useableInterval = interval;
 
                 if (previousType == "Quick")
                 {
-                    //swarmCounter++;
-
-                    //if (swarmCounter % 3 != 0)
                     useableInterval /= 2;
                 }
 

@@ -1431,8 +1431,6 @@ namespace schismTD
                 
                 p.Mana -= (int)Math.Round(p.ChiBlastCost);
                 p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
-                if (p.ChiBlastCost < 50)
-                    p.ChiBlastCost = 50;
                 p.ChiBlastUses++;
                 mCtx.Broadcast(Messages.GAME_SPELL_CREEP, position.X, position.Y);
             }
@@ -1458,7 +1456,7 @@ namespace schismTD
 
                 if (c.Tower != null)
                 {
-                    c.Tower.addEffect(new StunEffect(c.Tower, Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 500)));
+                    c.Tower.addEffect(new StunEffect(c.Tower, Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 400)));
                     mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Index);
 
                     p.Mana -= (int)Math.Round(p.ChiBlastCost);
