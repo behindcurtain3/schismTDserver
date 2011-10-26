@@ -13,6 +13,10 @@ namespace schismTD
             {
                 return mGame;
             }
+            set
+            {
+                mGame = value;
+            }
         }
         private Game mGame = null;
 
@@ -80,7 +84,8 @@ namespace schismTD
                 if (mLife < 0)
                     mLife = 0;
 
-                mGame.Context.Broadcast(Messages.PLAYER_LIFE, this.Id, mLife);
+                if(mGame != null)
+                    mGame.Context.Broadcast(Messages.PLAYER_LIFE, this.Id, mLife);
             }
         }
         private int mLife = Settings.DEFAULT_LIFE;
@@ -163,7 +168,6 @@ namespace schismTD
         public void reset(Game game)
         {
             mGame = game;
-
             Mana = Settings.DEFAULT_MANA;
             Life = Settings.DEFAULT_LIFE;
 

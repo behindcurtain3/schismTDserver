@@ -38,6 +38,7 @@ namespace schismTD
                     return empty;
 
                 // sort the open list
+                openList.RemoveAll(delegate(Cell c) { return c == null; });
                 openList.Sort(delegate(Cell c1, Cell c2) { return c1.F.CompareTo(c2.F); });
                 
                 // grab the first cell w/ lowest f score

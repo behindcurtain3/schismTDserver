@@ -120,6 +120,12 @@ namespace schismTD
             set;
         }
 
+        public Boolean Ranked
+        {
+            get;
+            set;
+        }
+
         public Game(GameCode gc, Player p1, Player p2)
         {
             Init = false;
@@ -127,6 +133,7 @@ namespace schismTD
             Stats = new GameStats();
             Black = p1;
             White = p2;
+            Ranked = true;
 
             CurrentWaveNum = 0;
 
@@ -166,6 +173,7 @@ namespace schismTD
             Black.Send(Messages.GAME_INFO, "black", Black.Id, White.Id);
             White.Send(Messages.GAME_INFO, "white", White.Id, Black.Id);
             mCtx.Broadcast(Messages.GAME_USER_INFO, Black.Name, White.Name);
+
         }
 
         public void setup()
@@ -1395,9 +1403,9 @@ namespace schismTD
                         float d = cr.getDistance(position);
 
                         if(cr is SwarmCreep)
-                            percent = (cr.StartingLife * 3) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 7) / 100)));// - (cr.Wave * 10 / 100));
+                            percent = (cr.StartingLife * 3) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100)));// - (cr.Wave * 10 / 100));
                         else
-                            percent = (cr.StartingLife / cr.Points) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 7) / 100)));// - (cr.Wave * 5 / 100));
+                            percent = (cr.StartingLife / cr.Points) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100)));// - (cr.Wave * 5 / 100));
 
                         if (percent <= 0)
                             percent = 0;
@@ -1424,6 +1432,9 @@ namespace schismTD
                                     cr.Life -= (int)(percent - (percent * 0.5f));
                                 else
                                     cr.Life -= (int)percent;
+
+                                // Chi blast takes away any armor
+                                cr.Armor = 0;
                             }
                         }
                     }
@@ -1564,17 +1575,21 @@ namespace schismTD
 
         public void updatePlayerObjects(Boolean genericSave = false)
         {
-            // Update ratings
+            // Make sure all users have a rating
             if (!Black.PlayerObject.Contains("rating"))
                 Black.PlayerObject.Set("rating", (double)1500);
             if (!White.PlayerObject.Contains("rating"))
                 White.PlayerObject.Set("rating", (double)1500);
-
-            EloRating ratings = new EloRating(Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), Black.Life, White.Life);
-            if (Black.ConnectUserId != "simpleAdmin")
-                Black.PlayerObject.Set("rating", ratings.FinalResult1);
-            if (White.ConnectUserId != "simpleAdmin")
-                White.PlayerObject.Set("rating", ratings.FinalResult2);
+            
+            // Update if a ranked match
+            if (Ranked)
+            {
+                EloRating ratings = new EloRating(Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), Black.Life, White.Life);
+                if (Black.ConnectUserId != "simpleAdmin")
+                    Black.PlayerObject.Set("rating", ratings.FinalResult1);
+                if (White.ConnectUserId != "simpleAdmin")
+                    White.PlayerObject.Set("rating", ratings.FinalResult2);
+            }
             /*
             if (Black.KongId != "" && Black.KongAuthToken != "")
             {

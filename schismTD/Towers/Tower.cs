@@ -137,6 +137,12 @@ namespace schismTD
             set;
         }
 
+        public Cell Cell
+        {
+            get;
+            private set;
+        }
+
         public String Type = Tower.BASIC;
 
         public Tower(Game g, Player p, Player opponent, Vector2 pos)
@@ -240,6 +246,7 @@ namespace schismTD
 
         public virtual void onPlaced(Cell c)
         {
+            Cell = c;
         }
 
         public virtual void onRemoved(Cell c)
@@ -248,7 +255,8 @@ namespace schismTD
 
         public override void addEffect(Effect e)
         {
-            Player.Game.Context.Broadcast(Messages.GAME_TOWER_EFFECT, ID, e.type, (int)e.Duration);
+            if(Cell != null)
+                Player.Game.Context.Broadcast(Messages.GAME_TOWER_EFFECT, Cell.Index, e.type, (int)e.Duration);
 
             base.addEffect(e);
         }

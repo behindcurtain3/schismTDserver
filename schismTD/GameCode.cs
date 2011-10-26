@@ -111,6 +111,13 @@ namespace schismTD
             {
                 Broadcast(Messages.CHAT, "Init game");
                 mGame = new Game(this, p1, p2);
+
+                if (RoomData.ContainsKey("rated"))
+                {
+                    Console.WriteLine("Is game rated? " + RoomData["rated"]);
+                    if (RoomData["rated"] == "false")
+                        mGame.Ranked = false;
+                }
             }
         }
 
