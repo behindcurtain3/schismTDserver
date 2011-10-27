@@ -223,20 +223,58 @@ namespace schismTD
                 }
             }
 
-            long interval = mWaveTimeWindow / SpawnQueue.Count;
-            long useableInterval;
-
             String previousType = "";
+            long interval = 0;
+            int swarmCreeps = 0;
             foreach (Creep creep in SpawnQueue)
             {
-                useableInterval = interval;
-
-                if (previousType == "Quick")
+                switch (creep.Type)
                 {
-                    useableInterval /= 2;
-                }
+                    case "Armor":
+                        interval = ArmorCreep.INTERVAL;
+                        break;
+                    case "Chigen":
+                        interval = ChigenCreep.INTERVAL;
+                        break;
+                    case "Magic":
+                        interval = MagicCreep.INTERVAL;
+                        break;
+                    case "Quick":
+                        interval = QuickCreep.INTERVAL;
+                        break;
+                    case "Regen":
+                        interval = RegenCreep.INTERVAL;
+                        break;
+                    case "Swarm":
+                        if (swarmCreeps == 0 && previousType != "Swarm")
+                        {
+                            interval = SwarmCreep.INTERVAL; // 1250... the default for 1 point creep
+                            swarmCreeps++;
+                        }
+                        else
+                        {
+                            if (swarmCreeps == 0)
+                            {
+                                interval = 950; // 850 so the first of the three leaves 1250 after the last FIRST swarm creep
+                                swarmCreeps++;
+                            }
+                            else if (swarmCreeps == 1)
+                            {
+                                interval = 250; // 200 behind the first guy!
+                                swarmCreeps++;
+                            }
+                            else
+                            {
+                                interval = 50;
+                                swarmCreeps++;
+                            }
+                        }
 
-                SpawnTimers.Add(creep, useableInterval);
+                        if (swarmCreeps >= 3)
+                            swarmCreeps = 0;
+                        break;
+                }
+                SpawnTimers.Add(creep, interval);
 
                 previousType = creep.Type;
             }

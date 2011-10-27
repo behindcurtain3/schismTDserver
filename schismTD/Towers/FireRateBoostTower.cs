@@ -17,12 +17,18 @@ namespace schismTD
             Damage = 0;
             SellValue = 217;
 
+            EffectedFireRate = FireRate;
+            EffectedDamage = Damage;
+            EffectedRange = Range;
+
             Type = Tower.RATE_BOOST;
         }
 
         public override void onPlaced(Cell c)
         {
             towerCell = c;
+
+            base.onPlaced(c);
         }
 
         public override void onRemoved(Cell c)

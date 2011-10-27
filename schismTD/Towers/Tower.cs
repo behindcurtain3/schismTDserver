@@ -145,6 +145,10 @@ namespace schismTD
 
         public String Type = Tower.BASIC;
 
+        private float mUpdatedRange;
+        private int mUpdatedRate;
+        private int mUpdatedDamage;
+
         public Tower(Game g, Player p, Player opponent, Vector2 pos)
         {
             mGame = g;
@@ -160,6 +164,14 @@ namespace schismTD
             Range = Settings.DEFAULT_RANGE * 2;
             Damage = 30;
             SellValue = 7;
+
+            EffectedFireRate = FireRate;
+            EffectedDamage = Damage;
+            EffectedRange = Range;
+
+            mUpdatedRange = Range;
+            mUpdatedRate = FireRate;
+            mUpdatedDamage = Damage;
 
             FireRatePosition = mFireRate;
 
@@ -234,6 +246,22 @@ namespace schismTD
                 // Apply effects
                 applyEffects(dt);
 
+                if (EffectedRange != mUpdatedRange)
+                {
+                    mUpdatedRange = EffectedRange;
+                    Player.Game.Context.Broadcast(Messages.GAME_TOWER_RANGE, Cell.Index, EffectedRange);
+                }
+                if (EffectedFireRate != mUpdatedRate)
+                {
+                    mUpdatedRate = EffectedFireRate;
+                    Player.Game.Context.Broadcast(Messages.GAME_TOWER_RATE, Cell.Index, EffectedFireRate);
+                }
+                if (EffectedDamage != mUpdatedDamage)
+                {
+                    mUpdatedDamage = EffectedDamage;
+                    Player.Game.Context.Broadcast(Messages.GAME_TOWER_DAMAGE, Cell.Index, EffectedDamage);
+                }
+
                 FireRatePosition += dt;
 
                 if (FireRatePosition > EffectedFireRate)
@@ -247,6 +275,8 @@ namespace schismTD
         public virtual void onPlaced(Cell c)
         {
             Cell = c;
+            Player.Game.Context.Broadcast(Messages.GAME_TOWER_RATE, Cell.Index, EffectedFireRate);
+            Player.Game.Context.Broadcast(Messages.GAME_TOWER_DAMAGE, Cell.Index, EffectedDamage);
         }
 
         public virtual void onRemoved(Cell c)

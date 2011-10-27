@@ -55,5 +55,15 @@ namespace schismTD
                 mEffects.Add(e);
             }
         }
+
+        public Effect getEffect(String t)
+        {
+            Effect result = Effects.Find(delegate(Effect e)
+            {
+                return e.type == t;
+            });
+
+            return result;
+        }
     }
 }

@@ -45,8 +45,8 @@ namespace schismTD
         public const int CREEP_DAMAGE = 1;
 
         // Waves
-        public const int WAVE_LENGTH = 35000; // Length of time between waves
-        public const int WAVE_WINDOW = 30000; // Length of time a wave has to spawn its creeps
+        public const int WAVE_LENGTH = 36000; // Length of time between waves
+        public const int WAVE_WINDOW = 31000; // Length of time a wave has to spawn its creeps
         public const float WAVE_HEALTH_MOD = 1.7f;//1.58f;
         public const float WAVE_ARMOR_MOD = 1.2f;
         public const float WAVE_WORTH_MOD = 1.35f;//1.3f; BASE * ((-10 / (X + 1)) + 6)

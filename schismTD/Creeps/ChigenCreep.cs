@@ -11,6 +11,7 @@ namespace schismTD
         public const int DEFAULT_LIFE = Settings.CREEP_LIFE * 2;
         public const int DEFAULT_DAMAGE = 2;
         public const int DEFAULT_ARMOR = 3;
+        public const long INTERVAL = 2500;
 
         private long mChiTimer;
         private long mChiPosition;

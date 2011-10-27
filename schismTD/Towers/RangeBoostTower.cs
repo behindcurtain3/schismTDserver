@@ -17,22 +17,32 @@ namespace schismTD
             Damage = 0;
             SellValue = 217;
 
+            EffectedFireRate = FireRate;
+            EffectedDamage = Damage;
+            EffectedRange = Range;
+
             Type = Tower.RANGE_BOOST;
         }
 
         public override void onPlaced(Cell c)
         {
             towerCell = c;
+
+            base.onPlaced(c);
         }
 
         public override void onRemoved(Cell c)
         {
             foreach (Tower t in towersEffected)
             {
-                t.Effects.RemoveAll(delegate(Effect e)
+                if (t.hasEffect("rangeboost"))
                 {
-                    return e.type == "rangeboost";
-                });
+                    lock (t.Effects)
+                    {
+                        Effect e = t.getEffect("rangeboost");
+                        t.Effects.Remove(e);
+                    }
+                }
             }
         }
 

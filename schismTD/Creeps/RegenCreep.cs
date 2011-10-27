@@ -11,6 +11,7 @@ namespace schismTD
         public const int DEFAULT_SPEED = 40;
         public const float DEFAULT_LIFE = Settings.CREEP_LIFE * 1.5f;
         public const int DEFAULT_DAMAGE = 2;
+        public const long INTERVAL = 2500;
 
         private long mRegenTimer;
         private long mRegenPosition;

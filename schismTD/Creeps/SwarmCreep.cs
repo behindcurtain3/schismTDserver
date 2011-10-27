@@ -11,6 +11,7 @@ namespace schismTD
         public const int DEFAULT_SPEED = 50;
         public const float DEFAULT_LIFE = Settings.CREEP_LIFE * 0.33f;
         public const int DEFAULT_DAMAGE = 1;
+        public const long INTERVAL = 1250;
 
         public SwarmCreep(Player player, Player opponent, Vector2 pos, Path p)
             : base(player, opponent, pos, p)

@@ -9,9 +9,9 @@ namespace schismTD
     {
         public RapidFireTower(Game g, Player p, Player opponent, Vector2 pos) : base(g, p, opponent, pos)
         {
-            FireRate = (int)(Settings.DEFAULT_FIRE_RATE * 0.33f);
+            FireRate = 200;
             Range = 100;// Settings.DEFAULT_RANGE * 3;
-            Damage = Settings.DEFAULT_DAMAGE * 2;
+            Damage = 20;
             SellValue = 75;
 
             Type = Tower.RAPID_FIRE;
