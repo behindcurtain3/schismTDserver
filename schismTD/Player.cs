@@ -67,7 +67,8 @@ namespace schismTD
             set
             {
                 mMana = value;
-                mGame.Context.Broadcast(Messages.PLAYER_MANA, this.Id, mMana);
+                if (mGame != null)
+                    mGame.Context.Broadcast(Messages.PLAYER_MANA, this.Id, mMana);
             }
         }
         private int mMana = Settings.DEFAULT_MANA;
@@ -155,6 +156,8 @@ namespace schismTD
                     mChiBlastCost = value;
                 else
                     mChiBlastCost = 50;
+
+                this.Send(Messages.PLAYER_CHIBLAST_COST, mChiBlastCost);
             }
         }
         private float mChiBlastCost;

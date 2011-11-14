@@ -34,6 +34,7 @@ namespace schismTD
                 foreach (Effect effect in toRemove)
                 {
                     Effects.Remove(effect);
+                    Console.WriteLine(effect.type);
                 }
             }
         }

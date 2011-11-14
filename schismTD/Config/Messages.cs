@@ -12,6 +12,7 @@ namespace schismTD
         public const String PLAYER_LEFT = "pl";
         public const String PLAYER_MANA = "pm";
         public const String PLAYER_LIFE = "pli";
+        public const String PLAYER_CHIBLAST_COST = "pcc";
 
         // Match
         public const String MATCH_ID = "mi";

@@ -44,6 +44,8 @@ namespace schismTD
 
         public override void update(long dt)
         {
+            applyEffects(dt);
+
             if (towerCell == null)
                 return;
 
@@ -51,7 +53,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Up.Tower))
                 {
-                    towerCell.Up.Tower.addEffect(new FireRateBoostEffect(towerCell.Up.Tower));
+                    towerCell.Up.Tower.addEffect(new FireRateBoostEffect(towerCell.Up.Tower, towerCell));
                     towersEffected.Add(towerCell.Up.Tower);
                 }
             }
@@ -59,7 +61,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Left.Tower))
                 {
-                    towerCell.Left.Tower.addEffect(new FireRateBoostEffect(towerCell.Left.Tower));
+                    towerCell.Left.Tower.addEffect(new FireRateBoostEffect(towerCell.Left.Tower, towerCell));
                     towersEffected.Add(towerCell.Left.Tower);
                 }
             }
@@ -67,7 +69,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Right.Tower))
                 {
-                    towerCell.Right.Tower.addEffect(new FireRateBoostEffect(towerCell.Right.Tower));
+                    towerCell.Right.Tower.addEffect(new FireRateBoostEffect(towerCell.Right.Tower, towerCell));
                     towersEffected.Add(towerCell.Right.Tower);
                 }
             }
@@ -75,7 +77,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Down.Tower))
                 {
-                    towerCell.Down.Tower.addEffect(new FireRateBoostEffect(towerCell.Down.Tower));
+                    towerCell.Down.Tower.addEffect(new FireRateBoostEffect(towerCell.Down.Tower, towerCell));
                     towersEffected.Add(towerCell.Down.Tower);
                 }
             }
@@ -84,7 +86,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Up.Left.Tower))
                 {
-                    towerCell.Up.Left.Tower.addEffect(new FireRateBoostEffect(towerCell.Up.Left.Tower));
+                    towerCell.Up.Left.Tower.addEffect(new FireRateBoostEffect(towerCell.Up.Left.Tower, towerCell));
                     towersEffected.Add(towerCell.Up.Left.Tower);
                 }
             }
@@ -92,7 +94,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Up.Right.Tower))
                 {
-                    towerCell.Up.Right.Tower.addEffect(new FireRateBoostEffect(towerCell.Up.Right.Tower));
+                    towerCell.Up.Right.Tower.addEffect(new FireRateBoostEffect(towerCell.Up.Right.Tower, towerCell));
                     towersEffected.Add(towerCell.Up.Right.Tower);
                 }
             }
@@ -100,7 +102,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Down.Left.Tower))
                 {
-                    towerCell.Down.Left.Tower.addEffect(new FireRateBoostEffect(towerCell.Down.Left.Tower));
+                    towerCell.Down.Left.Tower.addEffect(new FireRateBoostEffect(towerCell.Down.Left.Tower, towerCell));
                     towersEffected.Add(towerCell.Down.Left.Tower);
                 }
             }
@@ -108,7 +110,7 @@ namespace schismTD
             {
                 if (!towersEffected.Contains(towerCell.Down.Right.Tower))
                 {
-                    towerCell.Down.Right.Tower.addEffect(new FireRateBoostEffect(towerCell.Down.Right.Tower));
+                    towerCell.Down.Right.Tower.addEffect(new FireRateBoostEffect(towerCell.Down.Right.Tower, towerCell));
                     towersEffected.Add(towerCell.Down.Right.Tower);
                 }
             }
