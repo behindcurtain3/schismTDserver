@@ -165,6 +165,12 @@ namespace schismTD
             set;
         }
 
+        public String StaticTarget
+        {
+            get;
+            set;
+        }
+
         public void reset(Game game)
         {
             mGame = game;
@@ -185,6 +191,8 @@ namespace schismTD
 
             ChiBlastCost = Settings.CHI_BLAST_INITIAL;
             ChiBlastUses = 0;
+
+            StaticTarget = "";
         }
 
     }

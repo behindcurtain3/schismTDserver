@@ -1339,7 +1339,9 @@ namespace schismTD
                 });
             }
 
-            String oldId = "";
+            // Remove old target
+            mCtx.Broadcast(Messages.GAME_FIRE_REMOVE, p.StaticTarget);
+
             if (result != null)
             {
                 lock (p.Towers)
@@ -1348,15 +1350,14 @@ namespace schismTD
                     {
                         if (t.Type == Tower.SNIPER)
                         {
-                            if(t.StaticTarget != null)
-                                oldId = t.StaticTarget.ID;
                             t.StaticTarget = result;
                         }
                     }
                 }
+
+                p.StaticTarget = result.ID;
             }
-            if (oldId != "")
-                mCtx.Broadcast(Messages.GAME_FIRE_REMOVE, oldId);
+                
         }
 
         public void spellCreep(Player p, Message m)
@@ -1490,12 +1491,12 @@ namespace schismTD
 
         public void addTower(Player p, Cell c)
         {
-            c.Tower.onPlaced(c);
-
             lock (p.Towers)
                 p.Towers.Add(c.Tower);
 
             mCtx.Broadcast(Messages.GAME_TOWER_PLACE, c.Index, c.Tower.Type, c.Tower.Range);
+
+            c.Tower.onPlaced(c);
 
             // update stats
             switch (c.Tower.Type)

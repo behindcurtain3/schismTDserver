@@ -308,7 +308,7 @@ namespace schismTD
 
             mWaveTimeElapsed += dt;
 
-            if (mWaveTimeElapsed <= mWaveTimeWindow && SpawnQueue.Count > 0)
+            if (SpawnQueue.Count > 0)
             {
                 mTimeToNextSpawn -= dt;
 

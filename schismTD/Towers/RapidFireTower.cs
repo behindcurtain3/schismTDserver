@@ -14,6 +14,10 @@ namespace schismTD
             Damage = 20;
             SellValue = 75;
 
+            EffectedFireRate = FireRate;
+            EffectedDamage = Damage;
+            EffectedRange = Range;
+
             Type = Tower.RAPID_FIRE;
         }
 
