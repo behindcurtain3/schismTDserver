@@ -21,15 +21,5 @@ namespace schismTD
             Type = Tower.SPELL;
         }
 
-        public override void onPlaced(Cell c)
-        {
-            Player.ChiBlastCost -= Player.ChiBlastCost * 0.1f;
-
-            if (Player.ChiBlastCost < 10)
-                Player.ChiBlastCost = 10;
-
-            base.onPlaced(c);
-        }
-
     }
 }

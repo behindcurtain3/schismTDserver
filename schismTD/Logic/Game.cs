@@ -1468,12 +1468,84 @@ namespace schismTD
 
                 if (c.Tower != null)
                 {
-                    c.Tower.addEffect(new StunEffect(c.Tower, Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 400)));
+                    int duration = Settings.CHI_BLAST_DURATION + (int)(p.ChiBlastUses * 400);
+                    c.Tower.addEffect(new StunEffect(c.Tower, duration));
                     mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Index);
 
                     p.Mana -= (int)Math.Round(p.ChiBlastCost);
                     p.ChiBlastCost *= Settings.CHI_BLAST_MOD;
                     p.ChiBlastUses++;
+
+                    // Check orthogonal squares
+                    if (p.ChiBlastUses >= 10)
+                    {
+                        // Reduce duration
+                        duration /= 2;
+
+                        if (c.Up.Tower != null)
+                        {
+                            c.Up.Tower.addEffect(new StunEffect(c.Up.Tower, duration));
+                            mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Up.Index);
+                        }
+                        if (c.Right.Tower != null)
+                        {
+                            c.Right.Tower.addEffect(new StunEffect(c.Right.Tower, duration));
+                            mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Right.Index);
+                        }
+                        if (c.Down.Tower != null)
+                        {
+                            c.Down.Tower.addEffect(new StunEffect(c.Down.Tower, duration));
+                            mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Down.Index);
+                        }
+                        if (c.Left.Tower != null)
+                        {
+                            c.Left.Tower.addEffect(new StunEffect(c.Left.Tower, duration));
+                            mCtx.Broadcast(Messages.GAME_SPELL_TOWER, c.Left.Index);
+                        }
+                    }
+
+                    if (p.ChiBlastUses >= 20)
+                    {
+                        duration /= 2;
+
+                        Cell upLeft = findCellByPoint(new PointF(c.Center.X - Settings.BOARD_CELL_WIDTH, c.Center.Y - Settings.BOARD_CELL_HEIGHT));
+                        if (upLeft != null)
+                        {
+                            if(upLeft.Tower != null)
+                            {
+                                upLeft.Tower.addEffect(new StunEffect(upLeft.Tower, duration));
+                                mCtx.Broadcast(Messages.GAME_SPELL_TOWER, upLeft.Index);
+                            }
+                        }
+                        Cell upRight = findCellByPoint(new PointF(c.Center.X + Settings.BOARD_CELL_WIDTH, c.Center.Y - Settings.BOARD_CELL_HEIGHT));
+                        if (upRight != null)
+                        {
+                            if (upRight.Tower != null)
+                            {
+                                upRight.Tower.addEffect(new StunEffect(upRight.Tower, duration));
+                                mCtx.Broadcast(Messages.GAME_SPELL_TOWER, upRight.Index);
+                            }
+                        }
+                        Cell downRight = findCellByPoint(new PointF(c.Center.X + Settings.BOARD_CELL_WIDTH, c.Center.Y + Settings.BOARD_CELL_HEIGHT));
+                        if (downRight != null)
+                        {
+                            if (downRight.Tower != null)
+                            {
+                                downRight.Tower.addEffect(new StunEffect(downRight.Tower, duration));
+                                mCtx.Broadcast(Messages.GAME_SPELL_TOWER, downRight.Index);
+                            }
+                        }
+                        Cell downLeft = findCellByPoint(new PointF(c.Center.X - Settings.BOARD_CELL_WIDTH, c.Center.Y + Settings.BOARD_CELL_HEIGHT));
+                        if (downLeft != null)
+                        {
+                            if (downLeft.Tower != null)
+                            {
+                                downLeft.Tower.addEffect(new StunEffect(downLeft.Tower, duration));
+                                mCtx.Broadcast(Messages.GAME_SPELL_TOWER, downLeft.Index);
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -1497,6 +1569,10 @@ namespace schismTD
             mCtx.Broadcast(Messages.GAME_TOWER_PLACE, c.Index, c.Tower.Type, c.Tower.Range);
 
             c.Tower.onPlaced(c);
+
+            // Each spell tower levels up the chi blast
+            if (c.Tower.Type == Tower.SPELL)
+                p.ChiBlastUses++;
 
             // update stats
             switch (c.Tower.Type)
