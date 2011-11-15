@@ -7,65 +7,24 @@ namespace schismTD.Logic
 {
     public class EloRating
     {
-        public double Point1 { get; set; }
-        public double Point2 { get; set; }
+        public const double K = 24;
 
-        public double FinalResult1 { get; set; }
-        public double FinalResult2 { get; set; }
+        public double RatingA { get; set; }
+        public double RatingB { get; set; }
 
-        public EloRating(double CurrentRating1, double CurrentRating2, double Score1, double Score2)
+        public EloRating(double RA, double RB, double SA, double SB)
         {
-            /*
-            double CurrentR1 = 1500.0;
-            double CurrentR2 = 1500.0;
- 
-            double Score1 = 20.0;
-            double Score2 = 10;
-            */
+            double AResult = (SA > SB) ? 1.0 : (SA < SB) ? 0.0 : 0.5;
+            double BResult = (SB > SA) ? 1.0 : (SB < SA) ? 0.0 : 0.5;
 
-            double E = 0;
+            double EA = 1 / (1 + Math.Pow(10, (RB - RA) / 400));
+            double EB = 1 / (1 + Math.Pow(10, (RA - RB) / 400));
 
-            if (Score1 != Score2)
-            {
-                if (Score1 > Score2)
-                {
-                    E = 120 - Math.Round(1 / (1 + Math.Pow(10, ((CurrentRating2 - CurrentRating1) / 400))) * 120);
-                    FinalResult1 = CurrentRating1 + E;
-                    FinalResult2 = CurrentRating2 - E;
-                }
-                else
-                {
-                    E = 120 - Math.Round(1 / (1 + Math.Pow(10, ((CurrentRating1 - CurrentRating2) / 400))) * 120);
-                    FinalResult1 = CurrentRating1 - E;
-                    FinalResult2 = CurrentRating2 + E;
-                }
-            }
-            else
-            {
-                if (CurrentRating1 == CurrentRating2)
-                {
-                    FinalResult1 = CurrentRating1;
-                    FinalResult2 = CurrentRating2;
-                }
-                else
-                {
-                    if (CurrentRating1 > CurrentRating2)
-                    {
-                        E = (120 - Math.Round(1 / (1 + Math.Pow(10, ((CurrentRating1 - CurrentRating2) / 400))) * 120)) - (120 - Math.Round(1 / (1 + Math.Pow(10, ((CurrentRating2 - CurrentRating1) / 400))) * 120));
-                        FinalResult1 = CurrentRating1 - E;
-                        FinalResult2 = CurrentRating2 + E;
-                    }
-                    else
-                    {
-                        E = (120 - Math.Round(1 / (1 + Math.Pow(10, ((CurrentRating2 - CurrentRating1) / 400))) * 120)) - (120 - Math.Round(1 / (1 + Math.Pow(10, ((CurrentRating1 - CurrentRating2) / 400))) * 120));
-                        FinalResult1 = CurrentRating1 + E;
-                        FinalResult2 = CurrentRating2 - E;
-                    }
-                }
-            }
-            Point1 = FinalResult1 - CurrentRating1;
-            Point2 = FinalResult2 - CurrentRating2;
+            double RA2 = RA + K * (AResult - EA);
+            double RB2 = RB + K * (BResult - EB);
 
+            RatingA = Math.Round(RA2);
+            RatingB = Math.Round(RB2);
         }
     }
 }

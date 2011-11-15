@@ -1663,9 +1663,9 @@ namespace schismTD
             {
                 EloRating ratings = new EloRating(Black.PlayerObject.GetDouble("rating"), White.PlayerObject.GetDouble("rating"), Black.Life, White.Life);
                 if (Black.ConnectUserId != "simpleAdmin")
-                    Black.PlayerObject.Set("rating", ratings.FinalResult1);
+                    Black.PlayerObject.Set("rating", ratings.RatingA);
                 if (White.ConnectUserId != "simpleAdmin")
-                    White.PlayerObject.Set("rating", ratings.FinalResult2);
+                    White.PlayerObject.Set("rating", ratings.RatingB);
             }
             /*
             if (Black.KongId != "" && Black.KongAuthToken != "")
