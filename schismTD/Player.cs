@@ -157,7 +157,7 @@ namespace schismTD
                 else
                     mChiBlastCost = 50;
 
-                this.Send(Messages.PLAYER_CHIBLAST_COST, mChiBlastCost);
+                this.Send(Messages.PLAYER_CHIBLAST_COST, Math.Round(mChiBlastCost));
             }
         }
         private float mChiBlastCost;

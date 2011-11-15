@@ -1403,10 +1403,15 @@ namespace schismTD
                     {
                         float d = cr.getDistance(position);
 
+                        //((0.33+(0.07*numChiBlastUses))(0.5/(numWavePointValue)+0.5))
+                        percent = cr.StartingLife * ((Settings.CHI_BLAST_PERCENT + (0.07f * p.ChiBlastUses)) * (0.5f / cr.Points + 0.5f));
+                        /*
                         if(cr is SwarmCreep)
                             percent = (cr.StartingLife * 3) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100)));// - (cr.Wave * 10 / 100));
                         else
                             percent = (cr.StartingLife / cr.Points) * ((Settings.CHI_BLAST_PERCENT + ((p.ChiBlastUses * 10) / 100)));// - (cr.Wave * 5 / 100));
+                        */
+                        Console.WriteLine(percent);
 
                         if (percent <= 0)
                             percent = 0;
